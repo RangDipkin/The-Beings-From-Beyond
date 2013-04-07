@@ -66,14 +66,15 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 		myPane.setLayout(null);
 //		contentGraphics = myPane.getGraphics();
                 
-                Image icon = null;
-                try {
-			icon = (BufferedImage)ImageIO.read(new File("src/AppIcon.png"));
-		}  catch (IOException e) {
-                    System.out.println("Failed loading image!");
-                    System.exit(0);
-                }
-                setIconImage(icon);
+                //works fine, just waiting on a decent icon
+//                Image icon = null;
+//                try {
+//			icon = (BufferedImage)ImageIO.read(new File("src/AppIcon.png"));
+//		}  catch (IOException e) {
+//                    System.out.println("Failed loading image!");
+//                    System.exit(0);
+//                }
+//                setIconImage(icon);
                 
                 //do some fancy system optimizations
                 dasEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -94,9 +95,19 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 //separates the character sheet into 256 individual tiles
                 charsheet = separateSheet(rawCharSheet);
 		
+                BufferedImage titleScreen = null;
+                try {
+                    titleScreen = (BufferedImage)ImageIO.read(new File("src/drawing/title01.bmp"));
+                }  catch (IOException e) {
+                    System.out.println("Failed loading title screen!");
+                    System.exit(0);
+                }
+                
+                ImageRepresentation[][] translatedTitles = ImageRepresentation.bmpToImRep(titleScreen);
+                
 		//create the frame
 		MainFrame mainFrame = new MainFrame();
-		currentScreen = previousScreen = new TitleScreen();
+		currentScreen = previousScreen = new TitleScreen(translatedTitles);
 		
 		rosetta = new Translator();
 		

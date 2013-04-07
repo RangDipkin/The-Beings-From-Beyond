@@ -95,4 +95,19 @@ public class ImageRepresentation {
 	}
 	
 	int[][] getRGBMatrix() {return RGBMatrix;}
+        
+        static ImageRepresentation[][] bmpToImRep(BufferedImage inBMP){
+            ImageRepresentation[][] finishedImRepMatrix = new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];
+            if((inBMP.getWidth()!=MainFrame.WIDTH_IN_SLOTS)||(inBMP.getHeight()!=MainFrame.HEIGHT_IN_SLOTS)){
+                System.out.println("Yo, something's wrong with the title screen size.");
+            }
+                    
+            for(int i=0;i<inBMP.getWidth();i++){
+                for(int j=0;j<inBMP.getHeight(); j++){
+                    finishedImRepMatrix[i][j] = new ImageRepresentation(WHITE,inBMP.getRGB(i,j),0);
+                }
+            }
+            
+            return finishedImRepMatrix;
+        }
 }
