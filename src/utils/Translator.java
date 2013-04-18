@@ -111,12 +111,16 @@ public class Translator {
 	
 	//Takes a string input and returns the numerical positions on the charsheet that correspond to the characters within that string
 	//Note...returns ? if a character isn't currently entered in the dictionary. No worries though, just add it.
-	public static int[] translate(String input) {
-		int[] output = new int[input.length()];
+	public static int[] translate(String input) {            
+                int[] output = new int[input.length()];
 		
 		for(int i = 0; i < input.length(); i++) {
-			if(intToChar.containsKey(input.charAt(i))){output[i] = intToChar.get(input.charAt(i));}
-                        else {output[i] = ERROR_CHARACTER_NUMBER;}
+			if(intToChar.containsKey(input.charAt(i))){
+                            output[i] = intToChar.get(input.charAt(i));
+                        }
+                        else {
+                            output[i] = ERROR_CHARACTER_NUMBER;
+                        }
 		}
 		
 		return output;
@@ -133,21 +137,21 @@ public class Translator {
      * @param oneDimArray
      * @return
      */
-    public ArrayList<ArrayList<Integer>> oneDimToTwoDim(int[] oneDimArray) {
-            ArrayList<ArrayList<Integer>> twoDim = new ArrayList<>();
-            
-            int iterator = 0;
-            while(iterator < oneDimArray.length) {
-                if(oneDimArray[iterator] == -1){
-                    twoDim.add(new ArrayList<>());
-                }
-                else {
-                    twoDim.add(oneDimArray[iterator]);
-                }
-            }
-            
-            return twoDim;
-        }
+//    public ArrayList<ArrayList<Integer>> oneDimToTwoDim(int[] oneDimArray) {
+//            ArrayList<ArrayList<Integer>> twoDim = new ArrayList<>();
+//            
+//            int iterator = 0;
+//            while(iterator < oneDimArray.length) {
+//                if(oneDimArray[iterator] == -1){
+//                    twoDim.add(new ArrayList<>());
+//                }
+//                else {
+//                    twoDim.add(oneDimArray[iterator]);
+//                }
+//            }
+//            
+//            return twoDim;
+//    }
 	
 	//a lighter version of translate for individual chars
 	public static int translate(char input) {

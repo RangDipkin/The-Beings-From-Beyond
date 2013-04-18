@@ -38,8 +38,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
         //long-term version plans
-        //
-        final static String VERSION_NUMBER = "Alpha v0.1.0";
+        final static String VERSION_NUMBER = "Alpha v0.1.3";
         
         
 	MainFrame() {
@@ -105,11 +104,13 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 
                 ImageRepresentation[][] translatedTitles = ImageRepresentation.bmpToImRep(titleScreen);
                 
+                
+                rosetta = new Translator();
 		//create the frame
 		MainFrame mainFrame = new MainFrame();
 		currentScreen = previousScreen = new TitleScreen(translatedTitles);
 		
-		rosetta = new Translator();
+		
 		
 		//create game objects
 		Random dice = new Random();
