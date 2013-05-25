@@ -8,6 +8,7 @@ package objects;
 
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
+import drawing.VisibleItem;
 import java.util.ArrayList;
 import lighting.LightingElement;
 

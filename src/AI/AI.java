@@ -8,8 +8,6 @@ import objects.Tile;
 
 
 public class AI {
-	//************************************************************************
-	//TODO: this will probably take a while
 	public static Stack AStar(Tile start, Tile goal, GameMap map) {                  
                 //The set of nodes already evaluated
 		ArrayList<Tile> closedSet = new ArrayList<>();

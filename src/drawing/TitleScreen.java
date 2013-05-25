@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class TitleScreen extends Screen {
     public static ImageRepresentation[][] titlePixels;
     
-    ChoiceList MainMenuChoices = new ChoiceList(ImageRepresentation.WHITE, ImageRepresentation.YELLOW);
+    ChoiceList MainMenuChoices = new ChoiceList(ImageRepresentation.WHITE, ImageRepresentation.YELLOW, 35, 20);
     
     TitleScreen(ImageRepresentation[][] inPixels){
         titlePixels = inPixels;
@@ -21,16 +21,16 @@ public class TitleScreen extends Screen {
         MainMenuChoices.add(new GUIText("Exit Game"));
         
         //Space for version number
-        ChoiceList lowerRightCorner = new ChoiceList(ImageRepresentation.GRAY);
+        ChoiceList lowerRightCorner = new ChoiceList(ImageRepresentation.GRAY, 67, 24);
         lowerRightCorner.add(new GUIText(MainFrame.VERSION_NUMBER));
-        lowerRightCorner.display(67, 24);
+        lowerRightCorner.displayOnto(titlePixels);
     }
     
     @Override
 	public void render(Graphics g) {
             int[][] currGrid; 
             
-            MainMenuChoices.display(35, 20);
+            MainMenuChoices.displayOnto(titlePixels);
              
             BufferedImage currFrame = new BufferedImage(MainFrame.getDrawAreaWidth(), MainFrame.getDrawAreaHeight(), BufferedImage.TYPE_INT_ARGB);
             //System.out.println("currFrame set to " + MainFrame.getDrawAreaWidth() + "(" + currFrame.getWidth() + "), " + currFrame.getHeight() + "!");

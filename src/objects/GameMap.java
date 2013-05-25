@@ -1,7 +1,9 @@
 package objects;
 
+import AI.MovementDesire;
 import drawing.ImageRepresentation;
 import drawing.MainFrame;
+import drawing.VisibleItem;
 import java.util.ArrayList;
 import lighting.PreciseCoordinate;
 
@@ -16,19 +18,7 @@ public class GameMap {
 	public int width, height;
         
         public GameObject mainChar;
-        
-        //************************************************
-        //Multipliers for transforming coordinates to other octants
-        //for use in Bjorn Bergstrom's Recursive Shadowcasting FOV Algorithm
-        
-        //column corresponds to an octant(0 to 7)
-        //first row corresponds to xx, 
-        //second """               xy, 
-        //third  """               yx, 
-        //fourth """               yy
-        
-        //finally, X = (dx*xx) + (dy*xy) plus some cx [I'm thinkin cx is the originX]
-        //         Y = (dx*yx) + (dy*yy) plus some cy ["   "       cy "  "   originY]
+
         static final int[][] multipliers = {
             { 1, 0,  0, -1, -1,  0,  0,  1},
             { 0, 1, -1,  0,  0, -1,  1,  0}, 
@@ -142,8 +132,9 @@ public class GameMap {
 	
 	void moveNPCs() {
 		for(GameObject npc : NPCList) {
-			if(npc.desires.isEmpty())
+			if(npc.desires.isEmpty()){
                             npc.randomMove();
+                        }
 		}
 	}
 	
@@ -152,8 +143,10 @@ public class GameMap {
 		for(int i = 0; i < objectList.size(); i++) {
 			curr = objectList.get(i);
                         
-                        if(!curr.desires.isEmpty())
-                            curr.resolveImmediateDesire();
+                        if(!curr.desires.isEmpty()) {
+                            MovementDesire currDesire = (MovementDesire)curr.desires.pop();
+                            curr.resolveImmediateDesire(currDesire);
+                        }
 		}
         }
         
@@ -181,7 +174,7 @@ public class GameMap {
 		objectList.add(actor);
 	}
 	
-	Tile getTile(int x, int y) {
+	public Tile getTile(int x, int y) {
             return map[x][y];
 	}
 
@@ -189,7 +182,7 @@ public class GameMap {
             return map[(int)Math.floor(x)][(int)Math.floor(y)];
         }
         
-        boolean isValidTile(int x,int y) {
+        public boolean isValidTile(int x,int y) {
             return x < width && y < height && x >= 0 && y >= 0;
         }
         
@@ -248,7 +241,7 @@ public class GameMap {
         //(either the FoV of the main player(s) or a light source)
         //in the specified octant
         //(in the documentation, slopeA = startSlope and slopeB = endSlope)
-        public void scan(GameObject origin,ArrayList<PreciseCoordinate> litTiles, int visRange, int octant, int depth, double startSlope, double endSlope) {
+        /**/public void scan(GameObject origin,ArrayList<PreciseCoordinate> litTiles, int visRange, int octant, int depth, double startSlope, double endSlope) {
             //System.out.println("TRACE: x = " + origin.getX() + " - " + startSlope + "*" + depth);
             int x = origin.getX() + (int)Math.round(startSlope*depth); 
             int y = origin.getY() - depth; 
@@ -257,27 +250,32 @@ public class GameMap {
             
             double currentSlope = startSlope;
             
-            
             System.out.println("TRACE: new slope = " + currentSlope);
             //scan from the startSlope to the endSlope (if we're still inside the map)...
-            while(currentSlope >= endSlope && isValidTile((int)Math.floor(preciseX), (int)Math.floor(preciseY))) {
+            while(currentSlope >= endSlope && isValidTile((int)Math.floor(preciseX)+priors[0][octant], (int)Math.floor(preciseY)+priors[1][octant])) {
                 //if (x, y) is within visual range...
                 System.out.println(preciseX + "  " + preciseY + "  " + origin.getX() + "  " + origin.getY());
                 if(getDistance(preciseX,preciseY,origin.getX(),origin.getY()) < visRange) {
+                    
+                    
                     //if the current tile is the beginning of a vision-blocking series...
-                    if ( getTile(preciseX,preciseY).hasBlockingObject() && !getPrior(preciseX,preciseY,octant).hasBlockingObject()) {
+                    if ( getTile(preciseX,preciseY).hasBlockingObject() && (!isValidTile((int)Math.floor(preciseX), (int)Math.floor(preciseY)) || 
+                         !getPrior(preciseX,preciseY,octant).hasBlockingObject())) {
                         System.out.println("The current tile is the beginning of a blocking series");
                         //do another scan one tile farther from the center
-                        scan(origin, litTiles, visRange, octant, depth + 1, startSlope,
-                                //(using the top row of the octantFlags matrix...)
-                                (octantFlags[0][octant]>0) ? 
-                                    //if the current octant is in Quadrants I or III, use the standard slope
-                                    getSlope(preciseX,preciseY,(double)origin.getX(),(double)origin.getY(), negSlopeHandler[octant]) :
-                                    //otherwise use the inverse of the slope (1/slope)
-                                    getInverseSlope(preciseX,preciseY,(double)origin.getX(),(double)origin.getY(), negSlopeHandler[octant]));
+                        if(octantFlags[0][octant]<0){
+                            System.out.println("DEBUG: Starting a recursive scan with endslope = " + getSlope(preciseX,preciseY,(double)origin.getX(),(double)origin.getY(), negSlopeHandler[octant]));
+                            scan(origin, litTiles, visRange, octant, depth + 1, startSlope,getSlope(preciseX,preciseY,((double)origin.getX()) + 0.5,((double)origin.getY()) + 0.5, negSlopeHandler[octant]));
+                        }
+                        else {
+                            System.out.println("DEBUG: Starting a recursive Insverseslope scan with endslope = " + getInverseSlope(preciseX,preciseY,(double)origin.getX(),(double)origin.getY(), negSlopeHandler[octant]));
+                            scan(origin, litTiles, visRange, octant, depth + 1, startSlope,getInverseSlope(preciseX,preciseY,((double)origin.getX()) + 0.5,((double)origin.getY()) + 0.5, negSlopeHandler[octant]));
+                        }
                     }
+                    
+                    
                     //if the current tile is the end of a vision-blocking series...
-                    if (!getTile(preciseX,preciseY).hasBlockingObject() &&  getPrior(preciseX,preciseY,octant).hasBlockingObject()){
+                    if ((!getTile(preciseX,preciseY).hasBlockingObject()) &&  getPrior(preciseX,preciseY,octant).hasBlockingObject()){
                         System.out.println("The current tile is the end of a blocking series");
                         //start a new scan at the middle of the next cell
                         currentSlope = getSlope(preciseX + slopeTransform[0][octant],preciseY + slopeTransform[1][octant],origin.getX(),origin.getY(), negSlopeHandler[octant]);
@@ -285,6 +283,13 @@ public class GameMap {
        
                     //set (x,y) visible or create shadows
                     getTile(preciseX,preciseY).doFOVaction(origin);
+                    System.out.println();
+                    
+                    //DEBUG 
+                    try{
+                        Thread.sleep(4000);
+                        MainFrame.forceRender();
+                    } catch (Exception e) {}
                 }
                 //go to the next tile
                 preciseX = preciseX + increments[0][octant];
@@ -294,7 +299,7 @@ public class GameMap {
                 if (octantFlags[0][octant]<0) { 
                     //if the current octant is in Quadrants I or III, use the standard slope
                     currentSlope = getSlope(preciseX,preciseY,(double)origin.getX(),(double)origin.getY(), negSlopeHandler[octant]);
-                    System.out.println("TRACE: new slope = " + currentSlope);
+                    System.out.println("TRACE: new slope2 = " + currentSlope);
                 }
                 else {  
                     //otherwise use the inverse of the slope (1/slope)
@@ -308,13 +313,13 @@ public class GameMap {
 
             //if we haven't yet reached the maximum range and the current tile isn't a 
             //blocker
-            if ((depth < visRange) && !getTile(preciseX,preciseY).hasBlockingObject()){
+            if ((depth < visRange) && (!isValidTile((int)Math.floor(preciseX), (int)Math.floor(preciseY))||!getTile(preciseX,preciseY).hasBlockingObject())){
                 System.out.println("Increase Depth...");
                 scan(origin, litTiles, visRange, octant, depth + 1, startSlope, endSlope); 
             }
             
             //return litTiles;
-        } 
+        }
         
         double getDistance(double algorithmX, double algorithmY, int originX, int originY) {
             double srcX = (double)originX;
@@ -323,12 +328,13 @@ public class GameMap {
         }
         
         double getSlope(double x1, double y1, double x2, double y2, int neg) {  
-            System.out.println("(" + x1 + " - " + x2 + ") / (" + y1 + " - " + y2 + ")");
-            if(y1-y2 != 0){return neg * (x1-x2)/(y1-y2); }
+            System.out.println("(" + y1 + " - " + y2 + ") / (" + x1 + " - " + x2 + ")");
+            if(x1-x2 != 0){return neg * (y1-y2)/(x1-x2); }
             else          {return 0;}
         }
         
         double getInverseSlope(double x1, double y1, double x2, double y2, int neg) {
+            System.out.println("DEBUG: InverseSlope");
             if (getSlope(x1,y1,x2,y2, neg) != 0) {return (1.0 / getSlope(x1,y1,x2,y2, neg));}
             else                            {return 0;}
         }

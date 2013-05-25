@@ -12,7 +12,6 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import objects.GameMap;
-import objects.GameObject;
 import utils.Translator;
 
 public class MainFrame extends JFrame implements EventProcessable, KeyListener , ComponentListener{
@@ -38,7 +37,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
         //long-term version plans
-        final static String VERSION_NUMBER = "Alpha v0.1.3";
+        final static String VERSION_NUMBER = "Alpha v0.1.4";
         
         
 	MainFrame() {
@@ -116,19 +115,35 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 		Random dice = new Random();
                 int x = dice.nextInt(200);
                 int y = dice.nextInt(60);
-                testMap = new GameMap(x , y);
+                testMap = new GameMap(x + 10, y + 10);
 		testMap.populate();
 		testMap.updateObjects();
 		
 		//run the main loop
-		while(true) {
+		//TODO: call update after a TargetElapsedTime (1/60th of a second)
+                //TODO: after update is called, check to see if it's time to call
+                //TODO: update again(if update is taking a long time), if we still
+                //TODO: have time left, call draw. After calling draw, if drawing was
+                //TODO: too fast, idle, then call update; but if it is time to call
+                //TODO: update, do it.
+                //TODO: If Update takes too long (TargetElapsedTime??), call update
+                //TODO: again without drawing.
+                
+                //TODO: find out how to stop that dang smearing of game objects
+                
+                //TODO: make render (much) faster using buffers or something
+                while(true) {
 			eventProcessor.processEventList();
 			testMap.updateObjects();
-                        Graphics contentGraphics = myPane.getGraphics();
-			currentScreen.render(contentGraphics);
-                        contentGraphics.dispose();
+                        forceRender();
 		}
 	}
+        
+        public static void forceRender(){
+            Graphics contentGraphics = myPane.getGraphics();
+            currentScreen.render(contentGraphics);
+            contentGraphics.dispose();
+        }
 	
 
 	//add key events to the general list of events

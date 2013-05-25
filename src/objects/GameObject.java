@@ -4,11 +4,12 @@ import AI.AI;
 import AI.Compass;
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
+import drawing.VisibleItem;
 import java.util.Random;
 import java.util.Stack;
 import lighting.LightingElement;
 
-public class GameObject {
+public class GameObject implements VisibleItem{
 	int x, y;
 	int precedence;
 	boolean blocking = false;
@@ -24,9 +25,7 @@ public class GameObject {
         GameObject() {}
 	
 	GameObject(String name, ImageRepresentation ir, boolean blocking, int precedence, GameMap handlingMap) {
-		
-		
-		this.blocking = blocking;
+                this.blocking = blocking;
 		this.ir = ir;
 		this.precedence = precedence;
 		this.name = name;
@@ -77,8 +76,8 @@ public class GameObject {
 		Tile isItValid;
                 
 		do {
-			coords[0] = dice.nextInt(rollingArea.width);
-			coords[1] = dice.nextInt(rollingArea.height); 
+			coords[0] = dice.nextInt(rollingArea.width-1);
+			coords[1] = dice.nextInt(rollingArea.height-1); 
 			
                         isItValid = handlingMap.getTile(coords[0], coords[1]);
                         
@@ -92,22 +91,18 @@ public class GameObject {
 		desires.push(direction);
 	}
 	
-	void resolveImmediateDesire() {
-		//System.out.println("resolving: " + desires);
-		//System.out.println();
-		
+	//Preconditions: given a class instance, and a desire for direction
+        //Postconditions: the GameObject instance is moved in the desired direction
+    @Override
+        public void resolveImmediateDesire(MovementDesire curr) {
 		//curr can be either Compass directions or Tiles
-		MovementDesire curr = (MovementDesire)desires.pop();
 		int[] coords = curr.getCoords(getTile());
 		
 		//make sure that the desired target position is valid
 		if(!collision(coords[0], coords[1])) {
 			handlingMap.getTile(this.getX(), this.getY()).remove(this);
                         
-                        //System.out.println("Setting x from " + getX() + " to " + curr.getX());
 			this.setX(coords[0]);
-			
-			//System.out.println("Setting y from " + getY() + " to " + curr.getY());
 			this.setY(coords[1]);
 			
 			updateBackgroundColor(x,y);
