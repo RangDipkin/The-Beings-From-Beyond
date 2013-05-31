@@ -68,7 +68,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 //                Image icon = null;
 //                try {
 //			icon = (BufferedImage)ImageIO.read(new File("src/AppIcon.png"));
-//		}  catch (IOException e) {
+//		  }  catch (IOException e) {
 //                    System.out.println("Failed loading image!");
 //                    System.exit(0);
 //                }
@@ -82,42 +82,11 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 	}
 	
 	public static void main(String[] args) {
-                //read in the character sheet for drawing stuff
-		BufferedImage rawCharSheet = null;
-                try {
-			rawCharSheet = (BufferedImage)ImageIO.read(new File("src/drawing/charsheet.bmp"));
-		}  catch (IOException e) {
-                    System.out.println("Failed loading image!");
-                    System.exit(0);
-                }
-                //separates the character sheet into 256 individual tiles
-                charsheet = separateSheet(rawCharSheet);
+                loadCharSheet();
 		
-                BufferedImage titleScreen = null;
-                try {
-                    titleScreen = (BufferedImage)ImageIO.read(new File("src/drawing/title01.bmp"));
-                }  catch (IOException e) {
-                    System.out.println("Failed loading title screen!");
-                    System.exit(0);
-                }
-                
-                ImageRepresentation[][] translatedTitles = ImageRepresentation.bmpToImRep(titleScreen);
-                
-                
-                rosetta = new Translator();
-		//create the frame
-		MainFrame mainFrame = new MainFrame();
-		currentScreen = previousScreen = new TitleScreen(translatedTitles);
+                loadTitleScreen();
 		
-		
-		
-		//create game objects
-		Random dice = new Random();
-                int x = dice.nextInt(200);
-                int y = dice.nextInt(60);
-                testMap = new GameMap(x + 10, y + 10);
-		testMap.populate();
-		testMap.updateObjects();
+                initializeMap();    
 		
 		//run the main loop
 		//TODO: call update after a TargetElapsedTime (1/60th of a second)
@@ -131,18 +100,61 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 
                 //TODO: find out how to stop that dang smearing of game objects
                 
-                //TODO: make render (much) faster using buffers or something
+                //TODO: make render (much) faster using buffers or something 
+                
+                //TODO: stop using setRGB + getRGB
+                
+                //TODO: translate charsheet.bmp into a 2-dimensional boolean array
                 while(true) {
 			eventProcessor.processEventList();
-			testMap.updateObjects();
+			//testMap.updateObjects();
                         forceRender();
 		}
 	}
+        
+        static void loadCharSheet() {
+            //read in the character sheet for drawing stuff
+            BufferedImage rawCharSheet = null;
+            try {
+                    rawCharSheet = (BufferedImage)ImageIO.read(new File("src/drawing/charsheet.bmp"));
+            }  catch (IOException e) {
+                System.out.println("Failed loading image!");
+                System.exit(0);
+            }
+            //separates the character sheet into 256 individual tiles
+            charsheet = separateSheet(rawCharSheet);
+        }
+        
+        static void loadTitleScreen() {
+            BufferedImage titleScreen = null;
+            try {
+                titleScreen = (BufferedImage)ImageIO.read(new File("src/drawing/title01.bmp"));
+            }  catch (IOException e) {
+                System.out.println("Failed loading title screen!");
+                System.exit(0);
+            }
+
+            ImageRepresentation[][] translatedTitles = ImageRepresentation.bmpToImRep(titleScreen);
+
+
+            rosetta = new Translator();
+            //create the frame
+            MainFrame mainFrame = new MainFrame();
+            currentScreen = previousScreen = new TitleScreen(translatedTitles);
+        }
         
         public static void forceRender(){
             Graphics contentGraphics = myPane.getGraphics();
             currentScreen.render(contentGraphics);
             contentGraphics.dispose();
+        }
+        
+        static void initializeMap() {
+            Random dice = new Random();
+            int x = dice.nextInt(200);
+            int y = dice.nextInt(60);
+            testMap = new GameMap(x + 10, y + 10);
+            testMap.populate();
         }
 	
 

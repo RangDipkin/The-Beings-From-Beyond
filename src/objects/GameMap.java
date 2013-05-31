@@ -68,42 +68,45 @@ public class GameMap {
 		}
 	}
 	
-	public void populate() {
-		//fill the game map
-		for(int i = 0; i < map.length ; i++) {
-			for(int j = 0; j < map[i].length ; j++) {
-				ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
-				ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE     , 197);
-				
-				
-				if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-					objectList.add(new GameObject("Tiled Floor", tileFloor1, i, j, false, 2, this));
-				}
-				else {
-					objectList.add(new GameObject("Black Tiled Floor", tileFloor2, i, j, false, 2, this));
-				}
-				
-				//add a border around the edge of the game screen
-				if(i == 0 || i == width-1 || j == 0 || j == height-1 || (i%4==0 && j%4==0) ) {
-					ImageRepresentation whiteWall = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
-					objectList.add(new GameObject("White Wall", whiteWall, i, j, true,  1, this));
-				}
-			}
-		}
-                
-                mainChar = new GameObject("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
-                
-                for(int i = 0; i < 10; i++) {
-                    NPCList.add(new GameObject("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), true, 1, this));
+	public void populate() {            
+            //fill the game map
+            for(int i = 0; i < map.length ; i++) {
+                for(int j = 0; j < map[i].length ; j++) {
+                    ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
+                    ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE     , 197);
+                    ImageRepresentation whiteWall = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
+                    
+                    if(i == 0 || i == width-1 || j == 0 || j == height-1 || (i%4==0 && j%4==0) ) {
+                        objectList.add(new GameObject("White Wall", whiteWall, i, j, true,  1, this));
+                    }
+                    else if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
+                        objectList.add(new GameObject("Tiled Floor", tileFloor1, i, j, false, 2, this));
+                    }
+                    else {
+                        objectList.add(new GameObject("Black Tiled Floor", tileFloor2, i, j, false, 2, this));
+                    }
+
+                    
                 }
-                
-                updateObjects();
+            }
+
+            System.out.println("Yo why the heck am i getting copies?");
+            mainChar = new GameObject("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
+            addActor(mainChar);
+
+            for(int i = 0; i < 10; i++) {
+                GameObject greenSmiley = new GameObject("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), true, 1, this);
+                NPCList.add(greenSmiley);
+                addActor(greenSmiley);
+            }
+
+            updateObjects();
         }
 	
 	//returns the object in a specific map tile with the smallest precedence
 	public ImageRepresentation getRepresentation(int x, int y) {	
 		if(!isValidTile(x,y)) { 
-                    return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, 250);
+                    return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
                 }
             
                 //set the minimum to the first element in the tile
@@ -152,26 +155,26 @@ public class GameMap {
         
         
 	public void updateObjects() {		
-		//System.out.println("updating objects");
-		
-		//wipe the map clean to make room for new layout
-		for(int i = 0; i < width ; i++) {
-			for(int j = 0; j < height ; j++) {
-                            for(int k = 0; k < map[i][j].size(); k++){
-                                map[i][j].remove(0);
-                            }
-			}
-		}
-		
-		GameObject curr;
-		for(int i = 0; i < objectList.size(); i++) {
-			curr = objectList.get(i);
-                        map[curr.getX()][curr.getY()].add(curr);
-		}
+            System.out.println("updating objects...");
+            
+            //wipe the map clean to make room for new layout
+            for(int i = 0; i < width ; i++) {
+                for(int j = 0; j < height ; j++) {
+                    for(int k = 0; k < map[i][j].size(); k++){
+                        map[i][j].remove(0);
+                    }
+                }
+            }
+
+            GameObject curr;
+            for(int i = 0; i < objectList.size(); i++) {
+                curr = objectList.get(i);
+                map[curr.getX()][curr.getY()].add(curr);
+            }
 	}
 	
 	void addActor(GameObject actor) {
-		objectList.add(actor);
+            objectList.add(actor);
 	}
 	
 	public Tile getTile(int x, int y) {
@@ -241,7 +244,7 @@ public class GameMap {
         //(either the FoV of the main player(s) or a light source)
         //in the specified octant
         //(in the documentation, slopeA = startSlope and slopeB = endSlope)
-        /**/public void scan(GameObject origin,ArrayList<PreciseCoordinate> litTiles, int visRange, int octant, int depth, double startSlope, double endSlope) {
+        public void scan(GameObject origin,ArrayList<PreciseCoordinate> litTiles, int visRange, int octant, int depth, double startSlope, double endSlope) {
             //System.out.println("TRACE: x = " + origin.getX() + " - " + startSlope + "*" + depth);
             int x = origin.getX() + (int)Math.round(startSlope*depth); 
             int y = origin.getY() - depth; 

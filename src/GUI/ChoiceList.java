@@ -24,6 +24,9 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
     
     final static int CONTROL_ACTIVE_COLOR = -1;
     
+    public final static int DEFAULT_INACTIVE_COLOR = ImageRepresentation.WHITE;
+    public final static int DEFAULT_ACTIVE_COLOR   = ImageRepresentation.YELLOW;
+    
     //both screen-relative and map-relative, depends on context
     //if mapOverlay, map-relative, otherwise screen-relative
     int x, y;
@@ -175,7 +178,5 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
             this.setX(coords[0]);
             this.setY(coords[1]);
         }
-        System.out.println("new x " + x);
-        System.out.println("new y " + y);
     }
 }

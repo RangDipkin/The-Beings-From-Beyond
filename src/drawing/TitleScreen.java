@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class TitleScreen extends Screen {
     public static ImageRepresentation[][] titlePixels;
     
-    ChoiceList MainMenuChoices = new ChoiceList(ImageRepresentation.WHITE, ImageRepresentation.YELLOW, 35, 20);
+    ChoiceList MainMenuChoices = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 35, 20);
     
     TitleScreen(ImageRepresentation[][] inPixels){
         titlePixels = inPixels;
@@ -32,13 +32,7 @@ public class TitleScreen extends Screen {
             
             MainMenuChoices.displayOnto(titlePixels);
              
-            BufferedImage currFrame = new BufferedImage(MainFrame.getDrawAreaWidth(), MainFrame.getDrawAreaHeight(), BufferedImage.TYPE_INT_ARGB);
-            //System.out.println("currFrame set to " + MainFrame.getDrawAreaWidth() + "(" + currFrame.getWidth() + "), " + currFrame.getHeight() + "!");
-
-//          int XPadding = MainFrame.getDrawAreaWidth() -  (screenWidth  * MainFrame.CHAR_PIXEL_WIDTH);
-//          int YPadding = MainFrame.getDrawAreaHeight() - (screenHeight * MainFrame.CHAR_PIXEL_HEIGHT);
-//          int XPaddingRemainder = XPadding % 2;
-//          int YPaddingRemainder = YPadding % 2;   
+            BufferedImage currFrame = new BufferedImage(MainFrame.getDrawAreaWidth(), MainFrame.getDrawAreaHeight(), BufferedImage.TYPE_INT_ARGB);   
 
             for(int i = 0; i < MainFrame.WIDTH_IN_SLOTS ; i++) {
                     for(int j = 0; j < MainFrame.HEIGHT_IN_SLOTS ; j++) {					
@@ -53,8 +47,7 @@ public class TitleScreen extends Screen {
 
                     }
             }
-               
-               
+                  
             g.drawImage(currFrame, 0, 0, MainFrame.myPane);	
         }
     

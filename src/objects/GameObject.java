@@ -37,7 +37,7 @@ public class GameObject implements VisibleItem{
 		setY(coords[1]);
 		
 		updateBackgroundColor(x,y);
-		handlingMap.addActor(this);
+                //handlingMap.addActor(this);
 	}
 	
 	GameObject(String name, ImageRepresentation ir, int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
@@ -50,7 +50,7 @@ public class GameObject implements VisibleItem{
 		this.handlingMap = handlingMap;
 		
 		updateBackgroundColor(x,y);
-		handlingMap.addActor(this);
+		//handlingMap.addActor(this);
 	}
         
         GameObject(String name, ImageRepresentation ir, LightingElement light,
@@ -66,7 +66,7 @@ public class GameObject implements VisibleItem{
 		this.handlingMap = handlingMap;
 		
 		updateBackgroundColor(x,y);
-		handlingMap.addActor(this);
+		//handlingMap.addActor(this);
 	}
 	
 	private int[] validPositionRolls(GameMap rollingArea) {
@@ -114,6 +114,7 @@ public class GameObject implements VisibleItem{
             move(direction);
             handlingMap.moveNPCs();
             handlingMap.resolveDesires();
+            handlingMap.updateObjects();
 	}
 	
 	public boolean collision(int x, int y) {
@@ -194,7 +195,7 @@ public class GameObject implements VisibleItem{
 		this.y = newY;
 	}
 	
-	String getName() {
+	public String getName() {
 		return name;
 	}
 	
