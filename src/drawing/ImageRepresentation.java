@@ -10,7 +10,7 @@ public class ImageRepresentation {
 	int foreColor;
 	int backColor;
 	int[][] RGBMatrix;
-	BufferedImage pixels;
+	BooleanImage pixels;
 	
 	//maybe someday find out if java's Colors are these values...
 	final public static int BLACK              = 0xFF000000;
@@ -72,17 +72,17 @@ public class ImageRepresentation {
             pixels = MainFrame.charsheet[srcPosX][srcPosY];
         }
 	
-	void updateRGBMatrix() {
-		for(int i = 0; i < pixels.getHeight(); i++) {  
-			for(int j = 0; j < pixels.getWidth(); j++) {  
-				if(pixels.getRGB(j, i) == CONTROL_COLOR) {  
-					RGBMatrix[j][i] = backColor;  
-				}
-				else if(pixels.getRGB(j, i) == CONTROL_FORECOLOR) {
-					RGBMatrix[j][i] = foreColor;
-				}
-			}  
-		}  
+	void updateRGBMatrix() {    
+            for(int i = 0; i < pixels.getWidth(); i++) {  
+                for(int j = 0; j < pixels.getHeight(); j++) {     
+                    if(pixels.isForeground(i, j)) {  
+                        RGBMatrix[i][j] = foreColor;  
+                    }
+                    else if(!pixels.isForeground(i, j)) {
+                        RGBMatrix[i][j] = backColor;
+                    }
+                }  
+            }  
 	}
 	
 	public int getBackColor(){
@@ -94,7 +94,9 @@ public class ImageRepresentation {
 		updateRGBMatrix();
 	}
 	
-	int[][] getRGBMatrix() {return RGBMatrix;}
+	int[][] getRGBMatrix() {
+            return RGBMatrix;
+        }
         
         static ImageRepresentation[][] bmpToImRep(BufferedImage inBMP){
             ImageRepresentation[][] finishedImRepMatrix = new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];

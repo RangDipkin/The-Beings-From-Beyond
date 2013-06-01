@@ -73,7 +73,7 @@ public class GameMap {
             for(int i = 0; i < map.length ; i++) {
                 for(int j = 0; j < map[i].length ; j++) {
                     ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
-                    ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE     , 197);
+                    ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);
                     ImageRepresentation whiteWall = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
                     
                     if(i == 0 || i == width-1 || j == 0 || j == height-1 || (i%4==0 && j%4==0) ) {
@@ -134,28 +134,28 @@ public class GameMap {
 	}
 	
 	void moveNPCs() {
-		for(GameObject npc : NPCList) {
-			if(npc.desires.isEmpty()){
-                            npc.randomMove();
-                        }
-		}
+            for(GameObject npc : NPCList) {
+                if(npc.desires.isEmpty()){
+                    npc.randomMove();
+                }
+            }
 	}
 	
         void resolveDesires() {
-		GameObject curr;
-		for(int i = 0; i < objectList.size(); i++) {
-			curr = objectList.get(i);
-                        
-                        if(!curr.desires.isEmpty()) {
-                            MovementDesire currDesire = (MovementDesire)curr.desires.pop();
-                            curr.resolveImmediateDesire(currDesire);
-                        }
-		}
+            GameObject curr;
+            for(int i = 0; i < objectList.size(); i++) {
+                curr = objectList.get(i);
+
+                if(!curr.desires.isEmpty()) {
+                    MovementDesire currDesire = (MovementDesire)curr.desires.pop();
+                    curr.resolveImmediateDesire(currDesire);
+                }
+            }
         }
         
         
 	public void updateObjects() {		
-            System.out.println("updating objects...");
+            //System.out.println("updating objects...");
             
             //wipe the map clean to make room for new layout
             for(int i = 0; i < width ; i++) {

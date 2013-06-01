@@ -20,15 +20,21 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 	static Container myPane;    
         Insets insets;
 	final static int DELAY_TIME = 40; //should achieve an fps of 25
-	public static int WIDTH_IN_SLOTS    = 80;
-	public static int HEIGHT_IN_SLOTS   = 25;
+	
+        //default cmd emulation = 80
+        //to fill 1680x1000 = 210
+        public static int WIDTH_IN_SLOTS    = 80;
+	//default cmd emulation = 25
+        //to fill 1680x1000 = 85
+        public static int HEIGHT_IN_SLOTS   = 25;
+        
 	final static int CHAR_PIXEL_WIDTH  = 8;
 	final static int CHAR_PIXEL_HEIGHT = 12;
 	final static int FRAME_WIDTH  = CHAR_PIXEL_WIDTH * WIDTH_IN_SLOTS;
 	final static int FRAME_HEIGHT = CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS;
         final static int IMAGE_GRID_WIDTH = 16;
         final static int VOLATILE_IMAGE_TRANSPARENCY = 0;
-	static BufferedImage[][] charsheet;
+	static BooleanImage[][] charsheet;
         Graphics contentGraphics;
 	static Screen currentScreen;
 	static Screen previousScreen;
@@ -219,18 +225,40 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         
         //Precondition: srcScheet is a BufferedImage of 16x16 tiles
         //Postcondition: 256 VolatileImages in a 2-dimensional array
-        //Ha, ha! Fancy, eh?
         //I'm hoping this will reduce some of the work-load during drawing if I can avoid calling getSubImage per every tile.
-        static BufferedImage[][] separateSheet(BufferedImage srcSheet) {
-            BufferedImage[][] imageArray = new BufferedImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];
+//        static BufferedImage[][] separateSheet(BufferedImage srcSheet) {
+//            BufferedImage[][] imageArray = new BufferedImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];
+//            
+//            for(int i = 0; i < IMAGE_GRID_WIDTH; i++) {
+//                for(int j = 0; j < IMAGE_GRID_WIDTH; j++) {
+//                    imageArray[i][j] = srcSheet.getSubimage(i*CHAR_PIXEL_WIDTH,j*CHAR_PIXEL_HEIGHT,CHAR_PIXEL_WIDTH,CHAR_PIXEL_HEIGHT);   
+//                }
+//            }
+//            
+//            return imageArray;
+//        }
+        
+        static BooleanImage[][] separateSheet(BufferedImage srcSheet) {
+            BooleanImage[][] booleanArray = new BooleanImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];  
             
             for(int i = 0; i < IMAGE_GRID_WIDTH; i++) {
                 for(int j = 0; j < IMAGE_GRID_WIDTH; j++) {
-                    imageArray[i][j] = srcSheet.getSubimage(i*CHAR_PIXEL_WIDTH,j*CHAR_PIXEL_HEIGHT,CHAR_PIXEL_WIDTH,CHAR_PIXEL_HEIGHT);   
+                    BufferedImage currSubimage = srcSheet.getSubimage(i*CHAR_PIXEL_WIDTH,j*CHAR_PIXEL_HEIGHT,CHAR_PIXEL_WIDTH,CHAR_PIXEL_HEIGHT);   
+                    booleanArray[i][j] = new BooleanImage(CHAR_PIXEL_WIDTH, CHAR_PIXEL_HEIGHT);
+                    
+                    for(int k = 0; k < currSubimage.getWidth(); k++) {
+                        for(int l = 0; l < currSubimage.getHeight(); l++) {
+                            int currPixel = currSubimage.getRGB(k,l);
+                            
+                            if(currPixel == ImageRepresentation.CONTROL_FORECOLOR) {
+                                booleanArray[i][j].flipOn(k,l);
+                            }
+                        }
+                    }       
                 }
             }
-            
-            return imageArray;
+              
+            return booleanArray;
         }
         
         static VolatileImage createVolatileImage() {

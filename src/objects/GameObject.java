@@ -86,7 +86,6 @@ public class GameObject implements VisibleItem{
 		return coords;
 	}
 	
-	//Should generalize this so that one can order an object to move along a path(either Tile[] or Compass[])
 	public void move(Compass direction) {
 		desires.push(direction);
 	}
@@ -95,26 +94,30 @@ public class GameObject implements VisibleItem{
         //Postconditions: the GameObject instance is moved in the desired direction
     @Override
         public void resolveImmediateDesire(MovementDesire curr) {
-		//curr can be either Compass directions or Tiles
-		int[] coords = curr.getCoords(getTile());
-		
-		//make sure that the desired target position is valid
-		if(!collision(coords[0], coords[1])) {
-			handlingMap.getTile(this.getX(), this.getY()).remove(this);
-                        
-			this.setX(coords[0]);
-			this.setY(coords[1]);
-			
-			updateBackgroundColor(x,y);
-		}
+            //curr can be either Compass directions or Tiles
+            int[] coords = curr.getCoords(getTile());
+
+            //make sure that the desired target position is valid
+            if(!collision(coords[0], coords[1])) {
+                handlingMap.getTile(this.getX(), this.getY()).remove(this);
+
+                this.setX(coords[0]);
+                this.setY(coords[1]);
+
+                updateBackgroundColor(x,y);
+            }
 	}
 	
 	public void timestepMove(Compass direction) {
-            //System.out.println("timestepmovin...");
-            move(direction);
-            handlingMap.moveNPCs();
-            handlingMap.resolveDesires();
-            handlingMap.updateObjects();
+            int[] coords = direction.getCoords(getTile());
+            
+            if(!collision(coords[0], coords[1])) {
+                //System.out.println("timestepmovin...");
+                move(direction); 
+                handlingMap.moveNPCs();
+                handlingMap.resolveDesires();
+                handlingMap.updateObjects();
+            }
 	}
 	
 	public boolean collision(int x, int y) {
@@ -164,7 +167,7 @@ public class GameObject implements VisibleItem{
 		this.ir.setBackColor(newBackColor);
 	}
 	
-	void updateBackgroundColor(int x, int y) {
+	private void updateBackgroundColor(int x, int y) {
 		if(getTile().size() > 0) {
 			//System.out.println("updatin background colour...");
 			setBackground(handlingMap.getUnderlyingColor(x,y));
