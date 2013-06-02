@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 public class ImageRepresentation {
 	int foreColor;
 	int backColor;
+        
+        int rawImgChar;
+                
 	int[][] RGBMatrix;
 	BooleanImage pixels;
 	
@@ -33,36 +36,39 @@ public class ImageRepresentation {
 	final static public int CONTROL_FORECOLOR  = WHITE;
 	
 	public ImageRepresentation(int foreColor, int backColor, int rawImgChar) {
-		this.foreColor = foreColor;
-		this.backColor = backColor;
-		
-		this.RGBMatrix = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT];
-		
-		int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
-		int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
-		
-		pixels = MainFrame.charsheet[srcPosX][srcPosY];
-		
-		updateRGBMatrix();  
+            this.foreColor = foreColor;
+            this.backColor = backColor;             
+            this.rawImgChar = rawImgChar;
+
+            this.RGBMatrix = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT];
+
+            int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
+            int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
+
+            pixels = MainFrame.charsheet[srcPosX][srcPosY];
+
+            updateRGBMatrix();  
 	}
 	
 	public ImageRepresentation(int foreColor, int rawImgChar) {
-		this.foreColor = foreColor;
-		
-		this.RGBMatrix = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT];
-		
-		int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
-		int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
-		
-		pixels = MainFrame.charsheet[srcPosX][srcPosY];
-		
-		updateRGBMatrix();  
+            this.foreColor = foreColor;
+            this.rawImgChar = rawImgChar;
+
+            this.RGBMatrix = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT];
+
+            int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
+            int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
+
+            pixels = MainFrame.charsheet[srcPosX][srcPosY];
+
+            updateRGBMatrix();  
 	}
         
         //creates a black and white ImageRep
         public ImageRepresentation(int rawImgChar) {
             this.foreColor = WHITE;
             this.backColor = BLACK;
+            this.rawImgChar = rawImgChar;
             
             this.RGBMatrix = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT];
 		
@@ -86,8 +92,16 @@ public class ImageRepresentation {
 	}
 	
 	public int getBackColor(){
-		return this.backColor;
+            return this.backColor;
 	}
+        
+        public int getForeColor() {
+            return this.foreColor;
+        }
+        
+        public int getImgChar() {
+            return this.rawImgChar;
+        }
 	
 	public void setBackColor(int newBackColor) {
 		this.backColor = newBackColor;

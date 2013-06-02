@@ -8,7 +8,6 @@ package objects;
 
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
-import drawing.VisibleItem;
 import java.util.ArrayList;
 import lighting.LightingElement;
 
@@ -36,7 +35,7 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         boolean litDelay = false;
         //=LoS STUFF=
         
-        //might want to move hasBlockingObject from gameMap and use as blocking flag for Los/FoV
+        ImageRepresentation finalOutput;
 	
         Tile(int x, int y, GameMap handlingMap) {
 		this.x = x;
@@ -225,9 +224,10 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
             boolean hasBlocker = false;
 		
             for(int i = 0; i < size(); i++) {
-                if (get(i).blocking)
+                if (get(i).blocking) {
                     hasBlocker = true;
-		}
+                }
+            }
                 
             return hasBlocker;
 	}
@@ -254,5 +254,32 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
                                            origin.getLightingElement().getIntensity()));
         }
     }
+    
+//    private void updateBackgroundColor(int x, int y) {
+//        if(size() > 0) {
+//            setBackground(handlingMap.getUnderlyingColor(x,y));
+//        }
+//    }
+    
+    ImageRepresentation getFinalOutput() {
+        GameObject min = get(0);
+        GameObject max = get(0);
+
+        for(int i = 0; i < size(); i++) {
+            if(min.getPrecedence() != 0 && get(i).getPrecedence() < min.getPrecedence()) {
+                min = get(i);
+            }
+            if(get(i).getPrecedence() > max.getPrecedence()) {
+                max = get(i);
+            }
+        }
         
+        //get the foreground character and color of the highest-precedence object of the tile
+        int foreColor = max.getForeColor();
+        int imgChar   = max.getImgChar();
+        //get the background color of the lowest-precedence object in the tile
+        int backColor = min.getBackColor();
+        //return the resulting ImageRepresentation
+        return new ImageRepresentation(foreColor, backColor, imgChar);
+    }
 }

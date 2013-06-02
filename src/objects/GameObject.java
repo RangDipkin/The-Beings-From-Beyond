@@ -36,8 +36,7 @@ public class GameObject implements VisibleItem{
 		setX(coords[0]);
 		setY(coords[1]);
 		
-		updateBackgroundColor(x,y);
-                //handlingMap.addActor(this);
+                handlingMap.map[x][y].add(this);
 	}
 	
 	GameObject(String name, ImageRepresentation ir, int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
@@ -48,11 +47,9 @@ public class GameObject implements VisibleItem{
 		this.precedence = precedence;
 		this.name = name;
 		this.handlingMap = handlingMap;
-		
-		updateBackgroundColor(x,y);
-		//handlingMap.addActor(this);
 	}
         
+        //for lighted objects
         GameObject(String name, ImageRepresentation ir, LightingElement light,
                 int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
 		
@@ -64,9 +61,6 @@ public class GameObject implements VisibleItem{
 		this.precedence = precedence;
 		this.name = name;
 		this.handlingMap = handlingMap;
-		
-		updateBackgroundColor(x,y);
-		//handlingMap.addActor(this);
 	}
 	
 	private int[] validPositionRolls(GameMap rollingArea) {
@@ -103,8 +97,6 @@ public class GameObject implements VisibleItem{
 
                 this.setX(coords[0]);
                 this.setY(coords[1]);
-
-                updateBackgroundColor(x,y);
             }
 	}
 	
@@ -133,6 +125,14 @@ public class GameObject implements VisibleItem{
 	int getBackColor() { 
 		return this.ir.getBackColor();
 	}
+        
+        int getForeColor() {
+            return this.ir.getForeColor();
+        }
+        
+        int getImgChar() {
+            return this.ir.getImgChar();
+        }
 	
 	//moves 3 times in a random direction
 	void idleMove() {
@@ -165,13 +165,6 @@ public class GameObject implements VisibleItem{
 	
 	void setBackground(int newBackColor) {
 		this.ir.setBackColor(newBackColor);
-	}
-	
-	private void updateBackgroundColor(int x, int y) {
-		if(getTile().size() > 0) {
-			//System.out.println("updatin background colour...");
-			setBackground(handlingMap.getUnderlyingColor(x,y));
-		}
 	}
 	
 	public ImageRepresentation getRepresentation() {

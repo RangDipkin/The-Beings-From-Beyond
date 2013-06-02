@@ -70,15 +70,13 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 		myPane.setLayout(null);
 //		contentGraphics = myPane.getGraphics();
                 
-                //works fine, just waiting on a decent icon
-//                Image icon = null;
-//                try {
-//			icon = (BufferedImage)ImageIO.read(new File("src/AppIcon.png"));
-//		  }  catch (IOException e) {
-//                    System.out.println("Failed loading image!");
-//                    System.exit(0);
-//                }
-//                setIconImage(icon);
+                Image icon = null;
+                try {
+			icon = (BufferedImage)ImageIO.read(new File("src/drawing/AppIcon.png"));
+		  }  catch (IOException e) {
+                    System.out.println("Failed loading image!");
+                }
+                setIconImage(icon);
                 
                 //do some fancy system optimizations
                 dasEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -88,34 +86,34 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 	}
 	
 	public static void main(String[] args) {
-                loadCharSheet();
-		
-                loadTitleScreen();
-		
-                initializeMap();    
-		
-		//run the main loop
-		//TODO: call update after a TargetElapsedTime (1/60th of a second)
-                //TODO: after update is called, check to see if it's time to call
-                //TODO: update again(if update is taking a long time), if we still
-                //TODO: have time left, call draw. After calling draw, if drawing was
-                //TODO: too fast, idle, then call update; but if it is time to call
-                //TODO: update, do it.
-                //TODO: If Update takes too long (TargetElapsedTime??), call update
-                //TODO: again without drawing.
-                
-                //TODO: find out how to stop that dang smearing of game objects
-                
-                //TODO: make render (much) faster using buffers or something 
-                
-                //TODO: stop using setRGB + getRGB
-                
-                //TODO: translate charsheet.bmp into a 2-dimensional boolean array
-                while(true) {
-			eventProcessor.processEventList();
-			//testMap.updateObjects();
-                        forceRender();
-		}
+            loadCharSheet();
+
+            loadTitleScreen();
+
+            initializeMap();    
+
+            //run the main loop
+            //TODO: call update after a TargetElapsedTime (1/60th of a second)
+            //TODO: after update is called, check to see if it's time to call
+            //TODO: update again(if update is taking a long time), if we still
+            //TODO: have time left, call draw. After calling draw, if drawing was
+            //TODO: too fast, idle, then call update; but if it is time to call
+            //TODO: update, do it.
+            //TODO: If Update takes too long (TargetElapsedTime??), call update
+            //TODO: again without drawing.
+
+            //TODO: find out how to stop that dang smearing of game objects
+
+            //TODO: make render (much) faster using buffers or something 
+
+            //TODO: stop using setRGB
+
+            //TODO: stop the white-out on minimize-resize before a move
+            while(true) {
+                eventProcessor.processEventList();
+                //testMap.updateObjects();
+                forceRender();
+            }
 	}
         
         static void loadCharSheet() {
@@ -222,21 +220,6 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         Translator getTranslator() {
             return rosetta;
         }
-        
-        //Precondition: srcScheet is a BufferedImage of 16x16 tiles
-        //Postcondition: 256 VolatileImages in a 2-dimensional array
-        //I'm hoping this will reduce some of the work-load during drawing if I can avoid calling getSubImage per every tile.
-//        static BufferedImage[][] separateSheet(BufferedImage srcSheet) {
-//            BufferedImage[][] imageArray = new BufferedImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];
-//            
-//            for(int i = 0; i < IMAGE_GRID_WIDTH; i++) {
-//                for(int j = 0; j < IMAGE_GRID_WIDTH; j++) {
-//                    imageArray[i][j] = srcSheet.getSubimage(i*CHAR_PIXEL_WIDTH,j*CHAR_PIXEL_HEIGHT,CHAR_PIXEL_WIDTH,CHAR_PIXEL_HEIGHT);   
-//                }
-//            }
-//            
-//            return imageArray;
-//        }
         
         static BooleanImage[][] separateSheet(BufferedImage srcSheet) {
             BooleanImage[][] booleanArray = new BooleanImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];  

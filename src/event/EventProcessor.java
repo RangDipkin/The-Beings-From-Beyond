@@ -10,7 +10,7 @@ public class EventProcessor
     private LinkedList eventList;
     private EventProcessable handler;
 	
-	public EventProcessor(EventProcessable handler)
+    public EventProcessor(EventProcessable handler)
     {
         eventList = new LinkedList();
         this.handler = handler;
@@ -35,9 +35,7 @@ public class EventProcessor
                 event = (AWTEvent) eventList.removeFirst();
             }
 			
-			//System.out.println("handling event " + event + "...");
             handler.handleEvent(event);
-			//System.out.println(event + "handled");
         }
     }
 }

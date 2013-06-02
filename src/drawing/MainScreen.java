@@ -1,17 +1,12 @@
 package drawing;
 
-import AI.Compass;
 import GUI.ChoiceList;
-import GUI.GUIText;
 import java.awt.AWTEvent;
 import java.awt.Graphics;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import objects.GameMap;
 import objects.GameObject;
-import objects.Tile;
 
 public class MainScreen extends Screen{
         GameMap handledMap;

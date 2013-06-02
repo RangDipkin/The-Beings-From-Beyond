@@ -3,7 +3,6 @@ package objects;
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
 import drawing.MainFrame;
-import drawing.VisibleItem;
 import java.util.ArrayList;
 import lighting.PreciseCoordinate;
 
@@ -18,6 +17,8 @@ public class GameMap {
 	public int width, height;
         
         public GameObject mainChar;
+        
+        ArrayList<GameObject> updatedObjs = new ArrayList<>(); 
 
         static final int[][] multipliers = {
             { 1, 0,  0, -1, -1,  0,  0,  1},
@@ -52,20 +53,18 @@ public class GameMap {
         
         static final int[] negSlopeHandler = {1,-1,-1,1,1,-1,-1,1};
         
-        //************************************************
-        
 	public GameMap(int width, int height) {
-		this.width  = width;
-		this.height = height;
-		
-		//create a 2-dimensional array of null-reference tiles
-		map = new Tile[width][height];
-		
-		for(int i = 0; i < map.length ; i++) {
-			for(int j = 0; j < map[i].length ; j++) {
-				map[i][j] = new Tile(i, j, this);
-			}
-		}
+            this.width  = width;
+            this.height = height;
+
+            //create a 2-dimensional array of null-reference tiles
+            map = new Tile[width][height];
+
+            for(int i = 0; i < map.length ; i++) {
+                for(int j = 0; j < map[i].length ; j++) {
+                    map[i][j] = new Tile(i, j, this);
+                }
+            }
 	}
 	
 	public void populate() {            
@@ -74,16 +73,16 @@ public class GameMap {
                 for(int j = 0; j < map[i].length ; j++) {
                     ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
                     ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);
-                    ImageRepresentation whiteWall = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
+                    ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
                     
                     if(i == 0 || i == width-1 || j == 0 || j == height-1 || (i%4==0 && j%4==0) ) {
                         objectList.add(new GameObject("White Wall", whiteWall, i, j, true,  1, this));
                     }
                     else if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-                        objectList.add(new GameObject("Tiled Floor", tileFloor1, i, j, false, 2, this));
+                        objectList.add(new GameObject("Tiled Floor", tileFloor1, i, j, false, 0, this));
                     }
                     else {
-                        objectList.add(new GameObject("Black Tiled Floor", tileFloor2, i, j, false, 2, this));
+                        objectList.add(new GameObject("Black Tiled Floor", tileFloor2, i, j, false, 0, this));
                     }
 
                     
@@ -105,32 +104,24 @@ public class GameMap {
 	
 	//returns the object in a specific map tile with the smallest precedence
 	public ImageRepresentation getRepresentation(int x, int y) {	
-		if(!isValidTile(x,y)) { 
-                    return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
-                }
+            if(!isValidTile(x,y)) { 
+                return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
+            }
             
-                //set the minimum to the first element in the tile
-		GameObject floor = map[x][y].get(0);
-		
-		for(int i = 0; i < map[x][y].size(); i++) {
-			if(map[x][y].get(i).getPrecedence() < floor.getPrecedence()) 
-				floor = map[x][y].get(i);
-		}
-		
-		return floor.getRepresentation();
+            return map[x][y].getFinalOutput();
 	}
 	
 	int getUnderlyingColor(int x, int y) {
-		//set the minimum to the first element in the tile
-		GameObject floor = map[x][y].get(0);
-		
-		for(int i = 0; i < map[x][y].size(); i++) {
-			GameObject currObject = map[x][y].get(i);
-			if(currObject.getPrecedence() >= floor.getPrecedence()) {
-				floor = currObject;
-			}
-		}
-		return floor.getRepresentation().getBackColor();
+            //set the minimum to the first element in the tile
+            GameObject floor = map[x][y].get(0);
+
+            for(int i = 0; i < map[x][y].size(); i++) {
+                GameObject currObject = map[x][y].get(i);
+                if(currObject.getPrecedence() >= floor.getPrecedence()) {
+                    floor = currObject;
+                }
+            }
+            return floor.getRepresentation().getBackColor();
 	}
 	
 	void moveNPCs() {
@@ -155,7 +146,7 @@ public class GameMap {
         
         
 	public void updateObjects() {		
-            //System.out.println("updating objects...");
+            System.out.println("updating objects...");
             
             //wipe the map clean to make room for new layout
             for(int i = 0; i < width ; i++) {
