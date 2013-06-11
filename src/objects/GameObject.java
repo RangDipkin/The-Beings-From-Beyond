@@ -7,6 +7,7 @@ import drawing.ImageRepresentation;
 import drawing.VisibleItem;
 import java.util.Random;
 import java.util.Stack;
+import lighting.FieldOfViewScan;
 import lighting.LightingElement;
 
 public class GameObject implements VisibleItem{
@@ -108,9 +109,13 @@ public class GameObject implements VisibleItem{
             int[] coords = direction.getCoords(getTile());
             
             if(!collision(coords[0], coords[1])) {
+                handlingMap.clearVisibility();
+                
                 move(direction); 
                 handlingMap.moveNPCs();
                 handlingMap.resolveDesires();
+                
+                new FieldOfViewScan(this, 100);
             }
 	}
 	
@@ -152,7 +157,7 @@ public class GameObject implements VisibleItem{
 		}
 	}
 	
-	Tile getTile() {
+	public Tile getTile() {
 		return handlingMap.map[getX()][getY()];
 	}
 	

@@ -28,10 +28,6 @@ public class MainMode extends GameMode {
             KeyEvent keyEvent = (KeyEvent) e;
 
             switch(keyEvent.getKeyCode()) { 
-                case KeyEvent.VK_S:
-                    new FieldOfViewScan(callingScreen.handledMap.mainChar, 100);
-                    break;
-
                 case KeyEvent.VK_X:
                     beginInspectMode();
                     break;                 

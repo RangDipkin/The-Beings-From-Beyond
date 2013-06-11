@@ -4,6 +4,7 @@ import AI.MovementDesire;
 import drawing.ImageRepresentation;
 import drawing.MainFrame;
 import java.util.ArrayList;
+import lighting.FieldOfViewScan;
 import lighting.PreciseCoordinate;
 
 /*
@@ -19,6 +20,8 @@ public class GameMap {
         public GameObject mainChar;
         
         ArrayList<GameObject> updatedObjs = new ArrayList<>(); 
+        
+        ArrayList<Tile> visibleTiles = new ArrayList<>();
 
 	public GameMap(int width, int height) {
             this.width  = width;
@@ -57,6 +60,7 @@ public class GameMap {
             }
             mainChar = new GameObject("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
             addObject(mainChar);
+            new FieldOfViewScan(mainChar, 100);
 
             for(int i = 0; i < 10; i++) {
                 GameObject greenSmiley = new GameObject("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, 1, this);
@@ -69,12 +73,16 @@ public class GameMap {
 	
 	//returns the object in a specific map tile with the smallest precedence
 	public ImageRepresentation getRepresentation(int x, int y) {	
-            if(!isValidTile(x,y)) { 
+            if(!isValidTile(x,y) || !isVisibleTile(x, y)) { 
                 return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
             }
             
             return map[x][y].getFinalOutput();
 	}
+        
+        boolean isVisibleTile(int x, int y) {
+            return map[x][y].visible;
+        }
 	
 	int getUnderlyingColor(int x, int y) {
             //set the minimum to the first element in the tile
@@ -107,6 +115,14 @@ public class GameMap {
                     curr.resolveImmediateDesire(currDesire);
                 }
             }
+        }
+        
+        void clearVisibility() {
+            for(int i = 0; i < visibleTiles.size(); i++) {
+                visibleTiles.get(i).visible = false;
+            }
+            
+            visibleTiles = new ArrayList<>();
         }
         
         

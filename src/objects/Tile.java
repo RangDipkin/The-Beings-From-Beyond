@@ -30,7 +30,7 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         double upMax = 0;
         double lowCount = 0;
         double lowMax = 0;
-        boolean visible = true;
+        boolean visible = false;
         boolean lit = true;
         boolean litDelay = false;
         //=LoS STUFF=
@@ -236,28 +236,18 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         }
 
         return hasBlocker;
-    }
-    
-    
-    //for use in Gordon Lipford's LOS algorithm
-    boolean hasReachedUpperMax(){
-        return true; //placeholder, obviously
-    }
-    
-    //for use in Gordon Lipford's LOS algorithm
-    boolean hasReachedLowerMax(){
-        return true; //placeholder, obviously
-    }   
+    }  
     
     public void doFOVaction(GameObject origin) {
         if(origin == handlingMap.mainChar) {
             visible = true;
-            if(getBackgroundColor() == ImageRepresentation.YELLOW) {
-                setColor(ImageRepresentation.RED);
-            }
-            else {
-                setColor(ImageRepresentation.YELLOW);
-            }
+            handlingMap.visibleTiles.add(this);
+//            if(getBackgroundColor() == ImageRepresentation.YELLOW) {
+//                setColor(ImageRepresentation.RED);
+//            }
+//            else {
+//                setColor(ImageRepresentation.YELLOW);
+//            }
         }
         else {
             lights.add(new LightingElement(origin.getLightingElement().getColor(),
