@@ -13,11 +13,23 @@ public class PreciseCoordinate {
         this.y = y;
     }
     
-    double getX() {
+    public double getX() {
         return x;
     }
     
-    double getY() {
+    public double getY() {
         return y;
+    }
+    
+    void addToX(double incrementor){
+        x = x + incrementor;
+    }
+    
+    void addToY(double incrementor) {
+        y = y + incrementor;
+    }
+    
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
 }

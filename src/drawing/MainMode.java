@@ -9,6 +9,7 @@ import GUI.ChoiceList;
 import GUI.GUIText;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
+import lighting.FieldOfViewScan;
 
 /**
  *
@@ -28,12 +29,12 @@ public class MainMode extends GameMode {
 
             switch(keyEvent.getKeyCode()) { 
                 case KeyEvent.VK_S:
-                    MainFrame.testMap.scan(callingScreen.handledMap.mainChar, 10, 2);
+                    new FieldOfViewScan(callingScreen.handledMap.mainChar, 100);
                     break;
 
                 case KeyEvent.VK_X:
                     beginInspectMode();
-                    break;
+                    break;                 
 
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_NUMPAD8:

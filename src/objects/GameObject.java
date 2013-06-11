@@ -15,7 +15,7 @@ public class GameObject implements VisibleItem{
 	boolean blocking = false;
 	ImageRepresentation ir;
 	String name;
-	GameMap handlingMap;
+	public GameMap handlingMap;
         LightingElement light;
 	
 	//current implementation fills with Tiles
@@ -47,6 +47,8 @@ public class GameObject implements VisibleItem{
 		this.precedence = precedence;
 		this.name = name;
 		this.handlingMap = handlingMap;
+                
+                handlingMap.map[x][y].add(this);
 	}
         
         //for lighted objects
@@ -97,6 +99,8 @@ public class GameObject implements VisibleItem{
 
                 this.setX(coords[0]);
                 this.setY(coords[1]);
+                
+                handlingMap.map[getX()][getY()].add(this);
             }
 	}
 	
@@ -104,17 +108,16 @@ public class GameObject implements VisibleItem{
             int[] coords = direction.getCoords(getTile());
             
             if(!collision(coords[0], coords[1])) {
-                //System.out.println("timestepmovin...");
                 move(direction); 
                 handlingMap.moveNPCs();
                 handlingMap.resolveDesires();
-                handlingMap.updateObjects();
             }
 	}
 	
 	public boolean collision(int x, int y) {
-		if(x < 0 || y < 0 || x >= handlingMap.width || y >= handlingMap.height || handlingMap.getTile(x,y).hasBlockingObject())
-			return true;
+		if(x < 0 || y < 0 || x >= handlingMap.width || y >= handlingMap.height || handlingMap.getTile(x,y).hasBlockingObject()){
+                    return true;
+                }	
 		return false;
 	}
 	
@@ -155,12 +158,12 @@ public class GameObject implements VisibleItem{
 	
 	//Move to a random position using A*
 	void randomMove() {
-		int[] coords = validPositionRolls(handlingMap);
-		Tile start = handlingMap.getTile(getX(), getY());
-		Tile goal = handlingMap.getTile(coords[0], coords[1]);
-		
-		desires = AI.AStar(start, goal, handlingMap);
-                handlingMap.clearFGH();
+            int[] coords = validPositionRolls(handlingMap);
+            Tile start = handlingMap.getTile(getX(), getY());
+            Tile goal = handlingMap.getTile(coords[0], coords[1]);
+
+            desires = AI.AStar(start, goal, handlingMap);
+            handlingMap.clearFGH();
         }
 	
 	void setBackground(int newBackColor) {

@@ -37,6 +37,8 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         
         ImageRepresentation finalOutput;
 	
+        public Tile() {}
+        
         Tile(int x, int y, GameMap handlingMap) {
 		this.x = x;
 		this.y = y;
@@ -106,7 +108,7 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
 	
     @Override
 	public String toString() {
-		String output = "[";
+                String output = "[";
 		
 		for(GameObject go : this)
 			output = output + go.getName() + " ";
@@ -186,9 +188,13 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
 	}
         
         void setColor(int color) {
-            handlingMap.getRepresentation(getX(), getY()).setBackColor(color);
+            getMin().getRepresentation().setBackColor(color);
         }
 	
+        int getBackgroundColor() {
+            return getMin().getRepresentation().getBackColor();
+        }
+        
     @Override
 	public int compareTo(Tile other) {
 		if (this.fScore > other.fScore)
@@ -220,17 +226,17 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         return 1 / ((lowerRightEndY-startY) / (lowerRightEndX-startX));
     }
     
-    	boolean hasBlockingObject() {
-            boolean hasBlocker = false;
-		
-            for(int i = 0; i < size(); i++) {
-                if (get(i).blocking) {
-                    hasBlocker = true;
-                }
+    public boolean hasBlockingObject() {
+        boolean hasBlocker = false;
+
+        for(int i = 0; i < size(); i++) {
+            if (get(i).blocking) {
+                hasBlocker = true;
             }
-                
-            return hasBlocker;
-	}
+        }
+
+        return hasBlocker;
+    }
     
     
     //for use in Gordon Lipford's LOS algorithm
@@ -243,25 +249,23 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         return true; //placeholder, obviously
     }   
     
-    void doFOVaction(GameObject origin) {
+    public void doFOVaction(GameObject origin) {
         if(origin == handlingMap.mainChar) {
             visible = true;
-            System.out.println("Setting " + this.getX() + "," + this.getY() + "'s color to YELLOW...");
-            setColor(ImageRepresentation.YELLOW);
+            if(getBackgroundColor() == ImageRepresentation.YELLOW) {
+                setColor(ImageRepresentation.RED);
+            }
+            else {
+                setColor(ImageRepresentation.YELLOW);
+            }
         }
         else {
             lights.add(new LightingElement(origin.getLightingElement().getColor(),
                                            origin.getLightingElement().getIntensity()));
         }
-    }
+    } 
     
-//    private void updateBackgroundColor(int x, int y) {
-//        if(size() > 0) {
-//            setBackground(handlingMap.getUnderlyingColor(x,y));
-//        }
-//    }
-    
-    ImageRepresentation getFinalOutput() {
+    ImageRepresentation getFinalOutput() {  
         GameObject min = get(0);
         GameObject max = get(0);
 
@@ -280,6 +284,18 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         //get the background color of the lowest-precedence object in the tile
         int backColor = min.getBackColor();
         //return the resulting ImageRepresentation
-        return new ImageRepresentation(foreColor, backColor, imgChar);
+        finalOutput = new ImageRepresentation(foreColor, backColor, imgChar);
+        return finalOutput;
+    }
+    
+    GameObject getMin() {
+        GameObject min = get(0);
+         for(int i = 0; i < size(); i++) {
+            if(min.getPrecedence() != 0 && get(i).getPrecedence() < min.getPrecedence()) {
+                min = get(i);
+            }
+        }
+        
+        return min;
     }
 }

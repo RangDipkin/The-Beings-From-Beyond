@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         
 	MainFrame() {
 		//initialize the main game window
-		super("Beings From Beyond Alpha");
+		super("The Beings From Beyond Alpha");
 		setResizable(false);
 		eventProcessor = new EventProcessor(this);
                 setDefaultCloseOperation(EXIT_ON_CLOSE);	
@@ -104,11 +104,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 
             //TODO: find out how to stop that dang smearing of game objects
 
-            //TODO: make render (much) faster using buffers or something 
-
-            //TODO: stop using setRGB
-
-            //TODO: stop the white-out on minimize-resize before a move
+            //TODO: stop refreshing all objects when moving a character
             while(true) {
                 eventProcessor.processEventList();
                 //testMap.updateObjects();
@@ -258,5 +254,3 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             return currImg;
         }
 }
-
-

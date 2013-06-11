@@ -111,7 +111,6 @@ public class MainScreen extends Screen{
                         currFrame.setRGB(i * MainFrame.CHAR_PIXEL_WIDTH + k, j * MainFrame.CHAR_PIXEL_HEIGHT + m, currGrid[k][m]);
                     }
                 }
-
             }
         }
     }

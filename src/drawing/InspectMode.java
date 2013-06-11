@@ -112,6 +112,7 @@ public class InspectMode extends GameMode {
             GUIText newGUIEntry = new GUIText(GUIEntryName);
             inspectedTileDisplay.add(newGUIEntry);
         }
+        System.out.println(inspectedTile.hasBlockingObject()? "true":"false");
         
         callingScreen.activeGUIElements.add(inspectedTileDisplay);
     }
