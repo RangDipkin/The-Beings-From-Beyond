@@ -37,7 +37,7 @@ public class GameObject implements VisibleItem{
 		setX(coords[0]);
 		setY(coords[1]);
 		
-                handlingMap.map[x][y].add(this);
+                handlingMap.injectObject(this, x, y);
 	}
 	
 	GameObject(String name, ImageRepresentation ir, int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
@@ -49,7 +49,7 @@ public class GameObject implements VisibleItem{
 		this.name = name;
 		this.handlingMap = handlingMap;
                 
-                handlingMap.map[x][y].add(this);
+                handlingMap.injectObject(this, x, y);
 	}
         
         //for lighted objects
@@ -64,6 +64,8 @@ public class GameObject implements VisibleItem{
 		this.precedence = precedence;
 		this.name = name;
 		this.handlingMap = handlingMap;
+                
+                handlingMap.injectObject(this, x, y);
 	}
 	
 	private int[] validPositionRolls(GameMap rollingArea) {
@@ -101,7 +103,7 @@ public class GameObject implements VisibleItem{
                 this.setX(coords[0]);
                 this.setY(coords[1]);
                 
-                handlingMap.map[getX()][getY()].add(this);
+                handlingMap.injectObject(this, x, y);
             }
 	}
 	
@@ -158,7 +160,7 @@ public class GameObject implements VisibleItem{
 	}
 	
 	public Tile getTile() {
-		return handlingMap.map[getX()][getY()];
+		return handlingMap.getTile(getX(),getY());
 	}
 	
 	//Move to a random position using A*

@@ -11,7 +11,7 @@ import lighting.PreciseCoordinate;
  *
 */
 public class GameMap {
-	Tile[][] map;
+	private Tile[][] map;
 	ArrayList<GameObject> objectList = new ArrayList<>();
 	ArrayList<GameObject> NPCList = new ArrayList<>();
 	
@@ -146,6 +146,10 @@ public class GameMap {
 	void addObject(GameObject actor) {
             objectList.add(actor);
 	}
+        
+        void injectObject(GameObject actor, int x, int y) {
+            map[x][y].add(actor);
+        }
 	
 	public Tile getTile(int x, int y) {
             return map[x][y];
