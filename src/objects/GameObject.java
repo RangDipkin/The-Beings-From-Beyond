@@ -117,7 +117,7 @@ public class GameObject implements VisibleItem{
                 handlingMap.moveNPCs();
                 handlingMap.resolveDesires();
                 
-                new FieldOfViewScan(this, 100);
+                new FieldOfViewScan(this, 250);
             }
 	}
 	

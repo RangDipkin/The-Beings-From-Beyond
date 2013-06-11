@@ -60,7 +60,7 @@ public class GameMap {
             }
             mainChar = new GameObject("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
             addObject(mainChar);
-            new FieldOfViewScan(mainChar, 100);
+            new FieldOfViewScan(mainChar, 250);
 
             for(int i = 0; i < 10; i++) {
                 GameObject greenSmiley = new GameObject("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, 1, this);

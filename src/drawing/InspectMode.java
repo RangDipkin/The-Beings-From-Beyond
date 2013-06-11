@@ -18,7 +18,8 @@ import objects.Tile;
 public class InspectMode extends GameMode {
     MainScreen callingScreen;
     
-    ChoiceList inspectedTileDisplay;
+    ChoiceList inspectedTileDisplay;  
+    ChoiceList invalidTileDisplay;
     
     //MainScreen should be the only screen that initiates InspectMode
     InspectMode(MainScreen inScreen) {
@@ -102,17 +103,26 @@ public class InspectMode extends GameMode {
         
         //clean up the previous display
         callingScreen.activeGUIElements.remove(inspectedTileDisplay);
+        callingScreen.activeGUIElements.remove(invalidTileDisplay);
         displayInspectedTile(newTile);
     }
     
     void displayInspectedTile(Tile inspectedTile) {
-        inspectedTileDisplay = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 0, 0);
-        for(int i = 0; i < inspectedTile.size(); i++) {
-            String GUIEntryName = inspectedTile.get(i).getName();
-            GUIText newGUIEntry = new GUIText(GUIEntryName);
-            inspectedTileDisplay.add(newGUIEntry);
+        if (inspectedTile.isVisible()){
+            inspectedTileDisplay = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 0, 0);
+            for(int i = 0; i < inspectedTile.size(); i++) {
+                String GUIEntryName = inspectedTile.get(i).getName();
+                GUIText newGUIEntry = new GUIText(GUIEntryName);
+                inspectedTileDisplay.add(newGUIEntry);
+            }
+
+            callingScreen.activeGUIElements.add(inspectedTileDisplay);
         }
-        
-        callingScreen.activeGUIElements.add(inspectedTileDisplay);
+        else {
+            invalidTileDisplay = new ChoiceList(ImageRepresentation.GRAY, 0, 0);
+            GUIText invalidTileTxt = new GUIText("Tile not visible");
+            invalidTileDisplay.add(invalidTileTxt);
+            callingScreen.activeGUIElements.add(invalidTileDisplay);
+        }
     }
 }

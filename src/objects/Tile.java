@@ -25,15 +25,9 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         
         ArrayList<LightingElement> lights = new ArrayList<>();
         
-        //=LoS STUFF=
-        double upCount = 0;
-        double upMax = 0;
-        double lowCount = 0;
-        double lowMax = 0;
         boolean visible = false;
         boolean lit = true;
         boolean litDelay = false;
-        //=LoS STUFF=
         
         ImageRepresentation finalOutput;
 	
@@ -287,5 +281,9 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         }
         
         return min;
+    }
+    
+    public boolean isVisible() {
+        return visible;
     }
 }
