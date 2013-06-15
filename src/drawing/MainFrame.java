@@ -99,15 +99,18 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             //TODO: have time left, call draw. After calling draw, if drawing was
             //TODO: too fast, idle, then call update; but if it is time to call
             //TODO: update, do it.
-            //TODO: If Update takes too long (TargetElapsedTime??), call update
-            //TODO: again without drawing.
-
-            //TODO: find out how to stop that dang smearing of game objects
-
-            //TODO: stop refreshing all objects when moving a character
+            //TODO: If Update takes too long (TargetElapsedTime), call update
+            //TODO: again without drawing
+            
+            //TODO: flickering ImageReps
+            //TODO: Lighting Engine
+            //TODO: Name generator
+            //TODO: Inventory (for torches)
+            //TODO: LOS + throwing
+            //TODO: Detailed Inspection
+            //TODO: allow the player to force screen movement
             while(true) {
                 eventProcessor.processEventList();
-                //testMap.updateObjects();
                 forceRender();
             }
 	}

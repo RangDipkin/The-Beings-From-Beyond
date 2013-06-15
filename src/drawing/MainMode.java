@@ -71,6 +71,10 @@ public class MainMode extends GameMode {
                 case KeyEvent.VK_HOME:
                     callingScreen.handledMap.mainChar.timestepMove(Compass.NORTHWEST);
                     break;
+                    
+                case KeyEvent.VK_NUMPAD5:
+                    callingScreen.handledMap.stepTime(callingScreen.handledMap.mainChar);
+                    break;
 
                 default:
                     System.out.println("Some other key was pressed!");

@@ -22,23 +22,10 @@ public class GameObject implements VisibleItem{
 	//current implementation fills with Tiles
 	Stack desires = new Stack();
         
+        String detailedDescription;
+        
         //creates a completely bland GameObject for polymorphic purposes
         GameObject() {}
-	
-	GameObject(String name, ImageRepresentation ir, boolean blocking, int precedence, GameMap handlingMap) {
-                this.blocking = blocking;
-		this.ir = ir;
-		this.precedence = precedence;
-		this.name = name;
-		this.handlingMap = handlingMap;
-		
-		int[] coords = validPositionRolls(handlingMap);
-		//System.out.println("postpassed = " + coords[0] + " " + coords[1]);
-		setX(coords[0]);
-		setY(coords[1]);
-		
-                handlingMap.injectObject(this, x, y);
-	}
 	
 	GameObject(String name, ImageRepresentation ir, int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
 		setX(x);
@@ -48,6 +35,8 @@ public class GameObject implements VisibleItem{
 		this.precedence = precedence;
 		this.name = name;
 		this.handlingMap = handlingMap;
+                
+                this.detailedDescription = "This is a " + name;
                 
                 handlingMap.injectObject(this, x, y);
 	}
@@ -65,31 +54,64 @@ public class GameObject implements VisibleItem{
 		this.name = name;
 		this.handlingMap = handlingMap;
                 
-                handlingMap.injectObject(this, x, y);
-	}
-	
-	private int[] validPositionRolls(GameMap rollingArea) {
-		int[] coords = new int[2];
-		
-		Random dice = new Random();
-		Tile isItValid;
+                this.detailedDescription = "This is a " + name;
                 
-		do {
-			coords[0] = dice.nextInt(rollingArea.width-1);
-			coords[1] = dice.nextInt(rollingArea.height-1); 
-			
-                        isItValid = handlingMap.getTile(coords[0], coords[1]);
-                        
-		} while(isItValid.hasBlockingObject());
-		
-		return coords;
+                handlingMap.injectObject(this, x, y);
+        }
+        
+	public boolean collision(int x, int y) {
+		if(x < 0 || y < 0 || x >= handlingMap.width || y >= handlingMap.height || handlingMap.getTile(x,y).hasBlockingObject()){
+                    return true;
+                }	
+		return false;
+	} 
+	
+        int getBackColor() { 
+            return this.ir.getBackColor();
+	}
+        public String getDetailedDescription() {
+            return detailedDescription;
+        }
+        int getForeColor() {
+            return this.ir.getForeColor();
+        }
+        
+        int getImgChar() {
+            return this.ir.getImgChar();
+        }   	
+        public ImageRepresentation getRepresentation() {
+		return this.ir;
 	}
 	
+        LightingElement getLightingElement() {
+            return this.light;
+        }
+        public String getName() {
+		return name;
+	}
+	
+	int getPrecedence() {
+		return precedence;
+	}  
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}	
+	public Tile getTile() {
+		return handlingMap.getTile(getX(),getY());
+	} 
+        
+        public boolean isBlocking() {
+		return blocking;
+	}
 	public void move(Compass direction) {
 		desires.push(direction);
-	}
-	
-	//Preconditions: given a class instance, and a desire for direction
+        }
+      
+        //Preconditions: given a class instance, and a desire for direction
         //Postconditions: the GameObject instance is moved in the desired direction
     @Override
         public void resolveImmediateDesire(MovementDesire curr) {
@@ -107,42 +129,15 @@ public class GameObject implements VisibleItem{
             }
 	}
 	
+  
 	public void timestepMove(Compass direction) {
             int[] coords = direction.getCoords(getTile());
             
-            if(!collision(coords[0], coords[1])) {
-                handlingMap.clearVisibility();
-                
+            if(!collision(coords[0], coords[1])) {   
                 move(direction); 
-                handlingMap.moveNPCs();
-                handlingMap.resolveDesires();
-                
-                new FieldOfViewScan(this, 250);
+                handlingMap.stepTime(this);
             }
 	}
-	
-	public boolean collision(int x, int y) {
-		if(x < 0 || y < 0 || x >= handlingMap.width || y >= handlingMap.height || handlingMap.getTile(x,y).hasBlockingObject()){
-                    return true;
-                }	
-		return false;
-	}
-	
-	public boolean isBlocking() {
-		return blocking;
-	}
-	
-	int getBackColor() { 
-		return this.ir.getBackColor();
-	}
-        
-        int getForeColor() {
-            return this.ir.getForeColor();
-        }
-        
-        int getImgChar() {
-            return this.ir.getImgChar();
-        }
 	
 	//moves 3 times in a random direction
 	void idleMove() {
@@ -158,14 +153,11 @@ public class GameObject implements VisibleItem{
 			move(dirs[roll]);
 		}
 	}
-	
-	public Tile getTile() {
-		return handlingMap.getTile(getX(),getY());
-	}
+
 	
 	//Move to a random position using A*
 	void randomMove() {
-            int[] coords = validPositionRolls(handlingMap);
+            int[] coords = handlingMap.validPositionRolls();
             Tile start = handlingMap.getTile(getX(), getY());
             Tile goal = handlingMap.getTile(coords[0], coords[1]);
 
@@ -177,37 +169,17 @@ public class GameObject implements VisibleItem{
 		this.ir.setBackColor(newBackColor);
 	}
 	
-	public ImageRepresentation getRepresentation() {
-		return this.ir;
-	}
+
 	
-        LightingElement getLightingElement() {
-            return this.light;
-        }
-        
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	private void setX(int newX) {
+	public void setX(int newX) {
 		this.x = newX;
 	}
 	
-	private void setY(int newY) {
+	public void setY(int newY) {
 		this.y = newY;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
-	int getPrecedence() {
-		return precedence;
-	}
+
 	
     @Override
 	public String toString() {

@@ -9,6 +9,7 @@ import GUI.ChoiceList;
 import GUI.GUIText;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
+import objects.GameObject;
 import objects.Tile;
 
 /**
@@ -20,6 +21,8 @@ public class InspectMode extends GameMode {
     
     ChoiceList inspectedTileDisplay;  
     ChoiceList invalidTileDisplay;
+    
+    Tile inspectedTile;
     
     //MainScreen should be the only screen that initiates InspectMode
     InspectMode(MainScreen inScreen) {
@@ -75,9 +78,24 @@ public class InspectMode extends GameMode {
                     case KeyEvent.VK_HOME:
                         moveTrackedObject(Compass.NORTHWEST);
                         break;
+                        
+                    case KeyEvent.VK_ADD:
+                        inspectedTileDisplay.cycleDown();
+                        break;
+                        
+                    case KeyEvent.VK_SUBTRACT:
+                        inspectedTileDisplay.cycleUp();
+                        break;
+                        
+                    case KeyEvent.VK_ENTER:
+                        if(inspectedTileDisplay.size() > 0) {
+                            MainFrame.previousScreen = callingScreen;
+                            MainFrame.currentScreen  = new DetailedInspectionScreen(getInspectedObject()); 
+                        }
+                        break;
 
                     default:
-                        System.out.println("Some other key was pressed!");
+                        System.out.println("Some other key was pressed: " + keyEvent.getKeyCode());
                         break;
                 }
             }
@@ -91,20 +109,30 @@ public class InspectMode extends GameMode {
         callingScreen.currentMode = callingScreen.previousMode;
 
         callingScreen.activeGUIElements.remove(callingScreen.trackedObject);
-        callingScreen.activeGUIElements.remove(inspectedTileDisplay);
+        cleanDisplay();
+        
         
         callingScreen.trackedObject = callingScreen.handledMap.mainChar;
+    }
+    
+    GameObject getInspectedObject() {
+        return inspectedTileDisplay.getCurrentLogicalGameObject();
     }
     
     void moveTrackedObject(Compass dir) {  
         callingScreen.trackedObject.resolveImmediateDesire(dir);
         
-        Tile newTile = callingScreen.handledMap.getTile(callingScreen.trackedObject.getX(), callingScreen.trackedObject.getY());
+        inspectedTile = callingScreen.handledMap.getTile(callingScreen.trackedObject.getX(), callingScreen.trackedObject.getY());
         
         //clean up the previous display
+        cleanDisplay();
+        displayInspectedTile(inspectedTile);
+    }
+    
+    void cleanDisplay() {
         callingScreen.activeGUIElements.remove(inspectedTileDisplay);
         callingScreen.activeGUIElements.remove(invalidTileDisplay);
-        displayInspectedTile(newTile);
+        inspectedTileDisplay.clearLogicalObjectMap();
     }
     
     void displayInspectedTile(Tile inspectedTile) {
@@ -113,8 +141,14 @@ public class InspectMode extends GameMode {
             for(int i = 0; i < inspectedTile.size(); i++) {
                 String GUIEntryName = inspectedTile.get(i).getName();
                 GUIText newGUIEntry = new GUIText(GUIEntryName);
-                inspectedTileDisplay.add(newGUIEntry);
+                inspectedTileDisplay.add(newGUIEntry, inspectedTile.get(i));
             }
+            
+            if(inspectedTile.size() > 1) {
+                inspectedTileDisplay.add(new GUIText("Use + and - to navigate this list", true));
+            }  
+            inspectedTileDisplay.add(new GUIText("Press Enter for a detailed description", true));
+            inspectedTileDisplay.add(new GUIText("Press Escape to exit inspection mode", true));
 
             callingScreen.activeGUIElements.add(inspectedTileDisplay);
         }

@@ -4,6 +4,7 @@ import AI.MovementDesire;
 import drawing.ImageRepresentation;
 import drawing.MainFrame;
 import java.util.ArrayList;
+import java.util.Random;
 import lighting.FieldOfViewScan;
 import lighting.PreciseCoordinate;
 
@@ -58,18 +59,49 @@ public class GameMap {
                     
                 }
             }
-            mainChar = new GameObject("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
+            
+            mainChar = objectWithRandomPos("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
             addObject(mainChar);
             new FieldOfViewScan(mainChar, 250);
 
             for(int i = 0; i < 10; i++) {
-                GameObject greenSmiley = new GameObject("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, 1, this);
+                GameObject greenSmiley = objectWithRandomPos("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, 1, this);
                 NPCList.add(greenSmiley);
                 addObject(greenSmiley);
             }
 
 //            updateObjects();
         }
+        
+        public void stepTime(GameObject origin) {
+            clearVisibility();
+            moveNPCs();
+            resolveDesires();
+
+            new FieldOfViewScan(origin, 250);
+        }
+        
+        GameObject objectWithRandomPos(String name, ImageRepresentation imageCell, boolean blocking, int precedence, GameMap handlingMap) {
+            int[] coords = validPositionRolls();
+            return new GameObject(name, imageCell, coords[0], coords[1], blocking, precedence, handlingMap);    
+        }
+        
+        public int[] validPositionRolls() {
+            int[] coords = new int[2];
+
+            Random dice = new Random();
+            Tile isItValid;
+
+            do {
+                    coords[0] = dice.nextInt(width-1);
+                    coords[1] = dice.nextInt(height-1); 
+
+                    isItValid = getTile(coords[0], coords[1]);
+
+            } while(isItValid.hasBlockingObject());
+
+            return coords;
+	}
 	
 	//returns the object in a specific map tile with the smallest precedence
 	public ImageRepresentation getRepresentation(int x, int y) {	

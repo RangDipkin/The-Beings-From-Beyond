@@ -25,8 +25,9 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         
         ArrayList<LightingElement> lights = new ArrayList<>();
         
-        boolean visible = false;
-        boolean lit = true;
+        boolean visible  = false;
+        //TODO: set this back to false, true is used for testing purposes only
+        boolean lit      = true;
         boolean litDelay = false;
         
         ImageRepresentation finalOutput;
@@ -232,20 +233,10 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         return hasBlocker;
     }  
     
-    public void doFOVaction(GameObject origin) {
-        if(origin == handlingMap.mainChar) {
+    public void doFOVaction(GameObject origin, boolean adjacent) {
+        if(origin == handlingMap.mainChar && (lit || adjacent)) {
             visible = true;
             handlingMap.visibleTiles.add(this);
-//            if(getBackgroundColor() == ImageRepresentation.YELLOW) {
-//                setColor(ImageRepresentation.RED);
-//            }
-//            else {
-//                setColor(ImageRepresentation.YELLOW);
-//            }
-        }
-        else {
-            lights.add(new LightingElement(origin.getLightingElement().getColor(),
-                                           origin.getLightingElement().getIntensity()));
         }
     } 
     

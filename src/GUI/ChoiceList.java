@@ -8,7 +8,10 @@ import AI.MovementDesire;
 import drawing.ImageRepresentation;
 import drawing.VisibleItem;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import objects.GameMap;
+import objects.GameObject;
 import objects.Tile;
 import utils.Translator;
 
@@ -26,16 +29,21 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
     
     public final static int DEFAULT_INACTIVE_COLOR = ImageRepresentation.WHITE;
     public final static int DEFAULT_ACTIVE_COLOR   = ImageRepresentation.YELLOW;
+    public final static int DEFAULT_ANCILLARY_TEXT_COLOR = ImageRepresentation.GRAY;
     
     //both screen-relative and map-relative, depends on context
     //if mapOverlay, map-relative, otherwise screen-relative
     int x, y;
     
-    public ChoiceList () {}
+    ArrayList<GUIText> ancillaryText;
+    
+    Map<GUIText, GameObject> logicalObjectMap = new HashMap<>();
     
     public boolean mapOverlay = false;
     
     public GameMap overlaidMap;
+    
+    public ChoiceList () {}
     
     public ChoiceList (int inInactive, int x, int y) {
         inactiveColor = inInactive;
@@ -70,6 +78,15 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         overlaidMap = inOverlaidMap;
     }
     
+    public void add(GUIText inText, GameObject inObj) {
+        add(inText);
+        logicalObjectMap.put(inText, inObj);
+    }
+    
+    public GameObject getCurrentLogicalGameObject() {
+        return logicalObjectMap.get(getCurrentChoice());
+    }
+    
     //returns the maximum-length name of a GUIText object within the current ChoiceList
     public int getWidth() {
         int max = this.get(0).getName().length();
@@ -89,12 +106,20 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         return this.get(currentChoiceIndex).getName();
     }
     
+    public GUIText getCurrentChoice() {
+        return this.get(currentChoiceIndex);
+    }
+    
     int getInactiveColor() {
         return inactiveColor;
     }
     
     int getActiveColor() {
         return activeColor;
+    }
+    
+    public void addAncillaryText(GUIText infoText) {
+        ancillaryText.add(infoText);
     }
     
     public void cycleUp() {
@@ -107,10 +132,17 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         else{
             System.out.println("yo, cycleActiveUp in ChoiceList is bein' wierd");
         }
+        
+        if(this.get(currentChoiceIndex).isAncillary()) {
+            cycleUp();
+        }
     }
     
     public void cycleDown() {
         currentChoiceIndex = (currentChoiceIndex + 1) % this.size();
+        if(this.get(currentChoiceIndex).isAncillary()) {
+            cycleDown();
+        }
     }
     
     //used for screen-relative drawing
@@ -129,14 +161,20 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         
         //cycle through all the options
         for(int i = 0; i < this.size(); i++){
+            GUIText currText = this.get(i);
+            
             //turns the choice's name into an array of ints
-            int[] choiceNameIntegers = Translator.translate(this.get(i).getName());
+            int[] choiceNameIntegers = Translator.translate(currText.getName());
             for(int j = 0; j<choiceNameIntegers.length ;j++){
                 int currentLetter = choiceNameIntegers[j];
                 ImageRepresentation currentImg = null;
-                if(i == currentChoiceIndex && activeColor != CONTROL_ACTIVE_COLOR){
+                if(currText.isAncillary()) {
+                    currentImg = new ImageRepresentation(DEFAULT_ANCILLARY_TEXT_COLOR, ImageRepresentation.BLACK, currentLetter);
+                }
+                else if(i == currentChoiceIndex && activeColor != CONTROL_ACTIVE_COLOR){
                     currentImg = new ImageRepresentation(this.getActiveColor(), ImageRepresentation.BLACK, currentLetter);
-                } else {
+                } 
+                else {
                     currentImg = new ImageRepresentation(this.getInactiveColor(), ImageRepresentation.BLACK, currentLetter);
                 }
                 displayArea[currentX][currentY] = currentImg;
@@ -144,7 +182,7 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
             }
             currentX = inX;
             currentY++;
-        }
+        }        
     }
     
     public int getX() {
@@ -178,5 +216,9 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
             this.setX(coords[0]);
             this.setY(coords[1]);
         }
+    }
+
+    public void clearLogicalObjectMap() {
+        logicalObjectMap = new HashMap<>();
     }
 }

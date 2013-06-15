@@ -34,7 +34,7 @@ public class FieldOfViewScan {
             scanLine(START_DEPTH,START_STARTSLOPE,DEFAULT_ENDSLOPE);
         }
         
-        handlingMap.getTile(origin.getX(), origin.getY()).doFOVaction(origin);
+        handlingMap.getTile(origin.getX(), origin.getY()).doFOVaction(origin, true);
     }
 
     static final int[][] INCREMENTS = {
@@ -84,7 +84,7 @@ public class FieldOfViewScan {
     
     private double visibleAreaChecks (PreciseCoordinate coords, Integer depth, 
             double startSlope, double endSlope) {
-        handlingMap.getTile(coords).doFOVaction(origin); 
+        handlingMap.getTile(coords).doFOVaction(origin, depth == 1); 
                   
         boolean thisTileIsBlocking  = handlingMap.getTile(coords).hasBlockingObject(); 
         boolean priorTileIsBlocking = getPriorTile(coords).hasBlockingObject(); 

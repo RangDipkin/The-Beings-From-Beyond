@@ -52,6 +52,7 @@ public class ImageRepresentation {
 	
 	public ImageRepresentation(int foreColor, int rawImgChar) {
             this.foreColor = foreColor;
+            this.backColor = foreColor;
             this.rawImgChar = rawImgChar;
 
             this.RGBMatrix = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT];
