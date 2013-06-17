@@ -30,7 +30,12 @@ public class MainMode extends GameMode {
             switch(keyEvent.getKeyCode()) { 
                 case KeyEvent.VK_X:
                     beginInspectMode();
-                    break;                 
+                    break;  
+                    
+                case KeyEvent.VK_I:
+                    MainFrame.previousScreen = MainFrame.currentScreen;
+                    MainFrame.currentScreen = new InventoryScreen(callingScreen.handledMap.mainChar.myInventory);
+                    break;
 
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_NUMPAD8:

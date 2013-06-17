@@ -36,14 +36,17 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         final static int VOLATILE_IMAGE_TRANSPARENCY = 0;
 	static BooleanImage[][] charsheet;
         Graphics contentGraphics;
+        
 	static Screen currentScreen;
 	static Screen previousScreen;
+        static Screen grandparentScreen;
+        
 	static GameMap testMap;
         static GraphicsEnvironment   dasEnv;
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
-        //long-term version plans
-        final static String VERSION_NUMBER = "Alpha v0.1.5";
+
+        final static String VERSION_NUMBER = "Alpha v0.1.6";
         
         
 	MainFrame() {
@@ -107,7 +110,6 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             //TODO: Name generator
             //TODO: Inventory (for torches)
             //TODO: LOS + throwing
-            //TODO: Detailed Inspection
             //TODO: allow the player to force screen movement
             while(true) {
                 eventProcessor.processEventList();

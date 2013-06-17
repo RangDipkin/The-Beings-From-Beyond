@@ -5,9 +5,9 @@ import AI.Compass;
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
 import drawing.VisibleItem;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
-import lighting.FieldOfViewScan;
 import lighting.LightingElement;
 
 public class GameObject implements VisibleItem{
@@ -24,39 +24,36 @@ public class GameObject implements VisibleItem{
         
         String detailedDescription;
         
+        public Inventory myInventory = new Inventory();
+        
         //creates a completely bland GameObject for polymorphic purposes
         GameObject() {}
 	
-	GameObject(String name, ImageRepresentation ir, int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
-		setX(x);
-		setY(y);
-		this.blocking = blocking;
-		this.ir = ir;
-		this.precedence = precedence;
-		this.name = name;
-		this.handlingMap = handlingMap;
-                
-                this.detailedDescription = "This is a " + name;
-                
-                handlingMap.injectObject(this, x, y);
+	GameObject(String name, ImageRepresentation ir, Location loc, boolean blocking, int precedence, GameMap handlingMap) {
+            
+            this.blocking = blocking;
+            this.ir = ir;
+            this.precedence = precedence;
+            this.name = name;
+            this.handlingMap = handlingMap;
+
+            this.detailedDescription = "This is a " + name;
+            loc.setObjectLocation(this);
 	}
         
         //for lighted objects
         GameObject(String name, ImageRepresentation ir, LightingElement light,
-                int x, int y, boolean blocking, int precedence, GameMap handlingMap) {
-		
-                setX(x);
-		setY(y);
-		this.ir = ir;
-                this.light = light;
-                this.blocking = blocking;
-		this.precedence = precedence;
-		this.name = name;
-		this.handlingMap = handlingMap;
-                
-                this.detailedDescription = "This is a " + name;
-                
-                handlingMap.injectObject(this, x, y);
+            Location loc, boolean blocking, int precedence, GameMap handlingMap) {
+            
+            this.ir = ir;
+            this.light = light;
+            this.blocking = blocking;
+            this.precedence = precedence;
+            this.name = name;
+            this.handlingMap = handlingMap;
+
+            this.detailedDescription = "This is a " + name;
+            loc.setObjectLocation(this);    
         }
         
 	public boolean collision(int x, int y) {

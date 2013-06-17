@@ -89,6 +89,7 @@ public class InspectMode extends GameMode {
                         
                     case KeyEvent.VK_ENTER:
                         if(inspectedTileDisplay.size() > 0) {
+                            MainFrame.grandparentScreen = callingScreen;
                             MainFrame.previousScreen = callingScreen;
                             MainFrame.currentScreen  = new DetailedInspectionScreen(getInspectedObject()); 
                         }

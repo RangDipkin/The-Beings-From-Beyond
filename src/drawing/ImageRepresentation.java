@@ -61,7 +61,7 @@ public class ImageRepresentation {
             int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
 
             pixels = MainFrame.charsheet[srcPosX][srcPosY];
-
+            
             updateRGBMatrix();  
 	}
         

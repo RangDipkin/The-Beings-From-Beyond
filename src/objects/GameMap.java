@@ -47,20 +47,20 @@ public class GameMap {
                     ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
                     
                     if(i == 0 || i == width-1 || j == 0 || j == height-1 || (i%4==0 && j%4==0) ) {
-                        addObject(new GameObject("White Wall", whiteWall, i, j, true,  1, this));
+                        addObject(new GameObject("White Wall", whiteWall, new Coordinate(i, j), true,  1, this));
                     }
                     else if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-                        addObject(new GameObject("Black Tiled Floor", tileFloor1, i, j, false, 0, this));
+                        addObject(new GameObject("Black Tiled Floor", tileFloor1, new Coordinate(i, j), false, 0, this));
                     }
                     else {
-                        addObject(new GameObject("Tiled Floor", tileFloor2, i, j, false, 0, this));
+                        addObject(new GameObject("Tiled Floor", tileFloor2, new Coordinate(i, j), false, 0, this));
                     }
 
                     
                 }
             }
             
-            mainChar = objectWithRandomPos("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 1, this);
+            mainChar = objectWithRandomPos("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 2, this);
             addObject(mainChar);
             new FieldOfViewScan(mainChar, 250);
 
@@ -69,8 +69,9 @@ public class GameMap {
                 NPCList.add(greenSmiley);
                 addObject(greenSmiley);
             }
-
-//            updateObjects();
+            
+            GameObject torch = new GameObject("Torch", new ImageRepresentation(ImageRepresentation.BROWN, 47), mainChar.myInventory, false,  1, this);
+            GameObject topHat = new GameObject("Top hat", new ImageRepresentation(ImageRepresentation.BLACK, 254), mainChar.myInventory, false,  1, this);
         }
         
         public void stepTime(GameObject origin) {
@@ -83,7 +84,7 @@ public class GameMap {
         
         GameObject objectWithRandomPos(String name, ImageRepresentation imageCell, boolean blocking, int precedence, GameMap handlingMap) {
             int[] coords = validPositionRolls();
-            return new GameObject(name, imageCell, coords[0], coords[1], blocking, precedence, handlingMap);    
+            return new GameObject(name, imageCell, new Coordinate(coords[0], coords[1]), blocking, precedence, handlingMap);    
         }
         
         public int[] validPositionRolls() {
@@ -156,24 +157,6 @@ public class GameMap {
             
             visibleTiles = new ArrayList<>();
         }
-        
-        
-//	public void updateObjects() {		
-//            //wipe the map clean to make room for new layout
-//            for(int i = 0; i < width ; i++) {
-//                for(int j = 0; j < height ; j++) {
-//                    for(int k = 0; k < map[i][j].size(); k++){
-//                        map[i][j].remove(0);
-//                    }
-//                }
-//            }
-//
-//            GameObject curr;
-//            for(int i = 0; i < objectList.size(); i++) {
-//                curr = objectList.get(i);
-//                map[curr.getX()][curr.getY()].add(curr);
-//            }
-//	}
 	
 	void addObject(GameObject actor) {
             objectList.add(actor);
