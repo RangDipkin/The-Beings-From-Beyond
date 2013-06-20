@@ -40,6 +40,10 @@ public class MainScreen extends Screen{
                     stepScreenForwards(GrabGUI);
                     GrabGUI.createGrabGUI(GrabGUI.grabbableItems());
                     break;
+                    
+                case KeyEvent.VK_D:
+                    stepScreenForwards(new DropScreen(handledMap.mainChar));
+                    break;
 
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_NUMPAD8:

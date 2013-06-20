@@ -42,7 +42,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.7";
+        final static String VERSION_NUMBER = "Alpha v0.1.8";
         
         
 	MainFrame() {

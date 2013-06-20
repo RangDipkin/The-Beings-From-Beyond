@@ -15,13 +15,10 @@ import objects.Inventory;
  *
  * @author Travis
  */
-public class InventoryScreen extends Screen {
-    ChoiceList inventoryGUI;
-    GameObject holdingObject;
+public class DropScreen extends InventoryScreen{
+    DropScreen() {}
     
-    InventoryScreen() {}
-    
-    InventoryScreen(GameObject inHoldingObject) {
+    DropScreen(GameObject inHoldingObject) {
         this.holdingObject = inHoldingObject;
         Inventory myInventory = holdingObject.dasInventory;
         inventoryGUI = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR,ChoiceList.DEFAULT_ACTIVE_COLOR, 0,0);
@@ -32,18 +29,12 @@ public class InventoryScreen extends Screen {
         
         if(myInventory.size() > 1) {
                 inventoryGUI.add(new GUIText("Use + and - to navigate this list", true));
-        }  
-        inventoryGUI.add(new GUIText("Press Enter for a detailed description of the current item", true));
-        inventoryGUI.add(new GUIText("Press 't' to throw the current item", true));
-        inventoryGUI.add(new GUIText("Press 'd' to drop the current item", true));
-        inventoryGUI.add(new GUIText("Press Escape to exit inventory mode", true));
+        }
+        inventoryGUI.add(new GUIText("Press 'd' or Enter to drop the current item", true));  
+        inventoryGUI.add(new GUIText("Press 'i' for a detailed description of the current item", true));        
+        inventoryGUI.add(new GUIText("Press Escape to exit drop mode", true));
         
         activeGUIElements.add(inventoryGUI);
-    }
-    
-    @Override
-    ImageRepresentation getCurrentCell(int i, int j) {
-        return new ImageRepresentation(ImageRepresentation.BLACK, 0);
     }
     
     @Override
@@ -64,17 +55,13 @@ public class InventoryScreen extends Screen {
                     inventoryGUI.cycleUp();
                     break;
                     
-                case KeyEvent.VK_T:
-                    holdingObject.throwItem(inventoryGUI.getCurrentLogicalObject());
-                    stepScreenBackwards();
-                    break;
-                    
                 case KeyEvent.VK_D:
+                case KeyEvent.VK_ENTER:
                     holdingObject.dropItem(inventoryGUI.getCurrentLogicalObject());
                     stepScreenBackwards();
                     break;
-                    
-                case KeyEvent.VK_ENTER:
+                
+                case KeyEvent.VK_I:
                     stepScreenForwards(new DetailedInspectionScreen(inventoryGUI.getCurrentLogicalObject()));
                     break;
             } 
