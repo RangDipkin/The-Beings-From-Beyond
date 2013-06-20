@@ -14,6 +14,7 @@ public class GameObject implements VisibleItem{
 	int x, y;
 	int precedence;
 	boolean blocking = false;
+        boolean grabbable = false;
 	ImageRepresentation ir;
 	String name;
 	public GameMap handlingMap;
@@ -24,14 +25,16 @@ public class GameObject implements VisibleItem{
         
         String detailedDescription;
         
-        public Inventory myInventory = new Inventory();
+        public Inventory dasInventory = new Inventory();
         
         //creates a completely bland GameObject for polymorphic purposes
         GameObject() {}
 	
-	GameObject(String name, ImageRepresentation ir, Location loc, boolean blocking, int precedence, GameMap handlingMap) {
-            
+	GameObject(String name, ImageRepresentation ir, Location loc, 
+                boolean blocking, boolean grabbable, int precedence, 
+                GameMap handlingMap) {
             this.blocking = blocking;
+            this.grabbable = grabbable;
             this.ir = ir;
             this.precedence = precedence;
             this.name = name;
@@ -57,10 +60,10 @@ public class GameObject implements VisibleItem{
         }
         
 	public boolean collision(int x, int y) {
-		if(x < 0 || y < 0 || x >= handlingMap.width || y >= handlingMap.height || handlingMap.getTile(x,y).hasBlockingObject()){
-                    return true;
-                }	
-		return false;
+            if(x < 0 || y < 0 || x >= handlingMap.width || y >= handlingMap.height || handlingMap.getTile(x,y).hasBlockingObject()){
+                return true;
+            }	
+            return false;
 	} 
 	
         int getBackColor() { 
@@ -176,10 +179,32 @@ public class GameObject implements VisibleItem{
 		this.y = newY;
 	}
 	
-
-	
     @Override
 	public String toString() {
 		return this.ir.toString();
 	}
+    
+        public void throwItem(GameObject thrownItem) {
+            dasInventory.remove(thrownItem);
+            handlingMap.injectObject(thrownItem,getX(),getY());
+            thrownItem.setX(getX());
+            thrownItem.setY(getY());
+        }
+        
+        public void dropItem(GameObject droppedItem) {
+            dasInventory.remove(droppedItem);
+            handlingMap.injectObject(droppedItem,getX(),getY());
+            droppedItem.setX(getX());
+            droppedItem.setY(getY());
+        }
+        
+        public boolean isGrabbable() {
+            return grabbable;
+        }
+        
+        public void grabItem(GameObject grabbedItem) {
+            System.out.println("grabbing " + grabbedItem.getName());
+            grabbedItem.getTile().remove(grabbedItem);
+            dasInventory.add(grabbedItem);
+        }
 }

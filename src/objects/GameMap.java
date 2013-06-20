@@ -46,32 +46,35 @@ public class GameMap {
                     ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);
                     ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
                     
-                    if(i == 0 || i == width-1 || j == 0 || j == height-1 || (i%4==0 && j%4==0) ) {
-                        addObject(new GameObject("White Wall", whiteWall, new Coordinate(i, j), true,  1, this));
+                    if(i == 0 || i == width-1 || j == 0 || j == height-1  /*||(i%4==0 && j%4==0)*/ ) {
+                        addObject(new GameObject("White Wall", whiteWall, new Coordinate(i, j), true, false, 1, this));
                     }
                     else if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-                        addObject(new GameObject("Black Tiled Floor", tileFloor1, new Coordinate(i, j), false, 0, this));
+                        addObject(new GameObject("Black Tiled Floor", tileFloor1, new Coordinate(i, j), false, false, 0, this));
                     }
                     else {
-                        addObject(new GameObject("Tiled Floor", tileFloor2, new Coordinate(i, j), false, 0, this));
+                        addObject(new GameObject("Tiled Floor", tileFloor2, new Coordinate(i, j), false, false, 0, this));
                     }
-
-                    
+ 
                 }
             }
             
-            mainChar = objectWithRandomPos("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, 2, this);
+            for(int i = 0; i < 90; i++) {
+                objectWithRandomPos("Pillar", new ImageRepresentation(ImageRepresentation.WHITE, 7), true, false, 1, this);
+            }
+            
+            mainChar = objectWithRandomPos("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, false, 2, this);
             addObject(mainChar);
             new FieldOfViewScan(mainChar, 250);
 
             for(int i = 0; i < 10; i++) {
-                GameObject greenSmiley = objectWithRandomPos("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, 1, this);
+                GameObject greenSmiley = objectWithRandomPos("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, false, 1, this);
                 NPCList.add(greenSmiley);
                 addObject(greenSmiley);
             }
             
-            GameObject torch = new GameObject("Torch", new ImageRepresentation(ImageRepresentation.BROWN, 47), mainChar.myInventory, false,  1, this);
-            GameObject topHat = new GameObject("Top hat", new ImageRepresentation(ImageRepresentation.BLACK, 254), mainChar.myInventory, false,  1, this);
+            GameObject torch = new GameObject("Torch", new ImageRepresentation(ImageRepresentation.BROWN, 47), mainChar.dasInventory, false, true, 1, this);
+            GameObject topHat = new GameObject("Top hat", new ImageRepresentation(ImageRepresentation.BLACK, 254), mainChar.dasInventory, false, true, 1, this);
         }
         
         public void stepTime(GameObject origin) {
@@ -82,9 +85,9 @@ public class GameMap {
             new FieldOfViewScan(origin, 250);
         }
         
-        GameObject objectWithRandomPos(String name, ImageRepresentation imageCell, boolean blocking, int precedence, GameMap handlingMap) {
+        GameObject objectWithRandomPos(String name, ImageRepresentation imageCell, boolean blocking, boolean grabbable ,int precedence, GameMap handlingMap) {
             int[] coords = validPositionRolls();
-            return new GameObject(name, imageCell, new Coordinate(coords[0], coords[1]), blocking, precedence, handlingMap);    
+            return new GameObject(name, imageCell, new Coordinate(coords[0], coords[1]), blocking, grabbable, precedence, handlingMap);    
         }
         
         public int[] validPositionRolls() {

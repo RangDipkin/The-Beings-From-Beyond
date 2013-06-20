@@ -5,7 +5,6 @@ import event.EventProcessor;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -15,11 +14,8 @@ import objects.GameMap;
 import utils.Translator;
 
 public class MainFrame extends JFrame implements EventProcessable, KeyListener , ComponentListener{
-//	static Graphics contentGraphics;
 	static EventProcessor eventProcessor;
 	static Container myPane;    
-        Insets insets;
-	final static int DELAY_TIME = 40; //should achieve an fps of 25
 	
         //default cmd emulation = 80
         //to fill 1680x1000 = 210
@@ -33,7 +29,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 	final static int FRAME_WIDTH  = CHAR_PIXEL_WIDTH * WIDTH_IN_SLOTS;
 	final static int FRAME_HEIGHT = CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS;
         final static int IMAGE_GRID_WIDTH = 16;
-        final static int VOLATILE_IMAGE_TRANSPARENCY = 0;
+
 	static BooleanImage[][] charsheet;
         Graphics contentGraphics;
         
@@ -46,7 +42,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.6";
+        final static String VERSION_NUMBER = "Alpha v0.1.7";
         
         
 	MainFrame() {
@@ -57,7 +53,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 setDefaultCloseOperation(EXIT_ON_CLOSE);	
 		setIgnoreRepaint(true);
 		pack();
-		insets = getInsets();
+		Insets insets = getInsets();
 		
                 setSize(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS  + insets.left + insets.right, 
                         CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS + insets.top  + insets.bottom); 
@@ -71,7 +67,6 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 //create graphics on the main pane
 		myPane = this.getContentPane();
 		myPane.setLayout(null);
-//		contentGraphics = myPane.getGraphics();
                 
                 Image icon = null;
                 try {
@@ -108,7 +103,6 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             //TODO: flickering ImageReps
             //TODO: Lighting Engine
             //TODO: Name generator
-            //TODO: Inventory (for torches)
             //TODO: LOS + throwing
             //TODO: allow the player to force screen movement
             while(true) {
@@ -145,7 +139,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             rosetta = new Translator();
             //create the frame
             MainFrame mainFrame = new MainFrame();
-            currentScreen = previousScreen = new TitleScreen(translatedTitles);
+            currentScreen = previousScreen = grandparentScreen = new TitleScreen(translatedTitles);
         }
         
         public static void forceRender(){
@@ -191,7 +185,6 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 
         @Override
         public void componentResized(ComponentEvent e) {
-
             eventProcessor.addEvent(e);
         }
 
@@ -243,19 +236,5 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             }
               
             return booleanArray;
-        }
-        
-        static VolatileImage createVolatileImage() {
-            VolatileImage currImg = dasConfig.createCompatibleVolatileImage(CHAR_PIXEL_WIDTH,CHAR_PIXEL_HEIGHT, VOLATILE_IMAGE_TRANSPARENCY);
-            
-            //if the image had an error, recreate the image 
-            int validity = currImg.validate(dasConfig);
-            if(validity == VolatileImage.IMAGE_INCOMPATIBLE) {
-                //woah, recursion? Gettin' fancy...  
-                currImg = createVolatileImage();
-                return currImg;
-            }           
-            
-            return currImg;
         }
 }

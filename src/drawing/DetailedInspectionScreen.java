@@ -35,8 +35,7 @@ public class DetailedInspectionScreen extends Screen {
 
             switch(keyEvent.getKeyCode()) {
                 case KeyEvent.VK_ESCAPE:
-                    MainFrame.currentScreen  = MainFrame.previousScreen;
-                    MainFrame.previousScreen = MainFrame.grandparentScreen;
+                    stepScreenBackwards();
                     break;
             } 
         }

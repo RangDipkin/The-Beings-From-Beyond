@@ -80,4 +80,15 @@ abstract class Screen {
     ImageRepresentation getCurrentCell(int i, int j) {
         return new ImageRepresentation(63);
     }
+    
+    void stepScreenForwards(Screen newScreen) {
+        MainFrame.grandparentScreen = MainFrame.previousScreen;
+        MainFrame.previousScreen = MainFrame.currentScreen;
+        MainFrame.currentScreen = newScreen;
+    }
+    
+    void stepScreenBackwards() {
+        MainFrame.currentScreen  = MainFrame.previousScreen;
+        MainFrame.previousScreen = MainFrame.grandparentScreen;
+    }
 }

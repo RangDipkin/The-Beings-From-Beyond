@@ -97,7 +97,7 @@ public class TitleScreen extends Screen {
                     KeyEvent keyEvent = (KeyEvent) e;
                     if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
                         if(MainMenuChoices.getCurrentChoiceName().equals("New Game")){
-                            MainFrame.currentScreen = new MainScreen(MainFrame.testMap, MainFrame.testMap.mainChar, MainFrame.WIDTH_IN_SLOTS, MainFrame.HEIGHT_IN_SLOTS);
+                            stepScreenForwards(new MainScreen(MainFrame.testMap, MainFrame.testMap.mainChar, MainFrame.WIDTH_IN_SLOTS, MainFrame.HEIGHT_IN_SLOTS));
                         }
                         else if(MainMenuChoices.getCurrentChoiceName().equals("Exit Game")) {
                             System.exit(0);

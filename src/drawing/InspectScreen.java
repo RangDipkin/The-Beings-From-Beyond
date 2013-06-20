@@ -9,6 +9,7 @@ import GUI.ChoiceList;
 import GUI.GUIText;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
+import objects.GameMap;
 import objects.GameObject;
 import objects.Tile;
 
@@ -16,27 +17,34 @@ import objects.Tile;
  *
  * @author Travis
  */
-public class InspectMode extends GameMode {
-    MainScreen callingScreen;
-    
+public class InspectScreen extends MainScreen {   
     ChoiceList inspectedTileDisplay;  
     ChoiceList invalidTileDisplay;
     
     Tile inspectedTile;
     
     //MainScreen should be the only screen that initiates InspectMode
-    InspectMode(MainScreen inScreen) {
-        callingScreen = inScreen;
+    InspectScreen(GameMap inMap) {
+        handledMap = inMap;
+        int targetStartX = handledMap.mainChar.getX();
+        int targetStartY = handledMap.mainChar.getY();
+
+        ChoiceList target = new ChoiceList(ImageRepresentation.YELLOW, targetStartX , targetStartY, handledMap);
+        target.add(new GUIText("X"));
+
+        activeGUIElements.add(target);
+        trackedObject = target;
+
+        displayInspectedTile(handledMap.getTile(targetStartX, targetStartY));
     }
     
     public void handleEvents(AWTEvent e) {
-        if(callingScreen instanceof MainScreen) {
             if(e.getID() == KeyEvent.KEY_PRESSED) {
                 KeyEvent keyEvent = (KeyEvent) e;
 
                 switch(keyEvent.getKeyCode()) { 
                     case KeyEvent.VK_ESCAPE:
-                        endInspectMode();
+                        stepScreenBackwards();
                         break;
 
                     case KeyEvent.VK_UP:
@@ -89,9 +97,7 @@ public class InspectMode extends GameMode {
                         
                     case KeyEvent.VK_ENTER:
                         if(inspectedTileDisplay.size() > 0) {
-                            MainFrame.grandparentScreen = callingScreen;
-                            MainFrame.previousScreen = callingScreen;
-                            MainFrame.currentScreen  = new DetailedInspectionScreen(getInspectedObject()); 
+                            stepScreenForwards(new DetailedInspectionScreen(getInspectedObject())); 
                         }
                         break;
 
@@ -99,31 +105,28 @@ public class InspectMode extends GameMode {
                         System.out.println("Some other key was pressed: " + keyEvent.getKeyCode());
                         break;
                 }
-            }
         }
         else {
             System.out.println("");
         }
     }
     
-    void endInspectMode() {
-        callingScreen.currentMode = callingScreen.previousMode;
-
-        callingScreen.activeGUIElements.remove(callingScreen.trackedObject);
-        cleanDisplay();
-        
-        
-        callingScreen.trackedObject = callingScreen.handledMap.mainChar;
-    }
+//    void endInspectMode() {
+//        activeGUIElements.remove(trackedObject);
+//        cleanDisplay();
+//         
+//        trackedObject = handledMap.mainChar;
+//        stepScreenBackwards();
+//    }
     
     GameObject getInspectedObject() {
-        return inspectedTileDisplay.getCurrentLogicalGameObject();
+        return inspectedTileDisplay.getCurrentLogicalObject();
     }
     
     void moveTrackedObject(Compass dir) {  
-        callingScreen.trackedObject.resolveImmediateDesire(dir);
+        trackedObject.resolveImmediateDesire(dir);
         
-        inspectedTile = callingScreen.handledMap.getTile(callingScreen.trackedObject.getX(), callingScreen.trackedObject.getY());
+        inspectedTile = handledMap.getTile(trackedObject.getX(), trackedObject.getY());
         
         //clean up the previous display
         cleanDisplay();
@@ -131,8 +134,8 @@ public class InspectMode extends GameMode {
     }
     
     void cleanDisplay() {
-        callingScreen.activeGUIElements.remove(inspectedTileDisplay);
-        callingScreen.activeGUIElements.remove(invalidTileDisplay);
+        activeGUIElements.remove(inspectedTileDisplay);
+        activeGUIElements.remove(invalidTileDisplay);
         inspectedTileDisplay.clearLogicalObjectMap();
     }
     
@@ -151,13 +154,13 @@ public class InspectMode extends GameMode {
             inspectedTileDisplay.add(new GUIText("Press Enter for a detailed description", true));
             inspectedTileDisplay.add(new GUIText("Press Escape to exit inspection mode", true));
 
-            callingScreen.activeGUIElements.add(inspectedTileDisplay);
+            activeGUIElements.add(inspectedTileDisplay);
         }
         else {
             invalidTileDisplay = new ChoiceList(ImageRepresentation.GRAY, 0, 0);
             GUIText invalidTileTxt = new GUIText("Tile not visible");
             invalidTileDisplay.add(invalidTileTxt);
-            callingScreen.activeGUIElements.add(invalidTileDisplay);
+            activeGUIElements.add(invalidTileDisplay);
         }
     }
 }

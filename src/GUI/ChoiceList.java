@@ -83,7 +83,7 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         logicalObjectMap.put(inText, inObj);
     }
     
-    public GameObject getCurrentLogicalGameObject() {
+    public GameObject getCurrentLogicalObject() {
         return logicalObjectMap.get(getCurrentChoice());
     }
     

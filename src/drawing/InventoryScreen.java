@@ -8,6 +8,7 @@ import GUI.ChoiceList;
 import GUI.GUIText;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
+import objects.GameObject;
 import objects.Inventory;
 
 /**
@@ -16,8 +17,11 @@ import objects.Inventory;
  */
 public class InventoryScreen extends Screen {
     ChoiceList inventoryGUI;
+    GameObject holdingObject;
     
-    InventoryScreen(Inventory myInventory) {
+    InventoryScreen(GameObject inHoldingObject) {
+        this.holdingObject = inHoldingObject;
+        Inventory myInventory = holdingObject.dasInventory;
         inventoryGUI = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR,ChoiceList.DEFAULT_ACTIVE_COLOR, 0,0);
         
         for(int i = 0; i < myInventory.size(); i++){
@@ -27,7 +31,9 @@ public class InventoryScreen extends Screen {
         if(myInventory.size() > 1) {
                 inventoryGUI.add(new GUIText("Use + and - to navigate this list", true));
         }  
-        inventoryGUI.add(new GUIText("Press Enter for a detailed description", true));
+        inventoryGUI.add(new GUIText("Press Enter for a detailed description of the current item", true));
+        inventoryGUI.add(new GUIText("Press 't' to throw the current item", true));
+        inventoryGUI.add(new GUIText("Press 'd' to drop the current item", true));
         inventoryGUI.add(new GUIText("Press Escape to exit inventory mode", true));
         
         activeGUIElements.add(inventoryGUI);
@@ -45,7 +51,7 @@ public class InventoryScreen extends Screen {
 
             switch(keyEvent.getKeyCode()) {
                 case KeyEvent.VK_ESCAPE:
-                    MainFrame.currentScreen = MainFrame.previousScreen;
+                    stepScreenBackwards();
                     break;
                     
                 case KeyEvent.VK_ADD:
@@ -56,10 +62,18 @@ public class InventoryScreen extends Screen {
                     inventoryGUI.cycleUp();
                     break;
                     
+                case KeyEvent.VK_T:
+                    holdingObject.throwItem(inventoryGUI.getCurrentLogicalObject());
+                    stepScreenBackwards();
+                    break;
+                    
+                case KeyEvent.VK_D:
+                    holdingObject.dropItem(inventoryGUI.getCurrentLogicalObject());
+                    stepScreenBackwards();
+                    break;
+                    
                 case KeyEvent.VK_ENTER:
-                    MainFrame.grandparentScreen = MainFrame.previousScreen;
-                    MainFrame.previousScreen = MainFrame.currentScreen;
-                    MainFrame.currentScreen = new DetailedInspectionScreen(inventoryGUI.getCurrentLogicalGameObject());
+                    stepScreenForwards(new DetailedInspectionScreen(inventoryGUI.getCurrentLogicalObject()));
                     break;
             } 
         }

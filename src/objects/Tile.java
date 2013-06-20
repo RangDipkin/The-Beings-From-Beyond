@@ -258,6 +258,10 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         int imgChar   = max.getImgChar();
         //get the background color of the lowest-precedence object in the tile
         int backColor = min.getBackColor();
+        
+        if(foreColor == backColor) {
+            backColor = ImageRepresentation.MAGENTA;
+        }
         //return the resulting ImageRepresentation
         finalOutput = new ImageRepresentation(foreColor, backColor, imgChar);
         return finalOutput;
