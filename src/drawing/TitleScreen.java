@@ -18,7 +18,10 @@ public class TitleScreen extends Screen {
     int defaultBackColor;
     
     TitleScreen(ImageRepresentation[][] inPixels){
-        titlePixels = inPixels;
+        titlePixels = inPixels;        
+        
+        xOffset = (MainFrame.WIDTH_IN_SLOTS - titlePixels.length) / 2;
+        yOffset = (MainFrame.HEIGHT_IN_SLOTS - titlePixels[0].length) / 2;
         
         //initialize main menu choices       
         MainMenuChoices = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 35 + xOffset, 20 + yOffset);
@@ -30,10 +33,9 @@ public class TitleScreen extends Screen {
         //Space for version number
         ChoiceList lowerRightCorner = new ChoiceList(ImageRepresentation.GRAY, 67 + xOffset, 24 + yOffset);
         lowerRightCorner.add(new GUIText(MainFrame.VERSION_NUMBER));
-        lowerRightCorner.displayOnto(titlePixels);
         
-        xOffset = (MainFrame.WIDTH_IN_SLOTS - titlePixels.length) / 2;
-        yOffset = (MainFrame.HEIGHT_IN_SLOTS - titlePixels[0].length) / 2;
+        originX = xOffset;
+        originY = yOffset;
         
         xRemainder = (MainFrame.WIDTH_IN_SLOTS - titlePixels.length) % 2;
         yRemainder = (MainFrame.HEIGHT_IN_SLOTS - titlePixels[0].length) % 2;

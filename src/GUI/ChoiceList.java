@@ -165,7 +165,7 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
             
             //turns the choice's name into an array of ints
             int[] choiceNameIntegers = Translator.translate(currText.getName());
-            for(int j = 0; j<choiceNameIntegers.length ;j++){
+            for(int j = 0; j < choiceNameIntegers.length ;j++){
                 int currentLetter = choiceNameIntegers[j];
                 ImageRepresentation currentImg = null;
                 if(currText.isAncillary()) {

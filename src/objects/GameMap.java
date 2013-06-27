@@ -59,7 +59,7 @@ public class GameMap {
                 }
             }
             
-            for(int i = 0; i < 90; i++) {
+            for(int i = 0; i < (width * height)/10; i++) {
                 objectWithRandomPos("Pillar", new ImageRepresentation(ImageRepresentation.WHITE, 7), true, false, 1, this);
             }
             

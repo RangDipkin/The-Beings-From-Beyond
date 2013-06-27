@@ -22,21 +22,11 @@ public class FieldOfViewScan {
     GameObject origin;
     int visRange;
     int octant;
-    GameMap handlingMap;
+    GameMap handlingMap;  
     
-    //a driver for the long-form, recursive scan
-    public FieldOfViewScan(GameObject inOrigin, int inVisRange) {
-        origin = inOrigin;
-        visRange = inVisRange;
-        handlingMap = origin.handlingMap;  
-        
-        for(octant = 0; octant < NUMBER_OF_OCTANTS; octant++) {
-            scanLine(START_DEPTH,START_STARTSLOPE,DEFAULT_ENDSLOPE);
-        }
-        
-        handlingMap.getTile(origin.getX(), origin.getY()).doFOVaction(origin, true);
-    }
-
+//    int numberOfScans;
+//    int numberOfVisibleTiles;
+    
     static final int[][] INCREMENTS = {
         {1,-1,0, 0,-1,1, 0,0},
         {0, 0,1,-1, 0,0,-1,1}
@@ -50,75 +40,107 @@ public class FieldOfViewScan {
     //the first number is a boolean which controls whether the slope or inverse slope is used
     //-1 refers to inverse slope...1 refers to slope
     static final double[][] NEWENDSLOPE_CORNER = {
-        {-0.5,0.5,-0.5,-0.5, 0.5,-0.5, 0.5, 0.5},
-        { 0.5,0.5,-0.5, 0.5,-0.5,-0.5, 0.5,-0.5}
+        {-0.5, 0.5,-0.5,-0.5, 0.5,-0.5, 0.5, 0.5},
+        { 0.5, 0.5,-0.5, 0.5,-0.5,-0.5, 0.5,-0.5}
     };
     
     static final double[][] NEWSTARTSLOPE_CORNER = {
-        {-0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5},
-        {-0.5,-0.5,-0.5, 0.5, 0.5,  0.5,  0.5, -0.5}
+        {-0.5, 0.5, 0.5, 0.5, 0.5,-0.5,-0.5,-0.5},
+        {-0.5,-0.5,-0.5, 0.5, 0.5, 0.5, 0.5,-0.5}
     };
     
     static final int[] INVERSE_SLOPE_HANDLER  = {1, 1,-1,-1, 1, 1,-1,-1};
     static final int[] NEGATIVE_SLOPE_HANDLER = {1,-1,-1, 1, 1,-1,-1, 1};
         
+    //a driver for the long-form, recursive scan
+    public FieldOfViewScan(GameObject inOrigin, int inVisRange) {
+//        numberOfScans = 0; 
+//        numberOfVisibleTiles = 0;
+        
+        origin = inOrigin;
+        visRange = inVisRange;
+        handlingMap = origin.handlingMap;  
+        
+//        System.out.println("new scan...");
+        //NUMBER_OF_OCTANTS
+        for(octant = 0; octant < NUMBER_OF_OCTANTS; octant++) {
+            scanLine(START_DEPTH,START_STARTSLOPE,DEFAULT_ENDSLOPE);
+        }
+        
+        handlingMap.getTile(origin.getX(), origin.getY()).doFOVaction(origin, true);
+//        System.out.println("Scan Complete!");
+//        System.out.println("Number of scans = " + numberOfScans);
+//        System.out.println("Number of Visible Items = " + numberOfVisibleTiles);
+    }
+
+    
     void scanLine(int depth, double startSlope, double endSlope) {      
         double bonusX = (Math.abs(BONUSES[0][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[0][octant]) : depth*BONUSES[0][octant];
-        double bonusY = (Math.abs(BONUSES[1][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[1][octant]) : depth*BONUSES[1][octant];
-        
-        double x = origin.getX() + bonusX  + 0.5; 
-        double y = origin.getY() + bonusY  + 0.5;     
+        double bonusY = (Math.abs(BONUSES[1][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[1][octant]) : depth*BONUSES[1][octant];    
         double newStartSlope = startSlope;
         
-        PreciseCoordinate coords = new PreciseCoordinate(x, y);
+        PreciseCoordinate coords = new PreciseCoordinate(origin.getX() + bonusX  + 0.5, origin.getY() + bonusY  + 0.5);
  
-        while(getCurrentSlope(coords) >= endSlope && depth < visRange) {
+        
+//        System.out.println("new while: currentSlope = " + getCurrentSlope(coords) + ", endSlope = " + endSlope);
+        while(getCurrentSlope(new PreciseCoordinate(coords.getX() + NEWENDSLOPE_CORNER[0][octant], coords.getY() + NEWENDSLOPE_CORNER[1][octant])) > endSlope 
+                && depth < visRange) {
+//            System.out.println(new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant]) + "," + endSlope);
             if(handlingMap.isValidTile(coords) && getDistance(coords,origin.getX(),origin.getY()) < visRange) {
                 newStartSlope = visibleAreaChecks(coords, depth, newStartSlope, endSlope);                   
             }
             //go to the next tile
             coords.addToX((double)INCREMENTS[0][octant]);
-            coords.addToY((double)INCREMENTS[1][octant]);    
-        }       
+            coords.addToY((double)INCREMENTS[1][octant]); 
+//            System.out.println(new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant]) + "," + endSlope);
+//            System.out.println(getCurrentSlope(new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant])));
+        }  
     }
     
     private double visibleAreaChecks (PreciseCoordinate coords, Integer depth, 
             double startSlope, double endSlope) {
         handlingMap.getTile(coords).doFOVaction(origin, depth == 1); 
-                  
+        
         boolean thisTileIsBlocking  = handlingMap.getTile(coords).hasBlockingObject(); 
         boolean priorTileIsBlocking = getPriorTile(coords).hasBlockingObject(); 
         
         double newStartSlope = startSlope;
-          
-        if(thisTileIsBlocking && !priorTileIsBlocking) {     
-            PreciseCoordinate topLeft = new PreciseCoordinate(coords.getX()+NEWENDSLOPE_CORNER[0][octant], coords.getY()+NEWENDSLOPE_CORNER[1][octant]);
-            double newEndSlope = getCurrentSlope(topLeft);
+        
+        PreciseCoordinate endingCorner  = new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant]);
+        PreciseCoordinate leadingCorner = new PreciseCoordinate(coords.getX() + NEWENDSLOPE_CORNER[0][octant], coords.getY() + NEWENDSLOPE_CORNER[1][octant]);
+        PreciseCoordinate bottomRight = new PreciseCoordinate(coords.getX() - NEWSTARTSLOPE_CORNER[0][octant], coords.getY() - NEWSTARTSLOPE_CORNER[1][octant]);
+        
+//        System.out.println("endingCorner:" + endingCorner);
+//        System.out.println("coords:" + coords + "################################################");
+//        System.out.println("endslope: " + endSlope);
+//        System.out.println("bottomRight: " + bottomRight + ", slopeTo = " + getCurrentSlope(bottomRight));
+        
+        if (!thisTileIsBlocking && priorTileIsBlocking){
+//            System.out.println("1");
+            newStartSlope = slopeWRTQuadrant(coords.getX() + NEWSTARTSLOPE_CORNER[0][octant],coords.getY() + NEWSTARTSLOPE_CORNER[1][octant], origin.getX(),origin.getY());
+        }
+        if(thisTileIsBlocking && !priorTileIsBlocking) {              
+//            System.out.println("2");
+            double newEndSlope = getCurrentSlope(leadingCorner);
             if (newEndSlope <= START_STARTSLOPE) {
                 scanLine(depth + 1, startSlope, newEndSlope);
             }     
         }
-        else if (getCurrentSlope(coords) <= endSlope && !thisTileIsBlocking && priorTileIsBlocking) {
-            PreciseCoordinate topRight = new PreciseCoordinate(coords.getX()+NEWSTARTSLOPE_CORNER[0][octant], coords.getY()+NEWSTARTSLOPE_CORNER[1][octant]);
-            scanLine(depth + 1, getCurrentSlope(topRight), getCurrentSlope(coords));
+        else if (getCurrentSlope(bottomRight) <= endSlope && !thisTileIsBlocking) {
+//            System.out.println("3");
+            //Math.max(getCurrentSlope(endingCorner), 0)
+            scanLine(depth + 1, newStartSlope, endSlope);
         }
-        else if (getCurrentSlope(coords) <= endSlope ) {
-            scanLine(depth + 1, startSlope, getCurrentSlope(coords));
-        }
-
-        if (!thisTileIsBlocking && priorTileIsBlocking){
-            PreciseCoordinate topRight = new PreciseCoordinate(coords.getX()+NEWSTARTSLOPE_CORNER[0][octant], coords.getY()+NEWSTARTSLOPE_CORNER[1][octant]);
-            newStartSlope = getCurrentSlope(topRight);
-        }  
+//        System.out.println("!");
+        
         return newStartSlope;
     }
     
     double getCurrentSlope(PreciseCoordinate coords) {
-        double currentSlope;
-            
+        double currentSlope;    
         //if the current octant is in Quadrants I or III, use the standard slope
         currentSlope = slopeWRTQuadrant(coords.getX(), coords.getY(),(double)origin.getX()+0.5,(double)origin.getY()+0.5);
-
+//        System.out.println("slope = " + currentSlope + "," + coords);   
         return currentSlope;
     }
     
@@ -128,9 +150,12 @@ public class FieldOfViewScan {
         return Math.sqrt(Math.pow((coords.getX()-originX),2) + Math.pow((coords.getY()-originY),2));
     }
         
-    //always returns a positive, non-infinite number
+    //always returns a non-infinite number
+    //if called by getCurrentSlope->slopeWRTQuadrant, x1 and y1 will refer to the target coordinates, and x2 and y2 will
+    //refer to the origin coordinates
     double getSlope(double x1, double y1, double x2, double y2, int neg) {  
         if(x1-x2 != 0){
+            //System.out.println(neg  + "*(" + y1 + "-" + y2 + ")/(" + x1 + "-" + x2 +")");
             return neg * (y1-y2)/(x1-x2);
         }
         else {

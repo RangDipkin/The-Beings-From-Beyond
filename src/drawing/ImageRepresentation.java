@@ -115,7 +115,7 @@ public class ImageRepresentation {
         
         static ImageRepresentation[][] bmpToImRep(BufferedImage inBMP){
             ImageRepresentation[][] finishedImRepMatrix = new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];
-            if((inBMP.getWidth()!=MainFrame.WIDTH_IN_SLOTS)||(inBMP.getHeight()!=MainFrame.HEIGHT_IN_SLOTS)){
+            if((inBMP.getWidth() > MainFrame.WIDTH_IN_SLOTS)||(inBMP.getHeight() > MainFrame.HEIGHT_IN_SLOTS)){
                 System.out.println("Yo, something's wrong with the title screen size.");
             }
                     
