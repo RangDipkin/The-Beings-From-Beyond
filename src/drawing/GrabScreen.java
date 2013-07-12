@@ -1,6 +1,27 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * @author Travis
+ * 
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ * 
+ * GrabScreen.java
+ * 
+ * A GrabScreen is displayed when the player attempts to grab an item when there
+ * is more than one valid item to be grabbed (in the case where there is only
+ * one valid item to be grabbed, the item is simply grabbed
+ * 
  */
 package drawing;
 
@@ -13,10 +34,6 @@ import objects.GameMap;
 import objects.GameObject;
 import objects.Tile;
 
-/**
- *
- * @author Travis
- */
 public class GrabScreen extends MainScreen{
     ChoiceList grabbableItemGUIOverlay = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 0, 0);
     

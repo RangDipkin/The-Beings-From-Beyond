@@ -1,6 +1,27 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * @author Travis
+ * 
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+ * InspectScreen.java
+ * 
+ * An InspectScreen is displayed when the player presses the key associated with
+ * inspection (by default 'i')
+ * 
+ * This screen includes two ChoiceLists, both a map overlay and a camera-linked 
+ * display of all the items in the inspected Tile
  */
 package drawing;
 
@@ -13,10 +34,6 @@ import objects.GameMap;
 import objects.GameObject;
 import objects.Tile;
 
-/**
- *
- * @author Travis
- */
 public class InspectScreen extends MainScreen {   
     ChoiceList inspectedTileDisplay;  
     ChoiceList invalidTileDisplay;
@@ -38,6 +55,7 @@ public class InspectScreen extends MainScreen {
         displayInspectedTile(handledMap.getTile(targetStartX, targetStartY));
     }
     
+    @Override
     public void handleEvents(AWTEvent e) {
             if(e.getID() == KeyEvent.KEY_PRESSED) {
                 KeyEvent keyEvent = (KeyEvent) e;
@@ -111,14 +129,6 @@ public class InspectScreen extends MainScreen {
         }
     }
     
-//    void endInspectMode() {
-//        activeGUIElements.remove(trackedObject);
-//        cleanDisplay();
-//         
-//        trackedObject = handledMap.mainChar;
-//        stepScreenBackwards();
-//    }
-    
     GameObject getInspectedObject() {
         return inspectedTileDisplay.getCurrentLogicalObject();
     }
@@ -139,7 +149,13 @@ public class InspectScreen extends MainScreen {
         inspectedTileDisplay.clearLogicalObjectMap();
     }
     
-    void displayInspectedTile(Tile inspectedTile) {
+    /*
+     * If the currently inspected tile is not currently visible, this method 
+     * displays a relevant message.  Otherwise this method will add all items in
+     * the inspected tile to the activeGUIElements, which is displayed by 
+     * Screen.overlayGUI
+     */
+    private void displayInspectedTile(Tile inspectedTile) {
         if (inspectedTile.isVisible()){
             inspectedTileDisplay = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 0, 0);
             for(int i = 0; i < inspectedTile.size(); i++) {

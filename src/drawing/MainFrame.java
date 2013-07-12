@@ -1,3 +1,24 @@
+/* 
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ * 
+ * 
+ * MainFrame.java
+ * 
+ * This is the main class of this project.  It handles all of the lowest level 
+ * methods, including creating the frame and drawing onto it
+ */
 package drawing;
 
 import event.EventProcessable;
@@ -30,7 +51,8 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 	final static int FRAME_HEIGHT = CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS;
         final static int IMAGE_GRID_WIDTH = 16;
 
-	static BooleanImage[][] charsheet;
+	static BooleanImage[][] charSheet;
+        final static boolean charSheetHelp = false;
         Graphics contentGraphics;
         
 	static Screen currentScreen;
@@ -84,6 +106,10 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 	}
 	
 	public static void main(String[] args) {
+            if(charSheetHelp) {
+                charSheetHelper();
+            }
+            
             loadCharSheet();
 
             loadTitleScreen();
@@ -105,25 +131,53 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             //TODO: Name generator
             //TODO: LOS + throwing
             //TODO: allow the player to force screen movement
+            //TODO: building generation
             while(true) {
                 eventProcessor.processEventList();
                 forceRender();
             }
 	}
         
+        static void charSheetHelper() {
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    System.out.print(((16*i)+j));
+                    if(((16*i)+j) > 99) {
+                        System.out.print(" ");
+                    }
+                    else if (((16*i)+j) < 10) {
+                        System.out.print("   ");
+                    }
+                    else {
+                        System.out.print("  ");
+                    }
+                }
+                System.out.println();
+            }
+        }
+        
+        /*
+         * Loads the character sheet graphics, and then turns it into a two-
+         * dimensional array of booleans for quick drawing, which is stored in 
+         * charSheet
+         */
         static void loadCharSheet() {
             //read in the character sheet for drawing stuff
             BufferedImage rawCharSheet = null;
             try {
                     rawCharSheet = (BufferedImage)ImageIO.read(new File("src/drawing/charsheet.bmp"));
             }  catch (IOException e) {
-                System.out.println("Failed loading image!");
+                System.out.println("Failed loading the character sheet!");
                 System.exit(0);
             }
             //separates the character sheet into 256 individual tiles
-            charsheet = separateSheet(rawCharSheet);
+            charSheet = separateSheet(rawCharSheet);
         }
         
+        /*
+         * Reads a title screen image as a bitmap image, then creates the main
+         * frame, and finally creates a new title screen
+         */
         static void loadTitleScreen() {
             BufferedImage titleScreen = null;
             try {
@@ -142,12 +196,18 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             currentScreen = previousScreen = grandparentScreen = new TitleScreen(translatedTitles);
         }
         
+        /*
+         * sends a render command to whatever the current screen is
+         */
         public static void forceRender(){
             Graphics contentGraphics = myPane.getGraphics();
             currentScreen.render(contentGraphics);
             contentGraphics.dispose();
         }
         
+        /*
+         * creates a game map of random size and populates it
+         */
         static void initializeMap() {
             Random dice = new Random();
             int x = dice.nextInt(200);
@@ -215,6 +275,9 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             return rosetta;
         }
         
+        /*
+         * turns a charsheet into 256 separate boolean images for faster drawing
+         */
         static BooleanImage[][] separateSheet(BufferedImage srcSheet) {
             BooleanImage[][] booleanArray = new BooleanImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];  
             

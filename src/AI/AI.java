@@ -1,3 +1,21 @@
+/*
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+   * AI.java
+   * Contains an A* pathfinding algorithm used for traversing
+*/
 package AI;
 
 import java.util.ArrayList;
@@ -6,10 +24,10 @@ import java.util.Stack;
 import objects.GameMap;
 import objects.Tile;
 
-
 public class AI {
     final static double PLACEHOLDER_MOVE_COST = 1;
     
+    //returns a stack of Tiles representing the shortest path from one Tile to another
     public static Stack AStar(Tile start, Tile goal, GameMap map) {                  
         //The set of nodes already evaluated
         ArrayList<Tile> closedSet = new ArrayList<>();
@@ -59,7 +77,7 @@ public class AI {
     //no longer used, but is a nifty tool
     //TODO: use this to visualize the lightmap?
     private static void opensetVis(PriorityQueue openSet) {
-        ArrayList<Tile> bin = new ArrayList<Tile>();
+        ArrayList<Tile> bin = new ArrayList<>();
         for(int i = 0; i < openSet.size(); i++){ 
             Tile curr = (Tile)openSet.poll();
             System.out.println(" " + curr.getG() + "+" + curr.getH() + " ");

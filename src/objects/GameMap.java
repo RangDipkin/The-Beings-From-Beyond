@@ -1,19 +1,36 @@
+/*
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+   * GameMap.java
+   * 
+   * The GameMap is a logical representation of a group of objects (objectList)
+   * arranged on a two-dimensional array of Tiles (map)
+*/
 package objects;
 
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
-import drawing.MainFrame;
+import generation.Building;
 import java.util.ArrayList;
 import java.util.Random;
 import lighting.FieldOfViewScan;
 import lighting.PreciseCoordinate;
 
-/*
- *
-*/
 public class GameMap {
 	private Tile[][] map;
-	ArrayList<GameObject> objectList = new ArrayList<>();
+	public ArrayList<GameObject> objectList = new ArrayList<>();
 	ArrayList<GameObject> NPCList = new ArrayList<>();
 	
 	public int width, height;
@@ -23,6 +40,8 @@ public class GameMap {
         ArrayList<GameObject> updatedObjs = new ArrayList<>(); 
         
         ArrayList<Tile> visibleTiles = new ArrayList<>();
+        
+        int numberOfInjectedObjects = 0;
 
 	public GameMap(int width, int height) {
             this.width  = width;
@@ -38,45 +57,32 @@ public class GameMap {
             }
 	}
 	
-	public void populate() {            
-            //fill the game map
-            for(int i = 0; i < map.length ; i++) {
-                for(int j = 0; j < map[i].length ; j++) {
-                    ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
-                    ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);
-                    ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
-                    
-                    if(i == 0 || i == width-1 || j == 0 || j == height-1  /*||(i%4==0 && j%4==0)*/ ) {
-                        addObject(new GameObject("White Wall", whiteWall, new Coordinate(i, j), true, false, 1, this));
-                    }
-                    else if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-                        addObject(new GameObject("Black Tiled Floor", tileFloor1, new Coordinate(i, j), false, false, 0, this));
-                    }
-                    else {
-                        addObject(new GameObject("Tiled Floor", tileFloor2, new Coordinate(i, j), false, false, 0, this));
-                    }
- 
-                }
-            }
+	/*
+         * adds things to the map other than the physical walls and floors of a
+         * building
+         */
+        public void populate() {            
+            Building testLibrary = new Building(this);
             
-            for(int i = 0; i < (width * height)/10; i++) {
-                objectWithRandomPos("Pillar", new ImageRepresentation(ImageRepresentation.WHITE, 7), true, false, 1, this);
-            }
-            
-            mainChar = objectWithRandomPos("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, false, 2, this);
-            addObject(mainChar);
+            mainChar = new GameObject("Test Player", new ImageRepresentation(ImageRepresentation.WHITE, 64), false, false, 2, this);
+            addObject(mainChar, randomValidCoord());
             new FieldOfViewScan(mainChar, 250);
 
             for(int i = 0; i < 10; i++) {
-                GameObject greenSmiley = objectWithRandomPos("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, false, 1, this);
+                GameObject greenSmiley = new GameObject("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, false, 1, this);
                 NPCList.add(greenSmiley);
-                addObject(greenSmiley);
+                addObject(greenSmiley, randomValidCoord());
             }
             
-            GameObject torch = new GameObject("Torch", new ImageRepresentation(ImageRepresentation.BROWN, 47), mainChar.dasInventory, false, true, 1, this);
-            GameObject topHat = new GameObject("Top hat", new ImageRepresentation(ImageRepresentation.BLACK, 254), mainChar.dasInventory, false, true, 1, this);
+            GameObject torch = new GameObject("Torch", new ImageRepresentation(ImageRepresentation.BROWN, 47), false, true, 1, this);
+            torch.setLocation(mainChar.myInventory);
+            GameObject topHat = new GameObject("Top hat", new ImageRepresentation(ImageRepresentation.BLACK, 254), false, true, 1, this);
+            topHat.setLocation(mainChar.myInventory);
         }
         
+        /*
+         * moves the game timer forward one step
+         */
         public void stepTime(GameObject origin) {
             clearVisibility();
             moveNPCs();
@@ -85,11 +91,19 @@ public class GameMap {
             new FieldOfViewScan(origin, 250);
         }
         
-        GameObject objectWithRandomPos(String name, ImageRepresentation imageCell, boolean blocking, boolean grabbable ,int precedence, GameMap handlingMap) {
+        /*
+         * rolls two random numbers with valid position and makes a Coordinate
+         * object with those numbers
+         */
+        public Coordinate randomValidCoord() {
             int[] coords = validPositionRolls();
-            return new GameObject(name, imageCell, new Coordinate(coords[0], coords[1]), blocking, grabbable, precedence, handlingMap);    
+            return new Coordinate(coords[0],coords[1]);
         }
         
+        /*
+         * rolls two numbers, checks if those numbers lead to an invalid
+         * position, and rerolls if it is invalid.
+         */
         public int[] validPositionRolls() {
             int[] coords = new int[2];
 
@@ -107,9 +121,15 @@ public class GameMap {
             return coords;
 	}
 	
-	//returns the object in a specific map tile with the smallest precedence
+	/*
+         * returns the object in a specific map tile with the smallest 
+         * precedence
+         */
 	public ImageRepresentation getRepresentation(int x, int y) {	
-            if(!isValidTile(x,y) || !isVisibleTile(x, y)) { 
+            if(!isValidTile(x,y)) { 
+                return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, 88);
+            }
+            else if (!isVisibleTile(x, y)) {
                 return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
             }
             
@@ -120,6 +140,10 @@ public class GameMap {
             return map[x][y].visible;
         }
 	
+        /*
+         * returns the color of the object in the tile with themlowest 
+         * precedence.
+         */
 	int getUnderlyingColor(int x, int y) {
             //set the minimum to the first element in the tile
             GameObject floor = map[x][y].get(0);
@@ -161,12 +185,16 @@ public class GameMap {
             visibleTiles = new ArrayList<>();
         }
 	
-	void addObject(GameObject actor) {
+	public void addObject(GameObject actor, Location dasLocation) {
+            actor.setLocation(dasLocation);
+            
             objectList.add(actor);
 	}
         
         void injectObject(GameObject actor, int x, int y) {
+            //System.out.println("injecting object" + numberOfInjectedObjects);
             map[x][y].add(actor);
+            //numberOfInjectedObjects++;
         }
 	
 	public Tile getTile(int x, int y) {
@@ -219,18 +247,5 @@ public class GameMap {
                     curr.setParent(null);
 		}
             }
-        }
-        
-        void visualizeFVals() {
-            System.out.println("_______________________________________");
-            for(int i = 0; i < MainFrame.HEIGHT_IN_SLOTS; i++) {
-		for(int j = 0; j < MainFrame.WIDTH_IN_SLOTS;j++) {
-                    Tile curr = getTile(j,i);
-                    System.out.print(" " + curr.getG() + "+" + curr.getH() + " ");
-                }
-                
-                System.out.println(",");
-            }
-            System.out.println("_______________________________________");
-        }        
+        }       
 }

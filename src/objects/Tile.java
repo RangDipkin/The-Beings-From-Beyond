@@ -1,10 +1,24 @@
-package objects;
-
 /*
- * Represents a physical representation (physical in the game world) of a single space in the game grid
- * (may not be necessary)
-*/
+ * Copyright 2013 Travis Pressler
 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+   * Tile.java
+   * 
+   * Represents a a single cell of the game map which contains one or more game
+   * objects.
+ */
+package objects;
 
 import AI.MovementDesire;
 import drawing.ImageRepresentation;
@@ -94,26 +108,26 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
 	public int getY() {return y;}
 	
    
+        @Override
 	public int[] getCoords(Tile origin) {
 		int[] coords = {getX(), getY()};
 		return coords;
 	}
 	
-	
-	
-    @Override
+        @Override
 	public String toString() {
                 String output = "[";
 		
-		for(GameObject go : this)
+		for(GameObject go : this) {
 			output = output + go.getName() + " ";
+                }
 		
 		output += "](" + getX() + "," + getY() + ")";
 		
 		return output;
 	}
 	
-	//this whole method is probably really inefficient and dumb...oh well.
+	//this whole method is probably really inefficient and dumb, oh well.
 	public ArrayList<Tile> getNeighboringNodes() {
 		ArrayList<Tile> neighbors = new ArrayList<>();
 		int originX = this.getX();
@@ -133,50 +147,58 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
                 //add left-top node if possible
                 if(validLeft && validTop) {
                     currTile = handlingMap.getTile(left, top);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add top node if possible
                 if(validTop) {
                     currTile = handlingMap.getTile(originX, top);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add right-top node if possible
                 if(validRight && validTop){
                     currTile = handlingMap.getTile(right, top);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add right node if possible
                 if(validRight) {
                     currTile = handlingMap.getTile(right, originY);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add right-bottom node if possible
                 if(validRight && validBottom) {
                     currTile = handlingMap.getTile(right, bottom);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add bottom node if possible
                 if(validBottom) {
                     currTile = handlingMap.getTile(originX, bottom);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add left-bottom node if possible
                 if(validLeft && validBottom) {
                     currTile = handlingMap.getTile(left, bottom);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
 		//add left node if possible
                 if(validLeft){
                     currTile = handlingMap.getTile(left, originY);
-                    if(!currTile.hasBlockingObject())
-                            neighbors.add(currTile);
+                    if(!currTile.hasBlockingObject()) {
+                        neighbors.add(currTile);
+                    }
                 }
                 
                 return neighbors;
@@ -191,13 +213,17 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         }
         
     @Override
-	public int compareTo(Tile other) {
-		if (this.fScore > other.fScore)
-			return 1;
-		else if (this.fScore < other.fScore)
-			return -1;
-		else return 0;
-	}
+    public int compareTo(Tile other) {
+        if (this.fScore > other.fScore) {
+            return 1;
+        }
+        else if (this.fScore < other.fScore) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
     
     double getUpperSlope(Tile other) {
         double startX = this.getX() + 0.5;
@@ -240,6 +266,13 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
         }
     } 
     
+    /*
+     * Calculates the final graphic which should be outputted by the tile for a
+     * given render command. Grabs the character and foreground color of the 
+     * highest-precedence object in the tile, and grabs the background color of 
+     * the lowest-precedence object in the tile. After grabbing these three 
+     * attributes, it combines them and outputs a final graphic.
+     */
     ImageRepresentation getFinalOutput() {  
         GameObject min = get(0);
         GameObject max = get(0);

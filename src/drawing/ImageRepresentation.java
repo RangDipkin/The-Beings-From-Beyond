@@ -1,8 +1,28 @@
-package drawing;
-
 /*
- *   make sure to only render 2 frames at any given moment, and destroy the oldest one after you create it
-*/
+ *  Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ * 
+ *  ImageRepresentation.java
+ * 
+ *  An ImageRepresentation is the visual representation which occupies one of 
+ *  the game window's cells
+ * 
+ *  In other words, an ImageRepresentation represents all sprites and other 
+ *  graphics
+ * 
+ */
+package drawing;
 
 import java.awt.image.BufferedImage;
 
@@ -15,7 +35,6 @@ public class ImageRepresentation {
 	int[][] RGBMatrix;
 	BooleanImage pixels;
 	
-	//maybe someday find out if java's Colors are these values...
 	final public static int BLACK              = 0xFF000000;
 	final public static int BLUE               = 0xFF0000AA;
 	final public static int GREEN              = 0xFF00AA00;
@@ -35,7 +54,11 @@ public class ImageRepresentation {
 	final public static int CONTROL_COLOR 	   = 0xFF33236B;
 	final static public int CONTROL_FORECOLOR  = WHITE;
 	
-	public ImageRepresentation(int foreColor, int backColor, int rawImgChar) {
+	/*
+         *  An ImageRepresentation where the foreColor and backColor are 
+         *  explicitly defined
+         */
+        public ImageRepresentation(int foreColor, int backColor, int rawImgChar) {
             this.foreColor = foreColor;
             this.backColor = backColor;             
             this.rawImgChar = rawImgChar;
@@ -45,11 +68,16 @@ public class ImageRepresentation {
             int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
             int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
 
-            pixels = MainFrame.charsheet[srcPosX][srcPosY];
+            pixels = MainFrame.charSheet[srcPosX][srcPosY];
 
             updateRGBMatrix();  
 	}
 	
+        /*
+         * An ImageRepresentation where only the foreColor is explicitly 
+         * defined, the backColor is likely to be implied by the background 
+         * color of the floor below it
+         */
 	public ImageRepresentation(int foreColor, int rawImgChar) {
             this.foreColor = foreColor;
             this.backColor = foreColor;
@@ -60,7 +88,7 @@ public class ImageRepresentation {
             int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
             int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
 
-            pixels = MainFrame.charsheet[srcPosX][srcPosY];
+            pixels = MainFrame.charSheet[srcPosX][srcPosY];
             
             updateRGBMatrix();  
 	}
@@ -76,10 +104,10 @@ public class ImageRepresentation {
             int srcPosX = rawImgChar % MainFrame.IMAGE_GRID_WIDTH;
             int srcPosY = rawImgChar / MainFrame.IMAGE_GRID_WIDTH;
 		
-            pixels = MainFrame.charsheet[srcPosX][srcPosY];
+            pixels = MainFrame.charSheet[srcPosX][srcPosY];
         }
 	
-	void updateRGBMatrix() {    
+	private void updateRGBMatrix() {    
             for(int i = 0; i < pixels.getWidth(); i++) {  
                 for(int j = 0; j < pixels.getHeight(); j++) {     
                     if(pixels.isForeground(i, j)) {  
@@ -113,6 +141,12 @@ public class ImageRepresentation {
             return RGBMatrix;
         }
         
+        /*
+         * Nifty tool for translating a bitmap image into a two-dimensional 
+         * array of ImageRepresentations, where the background color of every
+         * ImageRepresentation is grabbed from the corresponding pixel of the 
+         * bitmap image
+         */
         static ImageRepresentation[][] bmpToImRep(BufferedImage inBMP){
             ImageRepresentation[][] finishedImRepMatrix = new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];
             if((inBMP.getWidth() > MainFrame.WIDTH_IN_SLOTS)||(inBMP.getHeight() > MainFrame.HEIGHT_IN_SLOTS)){

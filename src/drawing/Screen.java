@@ -1,3 +1,23 @@
+/*
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+   * Screen.java
+   * 
+   * A screen is a logical representation of a series of graphical elements and 
+   * corresponding control instructions
+ */
 package drawing;
 
 import GUI.ChoiceList;
@@ -13,6 +33,9 @@ abstract class Screen {
     
     BufferedImage currFrame;
     
+    /*
+     * draws the current screen elements to the main frame
+     */
     public void render(Graphics g) { 
         mainImRepMatrix = new ImageRepresentation[MainFrame.WIDTH_IN_SLOTS][MainFrame.HEIGHT_IN_SLOTS];           
         
@@ -32,6 +55,10 @@ abstract class Screen {
         
     public void handleEvents(AWTEvent e) { }
 
+    /*
+     * gets all finalized image representations and copies their colors onto the
+     * main frame
+     */
     void translateToRGB() {
         int[][] currGrid;
         for(int i = 0; i < mainImRepMatrix.length ; i++) {
@@ -48,6 +75,10 @@ abstract class Screen {
         }
     }
 
+    /*
+     * gets all GUI elements (both screen and map relative) and overrides the 
+     * game element representations which are overlaid 
+     */
     void overlayGUI() {
         for(int i = 0; i < activeGUIElements.size(); i++){
             ChoiceList currGUIElement = activeGUIElements.get(i);
@@ -69,6 +100,9 @@ abstract class Screen {
         }
     }
 
+    /*
+     * load all cells into the main image representation matrix
+     */
     private void prepareReps() {
         for(int i = 0; i < mainImRepMatrix.length; i++) {
             for(int j = 0; j < mainImRepMatrix[i].length; j++) {
@@ -81,12 +115,20 @@ abstract class Screen {
         return new ImageRepresentation(63);
     }
     
+    /*
+     * used when creating a new screen to make sure that the user can return to 
+     * the screen they were just at
+     */
     void stepScreenForwards(Screen newScreen) {
         MainFrame.grandparentScreen = MainFrame.previousScreen;
         MainFrame.previousScreen = MainFrame.currentScreen;
         MainFrame.currentScreen = newScreen;
     }
     
+    /*
+     * used when exiting a screen to make sure that all pointers decrement by 
+     * one
+     */
     void stepScreenBackwards() {
         MainFrame.currentScreen  = MainFrame.previousScreen;
         MainFrame.previousScreen = MainFrame.grandparentScreen;

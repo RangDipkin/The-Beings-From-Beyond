@@ -1,11 +1,30 @@
+/*
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+   * TitleScreen.java
+   * 
+   * The title screen has a graphic loaded from title01.bmp, along with a list 
+   * of options (New game, options, exit game), and a version number specified
+   * in MainFrame.VERSION_NUMBER
+ */
 package drawing;
 
 import GUI.ChoiceList;
 import GUI.GUIText;
 import java.awt.AWTEvent;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 public class TitleScreen extends Screen {
     public static ImageRepresentation[][] titlePixels;
@@ -44,44 +63,7 @@ public class TitleScreen extends Screen {
         
         activeGUIElements.add(MainMenuChoices);
         activeGUIElements.add(lowerRightCorner);
-    }
-    
-//    /**
-//     *
-//     * @param e
-//     */
-//    @Override
-//	public void render(Graphics g) {
-//            int[][] currGrid = new int[MainFrame.CHAR_PIXEL_WIDTH][MainFrame.CHAR_PIXEL_HEIGHT]; 
-//            
-//            MainMenuChoices.displayOnto(titlePixels);
-//             
-//            BufferedImage currFrame = new BufferedImage(MainFrame.getDrawAreaWidth(), MainFrame.getDrawAreaHeight(), BufferedImage.TYPE_INT_ARGB);   
-//            
-//            int defaultBackColor = titlePixels[0][0].getBackColor();
-//            
-//            for(int i = 0; i < MainFrame.WIDTH_IN_SLOTS ; i++) {
-//                for(int j = 0; j < MainFrame.HEIGHT_IN_SLOTS ; j++) {					
-//                    //if the current cell is out of the bounds of the titleScreen
-//                    if(i < xOffset || i >= MainFrame.WIDTH_IN_SLOTS - xOffset - xRemainder || j < yOffset || j >= MainFrame.HEIGHT_IN_SLOTS - yOffset - yRemainder) {
-//                        ImageRepresentation defaultBackTile = new ImageRepresentation(ImageRepresentation.WHITE, defaultBackColor, 0);
-//                        currGrid = defaultBackTile.getRGBMatrix();
-//                    }
-//                    else {
-//                        currGrid = titlePixels[i-xOffset][j-yOffset].getRGBMatrix();
-//                    }
-//
-//                    //iterate through currGrid...add all pixels to frame[][]
-//                    for(int k = 0; k < currGrid.length; k++) {
-//                        for (int m = 0; m < currGrid[k].length; m++) {
-//                             currFrame.setRGB(i * MainFrame.CHAR_PIXEL_WIDTH + k, j * MainFrame.CHAR_PIXEL_HEIGHT + m, currGrid[k][m]);
-//                        }
-//                    }
-//                }
-//            }
-//                  
-//            g.drawImage(currFrame, 0, 0, MainFrame.myPane);	
-//        }
+    }      
     
     @Override
     ImageRepresentation getCurrentCell(int i, int j) {

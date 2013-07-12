@@ -1,6 +1,27 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * @author Travis
+ * 
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   * 
+ * FieldOfViewScan.java
+ * 
+ * When a Field of View scan is initiated, it does a recursive shadowcasting 
+ * search across all eight octants.  A detailed description of the technique 
+ * used can be found here:
+ *   http://roguebasin.roguelikedevelopment.org/index.php?title=FOV_using_recursive_shadowcasting
  */
 package lighting;
 
@@ -8,10 +29,6 @@ import objects.GameMap;
 import objects.GameObject;
 import objects.Tile;
 
-/**
- *
- * @author Travis
- */
 public class FieldOfViewScan {  
     static final int START_DEPTH = 1;
     static final int START_STARTSLOPE = 1;
@@ -74,7 +91,13 @@ public class FieldOfViewScan {
     }
 
     
-    void scanLine(int depth, double startSlope, double endSlope) {      
+    /*
+     * Traverses across a line of tiles (can be horizontal or vertical 
+     * depending on the octant), and calls visibleAreaChecks on all tiles 
+     * visited.  The length of the line visited is determined by where the 
+     * starting slope angle and ending slope angle are situated.
+     */
+    private void scanLine(int depth, double startSlope, double endSlope) {      
         double bonusX = (Math.abs(BONUSES[0][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[0][octant]) : depth*BONUSES[0][octant];
         double bonusY = (Math.abs(BONUSES[1][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[1][octant]) : depth*BONUSES[1][octant];    
         double newStartSlope = startSlope;
@@ -97,6 +120,19 @@ public class FieldOfViewScan {
         }  
     }
     
+    /*
+     * Sets the tile specified by coords to be visible and checks to see if any
+     * other modifications need to be done, for instance:
+     *   1.If the current tile is after the end of a series of vision-blocking 
+     *     game elements, the start slope of the next scanLine is set to be the 
+     *     point which grazes the point of the blocking series closest to the 
+     *     zero-slope and farthest from the origin coordinate.
+     *   2.If the current tile is the beginning of a series of vision-blocking
+     *     game elements, a new scan is begun at a depth of one deeper and with 
+     *     an endslope which is the point grazing the vision-blocking element 
+     *     closest to both the one-slope and the origin coordinate.
+     *   3.If the slope has completed, scan one tile deeper.
+     */
     private double visibleAreaChecks (PreciseCoordinate coords, Integer depth, 
             double startSlope, double endSlope) {
         handlingMap.getTile(coords).doFOVaction(origin, depth == 1); 

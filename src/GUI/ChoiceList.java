@@ -1,7 +1,29 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * @author Travis
+ * 
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ * 
+ * ChoiceList.java
+ * 
+ * A ChoiceList is an array of GUIText elements with added functionality for tracking the currently selected item in the list
+ * 
+ * In addition, a ChoiceList is also used for map overlays (change in future? maybe make choiceList abstract??) such as the inspection cursor
+ * 
  */
+
 package GUI;
 
 import AI.MovementDesire;
@@ -15,10 +37,6 @@ import objects.GameObject;
 import objects.Tile;
 import utils.Translator;
 
-/**
- *
- * @author Travis
- */
 public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
     int currentChoiceIndex = 0;
     
@@ -59,7 +77,7 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         this.y = y;
     }
     
-    //Map Overlay constructors
+    //Map Overlay constructors  ========================================================================
     public ChoiceList (int inInactive, int x, int y, GameMap inOverlaidMap) {
         inactiveColor = inInactive;
         activeColor = CONTROL_ACTIVE_COLOR;
@@ -77,12 +95,16 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
         mapOverlay = true;
         overlaidMap = inOverlaidMap;
     }
+    //==================================================================================================
     
-    public void add(GUIText inText, GameObject inObj) {
-        add(inText);
-        logicalObjectMap.put(inText, inObj);
+    //adds a GUIText element along with its corresponding GameObject to the ChoiceList
+    //for example, add a new GUIText with the text "Torch" along with a specific GameObject with the name Torch
+    public void add(GUIText text, GameObject obj) {
+        add(text);
+        logicalObjectMap.put(text, obj);
     }
     
+    //returns the logical object which is referred to by the GUIText which is the current choice
     public GameObject getCurrentLogicalObject() {
         return logicalObjectMap.get(getCurrentChoice());
     }
@@ -202,6 +224,7 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
     }
 
     @Override
+    //moves the mapOverlay in the direction which the MovementDesire indicates
     public void resolveImmediateDesire(MovementDesire curr) {
         if(overlaidMap == null) {
             System.out.println("yo, you shouldn't be calling resolveImmediateDesire");

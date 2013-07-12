@@ -1,6 +1,25 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * @author Travis
+ * 
+ * Copyright 2013 Travis Pressler
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ * 
+ * InventoryScreen.java
+ * 
+ * An inventory screen is displayed when the user presses the inventory key, by
+ * default 'i' when on the main screen
  */
 package drawing;
 
@@ -11,10 +30,6 @@ import java.awt.event.KeyEvent;
 import objects.GameObject;
 import objects.Inventory;
 
-/**
- *
- * @author Travis
- */
 public class InventoryScreen extends Screen {
     ChoiceList inventoryGUI;
     GameObject holdingObject;
@@ -23,7 +38,7 @@ public class InventoryScreen extends Screen {
     
     InventoryScreen(GameObject inHoldingObject) {
         this.holdingObject = inHoldingObject;
-        Inventory myInventory = holdingObject.dasInventory;
+        Inventory myInventory = holdingObject.myInventory;
         inventoryGUI = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR,ChoiceList.DEFAULT_ACTIVE_COLOR, 0,0);
         
         for(int i = 0; i < myInventory.size(); i++){
