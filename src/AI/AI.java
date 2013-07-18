@@ -37,7 +37,7 @@ public class AI {
         openSet.add(start);
 
         Tile current;
-        while (openSet.peek() != goal) {
+        while (openSet.peek() != goal && openSet.peek() != null) {
             current = openSet.poll();
             closedSet.add(current);
             for(Tile neighbor : current.getNeighboringNodes()) {

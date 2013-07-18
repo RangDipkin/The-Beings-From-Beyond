@@ -200,7 +200,6 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
                         neighbors.add(currTile);
                     }
                 }
-                
                 return neighbors;
 	}
         

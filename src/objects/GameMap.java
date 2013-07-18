@@ -127,7 +127,7 @@ public class GameMap {
          */
 	public ImageRepresentation getRepresentation(int x, int y) {	
             if(!isValidTile(x,y)) { 
-                return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, 88);
+                return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, 250);
             }
             else if (!isVisibleTile(x, y)) {
                 return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);

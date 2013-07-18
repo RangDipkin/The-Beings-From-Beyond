@@ -40,19 +40,28 @@ public class Coordinate implements Location{
        targetObject.handlingMap.injectObject(targetObject, x, y);
     }
     
+    @Override
     public int getX() {
         return x;
     }
     
+    @Override
     public int getY() {
         return y;
     }
     
+    @Override
     public void setX(int newX) {
         x = newX;
     }
     
+    @Override
     public void setY(int newY) {
         y = newY;
+    }
+    
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
 }

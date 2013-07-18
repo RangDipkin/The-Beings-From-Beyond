@@ -43,22 +43,21 @@ public class Building {
      * creates a wall and floors
      */
     private void createStructuralElements() {
+        ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
+        GameObject whiteWallObject = new GameObject("White Wall", whiteWall, true, false, 1, handledMap); 
+        createRectangularRoom(new Coordinate(0,0),new Coordinate(10, 0),new Coordinate(0,10),new Coordinate(10, 10),whiteWallObject);
+        
         for(int i = 0; i < handledMap.width ; i++) {
             for(int j = 0; j < handledMap.height ; j++) {
                 ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
                 ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);
-                ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
-
-                if(i == 0 || i == handledMap.width-1 || j == 0 || j == handledMap.height-1  /*||(i%4==0 && j%4==0)*/ ) {
-                    handledMap.addObject(new GameObject("White Wall", whiteWall, true, false, 1, handledMap), new Coordinate(i,j));
-                }
-                else if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
+                               
+                if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
                     handledMap.addObject(new GameObject("Black Tiled Floor", tileFloor1, false, false, 0, handledMap), new Coordinate(i, j));
                 }
                 else {
                     handledMap.addObject(new GameObject("Tiled Floor", tileFloor2, false, false, 0, handledMap),new Coordinate(i, j));
                 }
- 
             }
         }
             
@@ -67,11 +66,18 @@ public class Building {
         }
     }
     
-    void createRectangularRoom(Coordinate topLeft, Coordinate bottomRight, GameObject wallType) {
-        
+    void createRectangularRoom(Coordinate topLeft, Coordinate topRight, Coordinate bottomLeft, Coordinate bottomRight, GameObject wallType) {
+        //create the top wall
+        createLineWall(topLeft,topRight,wallType);
+        //create the left wall
+        createLineWall(topLeft,bottomLeft,wallType);
+        //create the right wall
+        createLineWall(topRight,bottomRight,wallType);
+        //create the bottomwall
+        createLineWall(bottomLeft,bottomRight,wallType);
     }
     
-    void createLineWall(Coordinate begin, Coordinate end, GameObject wallType) {
+    void createLineWall(Coordinate begin, Coordinate end, GameObject wallType) {        
         if((begin.getX() != end.getX()) && (end.getY() != end.getY())) {
             System.out.println("createLineWall does not currently support diagonal walls");
         }
@@ -84,19 +90,36 @@ public class Building {
     }
     
     void createVerticalWall(Coordinate begin, Coordinate end, GameObject wallType) {
+        System.out.println("creating a vertical wall from " + begin + " to " + end);
         int x = begin.getX();
         int currentY = begin.getY();
         
-        while(currentY != end.getY()) {
+        while(currentY < end.getY()) {
             //Copy wallType in order to avoid pointing issues
             GameObject newWall = wallType;
-            handledMap.addObject(newWall, new Coordinate(x, currentY));
+            if(!handledMap.getTile(x,currentY).hasBlockingObject()) {
+                System.out.println(new Coordinate(x,currentY));
+                handledMap.addObject(newWall, new Coordinate(x, currentY));
+            }
             currentY++;
         }
     }
     
     void createHorizontalWall(Coordinate begin, Coordinate end, GameObject wallType) {
+        System.out.println("creating a horizontal wall from " + begin + " to " + end);
+        int y = begin.getY();
+        int currentX = begin.getX();
         
+        System.out.println("currentX: " + currentX + ",end.getX(): "+ end.getX());
+        while(currentX < end.getX()) {
+            //Copy wallType in order to avoid pointing issues
+            GameObject newWall = wallType;
+            if(!handledMap.getTile(currentX,y).hasBlockingObject()) {
+                System.out.println(new Coordinate(currentX,y));
+                handledMap.addObject(newWall, new Coordinate(currentX, y));
+            }
+            currentX++;
+        }
     }
     
     void fitMapSizeToExternalWalls() {
