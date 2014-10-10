@@ -46,12 +46,14 @@ public class GameMap {
 	public GameMap(int width, int height) {
             this.width  = width;
             this.height = height;
-
+            
+            System.out.println("Generating map of size " + width + " tiles wide and " + height + " tiles high.");
             //create a 2-dimensional array of null-reference tiles
+            
             map = new Tile[width][height];
-
-            for(int i = 0; i < map.length ; i++) {
-                for(int j = 0; j < map[i].length ; j++) {
+            
+            for(int i = 0; i < width ; i++) {
+                for(int j = 0; j < height ; j++) {
                     map[i][j] = new Tile(i, j, this);
                 }
             }
@@ -133,6 +135,8 @@ public class GameMap {
                 return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
             }
             
+            //System.out.println("map[0].length="+ map[0].length + ",map.length=" + map.length);
+            //System.out.println("Getting rep at " + x + "," + y);
             return map[x][y].getFinalOutput();
 	}
         

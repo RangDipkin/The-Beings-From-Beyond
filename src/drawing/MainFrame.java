@@ -21,6 +21,7 @@
  */
 package drawing;
 
+
 import event.EventProcessable;
 import event.EventProcessor;
 import java.awt.*;
@@ -28,16 +29,29 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import objects.GameMap;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import utils.Translator;
 
 public class MainFrame extends JFrame implements EventProcessable, KeyListener , ComponentListener{
 	static EventProcessor eventProcessor;
 	static Container myPane;    
 	
+        final static long FLICKER_TIME_IN_NANOS = 1000000000L;
+        
+        static String FPS = "";
+        
         //default cmd emulation = 80
         //to fill 1680x1000 = 210
         public static int WIDTH_IN_SLOTS    = 80;
@@ -64,45 +78,42 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.9";
-        
-        
+        final static String VERSION_NUMBER = "Alpha v0.1.10";
+           
 	MainFrame() {
-		//initialize the main game window
-		super("The Beings From Beyond Alpha");
-		setResizable(false);
-		eventProcessor = new EventProcessor(this);
-                setDefaultCloseOperation(EXIT_ON_CLOSE);	
-		setIgnoreRepaint(true);
-		pack();
-		Insets insets = getInsets();
-		
-                setSize(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS  + insets.left + insets.right, 
-                        CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS + insets.top  + insets.bottom); 
-                setMinimumSize(new Dimension(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS + insets.left + insets.right, 
-                                             CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS+ insets.top  + insets.bottom));
-		setVisible(true);
-                
-                addKeyListener(this);
-                addComponentListener(this);
-		
-                //create graphics on the main pane
-		myPane = this.getContentPane();
-		myPane.setLayout(null);
-                
-                Image icon = null;
-                try {
-			icon = (BufferedImage)ImageIO.read(new File("src/drawing/AppIcon.png"));
-		  }  catch (IOException e) {
-                    System.out.println("Failed loading image!");
-                }
-                setIconImage(icon);
-                
-                //do some fancy system optimizations
-                dasEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                dasConfig = dasEnv.getDefaultScreenDevice().getDefaultConfiguration();
-                
-                this.createBufferStrategy(2);
+            //initialize the main game window
+            super("Atlas of India Alpha");
+            setResizable(false);
+            eventProcessor = new EventProcessor(this);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);	
+            setIgnoreRepaint(true);
+            pack();
+            Insets insets = getInsets();		
+            setSize(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS  + insets.left + insets.right, 
+                    CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS + insets.top  + insets.bottom); 
+            setMinimumSize(new Dimension(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS + insets.left + insets.right, 
+                                         CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS+ insets.top  + insets.bottom));
+            setVisible(true);
+            addKeyListener(this);
+            addComponentListener(this);
+
+            //create graphics on the main pane
+            myPane = this.getContentPane();
+            myPane.setLayout(null);
+
+            Image icon = null;
+            try {
+                    icon = (BufferedImage)ImageIO.read(new File("src/drawing/AppIcon.png"));
+              }  catch (IOException e) {
+                System.out.println("Failed loading image!");
+            }
+            setIconImage(icon);
+
+            //do some fancy system optimizations
+            dasEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            dasConfig = dasEnv.getDefaultScreenDevice().getDefaultConfiguration();
+
+            this.createBufferStrategy(2);
 	}
 	
 	public static void main(String[] args) {
@@ -110,31 +121,33 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 charSheetHelper();
             }
             
+            loadPlaceGrammar();           
             loadCharSheet();
-
             loadTitleScreen();
-
             initializeMap();    
 
-            //run the main loop
-            //TODO: call update after a TargetElapsedTime (1/60th of a second)
-            //TODO: after update is called, check to see if it's time to call
-            //TODO: update again(if update is taking a long time), if we still
-            //TODO: have time left, call draw. After calling draw, if drawing was
-            //TODO: too fast, idle, then call update; but if it is time to call
-            //TODO: update, do it.
-            //TODO: If Update takes too long (TargetElapsedTime), call update
-            //TODO: again without drawing
+            //run the main loop          
+            long startTime = 0;
+            long endTime;
+            long duration;
+            long nanosSinceLastFlicker=0;
+            long timeSinceLastRender = 0;
+            int frames=0;
+            boolean flicker;
             
-            //TODO: flickering ImageReps
-            //TODO: Lighting Engine
-            //TODO: Name generator
-            //TODO: LOS + throwing
-            //TODO: allow the player to force screen movement
-            //TODO: building generation
-            while(true) {
+            while(true) {                 
                 eventProcessor.processEventList();
-                forceRender();
+                timeSinceLastRender = System.nanoTime() - startTime;
+                //System.out.println("timeSinceLastRender = " + timeSinceLastRender);
+                forceRender(timeSinceLastRender);
+                timeSinceLastRender = 0;
+                startTime = System.nanoTime();
+                //duration = (endTime - startTime); 
+                //nanosSinceLastFlicker += duration;
+                //if(nanosSinceLastFlicker >= FLICKER_TIME_IN_NANOS) {
+                //    FPS = frames / (1000000000 / duration+1) + "";
+                //    nanosSinceLastFlicker-=FLICKER_TIME_IN_NANOS;
+                //}
             }
 	}
         
@@ -179,29 +192,61 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
          * frame, and finally creates a new title screen
          */
         static void loadTitleScreen() {
-            BufferedImage titleScreen = null;
-            try {
-                titleScreen = (BufferedImage)ImageIO.read(new File("src/drawing/title01.bmp"));
-            }  catch (IOException e) {
-                System.out.println("Failed loading title screen!");
-                System.exit(0);
+            File folder = new File("src/TitleFrames");
+            File[] listOfFiles = folder.listFiles();
+            ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<>();
+            
+            BufferedImage currFrame = null;
+            for(File file : listOfFiles) {
+                if (file.isFile()) {
+                    try {
+                        currFrame = (BufferedImage)ImageIO.read(file);
+                    }  catch (IOException e) {
+                        System.out.println("Failed loading title screen!");
+                        System.exit(0);
+                    }
+                    translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
+                }
             }
-
-            ImageRepresentation[][] translatedTitles = ImageRepresentation.bmpToImRep(titleScreen);
-
-
             rosetta = new Translator();
             //create the frame
             MainFrame mainFrame = new MainFrame();
-            currentScreen = previousScreen = grandparentScreen = new TitleScreen(translatedTitles);
+            currentScreen = previousScreen = grandparentScreen = new TitleScreen(translatedFrames);
+        }
+         
+        static void loadPlaceGrammar() {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            Document dom = null;
+
+            try {
+                //Using factory get an instance of document builder
+                DocumentBuilder db = dbf.newDocumentBuilder();
+
+                //parse using builder to get DOM representation of the XML file
+                dom = db.parse("src/drawing/testGrammar01.xml");
+            }catch(ParserConfigurationException pce) {
+                pce.printStackTrace();
+            }catch(SAXException se) {
+                se.printStackTrace();
+            }catch(IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            //get the root element
+            Element docEle;
+            //Iterating through the nodes and extracting the data.
+            NodeList nodeList = dom.getDocumentElement().getChildNodes();
+            Node node = nodeList.item(0);
+            System.out.println("Node Name: " + node.getNodeName());
+            System.out.println("Node Last Child Name: " + node.getLastChild());
         }
         
         /*
          * sends a render command to whatever the current screen is
          */
-        public static void forceRender(){
+        public static void forceRender(long timeSinceLastRender){
             Graphics contentGraphics = myPane.getGraphics();
-            currentScreen.render(contentGraphics);
+            currentScreen.render(contentGraphics, timeSinceLastRender);
             contentGraphics.dispose();
         }
         

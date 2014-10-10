@@ -31,4 +31,24 @@
             </bookmark>
         </file>
     </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/generation/CenteringScheme.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/generation/Building.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/utils/Translator.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/generation/Room.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/objects/GameMap.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/MainFrame.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/charsheet.bmp</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/ImageRepresentation.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/GUI/ChoiceList.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/Screen.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/GUI/GUIText.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/InventoryScreen.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/testGrammar01.xml</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/AppIcon.png</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/TitleScreen.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/MainScreen.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/InspectScreen.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Roguelike/src/drawing/VisibleItem.java</file>
+    </open-files>
 </project-private>

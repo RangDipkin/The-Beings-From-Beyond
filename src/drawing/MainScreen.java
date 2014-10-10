@@ -121,6 +121,7 @@ public class MainScreen extends Screen{
         originX = originCoords[0];
         originY = originCoords[1];
         return handledMap.getRepresentation(i+originX,j+originY);
+        //return handledMap.getRepresentation(1,1);
     }
     
     //originX and originY offset the iterator

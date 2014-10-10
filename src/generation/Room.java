@@ -16,14 +16,40 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * Room
  */
 package generation;
 
 import java.util.ArrayList;
+import java.util.Random;
+import objects.Coordinate;
+import objects.GameMap;
+import objects.GameObject;
 
 public class Room extends ArrayList<Wall>{
     Wall topWall,bottomWall,leftWall,rightWall;
+    
+    public Room(Coordinate topLeft, Coordinate topRight, Coordinate bottomLeft, Coordinate bottomRight, GameObject wallType, GameMap handledMap) {
+        //create the top wall
+        Wall topWall = new Wall(topLeft,topRight,wallType,handledMap);
+        add(topWall);
+        setTopWall(topWall);
+        
+        //create the left wall
+        Wall leftWall = new Wall(topLeft,bottomLeft,wallType,handledMap);
+        add(leftWall);
+        setLeftWall(leftWall);
+        
+        //create the right wall
+        Wall rightWall = new Wall(topRight,bottomRight,wallType,handledMap);
+        add(rightWall);
+        setRightWall(rightWall);
+        
+        //create the bottom wall
+        //System.out.println("makin a bottom wall");
+        Wall bottomWall = new Wall(bottomLeft,bottomRight,wallType,handledMap);
+        add(bottomWall);
+        setBottomWall(bottomWall);
+    }
     
     public Wall getTopWall() {
         return topWall;
@@ -55,5 +81,35 @@ public class Room extends ArrayList<Wall>{
     
     public void setRightWall(Wall newRight) {
         rightWall = newRight;
+    }
+    
+    public int getRectangularArea() {
+        return getLeftWall().getWidth() * getTopWall().getWidth();
+    }
+
+    Wall randomWall() {
+        Random dice = new Random();
+        Wall returnWall = null;
+        
+        int diceRoll = dice.nextInt(3);
+        
+        switch(diceRoll) {
+            case 1:
+                returnWall = topWall;
+                break;
+            case 2:
+                returnWall = bottomWall;
+                break;
+            case 3:
+                returnWall = leftWall;
+                break;
+            case 4:
+                returnWall = rightWall;
+                break;
+            default:
+                System.out.println("Invalid dice roll in Room.randomWall");
+        }
+        
+        return returnWall;
     }
 }

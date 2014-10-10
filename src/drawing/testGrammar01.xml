@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<shape_rule>
+    <name>af_split2v</name>
+    <label>afsplit</label>
+    
+    <constants>
+        <var value="0.20">s</var> 
+    </constants> 
+    
+    <constraints>
+        <constraint>
+            <var>height</var>
+            <ineq>&gt;</ineq>
+            <const>5</const>
+        </constraint>
+        <constraint>
+            <var>weight</var>
+            <ineq>&gt;</ineq>
+            <const>5</const>
+        </constraint>
+        <constraint>
+            <var>aspect</var>
+            <ineq>&gt;</ineq>
+            <const>0.2</const>
+        </constraint>
+    </constraints>
+    
+    <output>
+        <shape-spec>
+            <label><value>afsplit</value><weight>splitp</weight></label>
+            <label><value>af_z</value><weight>trudep</weight></label>
+            <vertex>
+                <x><const>0</const></x>
+                <y><const>0</const></y>
+                <z><const>0</const></z>
+            </vertex>
+            <vertex>
+                <x><var>s</var></x>
+                <y><const>0</const></y>
+                <z><const>0</const></z>
+            </vertex>
+            <vertex>
+                <x><var>s</var></x>
+                <y><const>1</const></y>
+                <z><const>0</const></z>                
+            </vertex>
+            <vertex>
+                <x><const>0</const></x>
+                <y><const>1</const></y>
+                <z><const>0</const></z>                
+            </vertex>
+        </shape-spec>
+        
+        <shape-spec>
+            <label><value>afsplit</value><weight>splitp</weight></label>
+            <label><value>af_z</value><weight>trudep</weight></label>
+            <vertex>
+                <x><var>s</var></x>
+                <y><const>0</const></y>
+                <z><const>0</const></z>
+            </vertex>
+            <vertex>
+                <x><const>1</const></x>
+                <y><const>0</const></y>
+                <z><const>0</const></z> 
+            </vertex>
+            <vertex>
+                <x><const>1</const></x>
+                <y><const>1</const></y>
+                <z><const>0</const></z>                
+            </vertex>
+            <vertex>
+                <x><var>s</var></x>
+                <y><const>1</const></y>
+                <z><const>0</const></z>                
+            </vertex>
+        </shape-spec>
+        
+    </output>
+</shape_rule>

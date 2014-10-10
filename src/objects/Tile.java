@@ -272,7 +272,12 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
      * the lowest-precedence object in the tile. After grabbing these three 
      * attributes, it combines them and outputs a final graphic.
      */
-    ImageRepresentation getFinalOutput() {  
+    ImageRepresentation getFinalOutput() { 
+        if(this.size() == 0) {
+            finalOutput = new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.MAGENTA, 63);
+            return finalOutput;
+        }
+        
         GameObject min = get(0);
         GameObject max = get(0);
 

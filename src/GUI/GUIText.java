@@ -30,7 +30,15 @@ package GUI;
 public class GUIText {
     String name;
     
+    //if a GUIText element is a BGthief, it will steal the color from the
+    //element underneath
+    public boolean BGthief = false;
+    
     boolean ancillaryText = false;
+    
+    int specX = -1;
+    int specY = -1;
+    
     public GUIText(String inName) {
         name = inName;
     }
@@ -38,6 +46,12 @@ public class GUIText {
     public GUIText(String inName, boolean inAncillaryText) {
         name = inName;
         ancillaryText = inAncillaryText;
+    }
+    
+    public GUIText(String inName, int inSpecX, int inSpecY) {
+        name = inName;
+        specX = inSpecX;
+        specY = inSpecY;
     }
     
     String getName(){

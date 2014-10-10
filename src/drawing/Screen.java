@@ -33,10 +33,18 @@ abstract class Screen {
     
     BufferedImage currFrame;
     
+    long nanosSinceLastRender = 0;    
+    final long NANO_TO_MS_FACTOR = 1000;
+    final long FRAME_TIME_IN_MS = 1000;
+    
     /*
      * draws the current screen elements to the main frame
      */
-    public void render(Graphics g) { 
+    public void render(Graphics g, long inLastRenderTime) { 
+        nanosSinceLastRender += inLastRenderTime;
+        
+        sendFrameChangeEvery(NANO_TO_MS_FACTOR * FRAME_TIME_IN_MS);
+        
         mainImRepMatrix = new ImageRepresentation[MainFrame.WIDTH_IN_SLOTS][MainFrame.HEIGHT_IN_SLOTS];           
         
         currFrame = new BufferedImage(MainFrame.getDrawAreaWidth(), MainFrame.getDrawAreaHeight(), BufferedImage.TYPE_INT_ARGB); 
@@ -51,7 +59,16 @@ abstract class Screen {
         translateToRGB();
 
         g.drawImage(currFrame, 0, 0, MainFrame.myPane);
-    }      
+    }   
+    
+    public void handleFrameChange() { }
+    
+    public void sendFrameChangeEvery(long frameTime) {
+        if (nanosSinceLastRender > frameTime) {
+            handleFrameChange();
+            nanosSinceLastRender = 0;
+        }
+    }
         
     public void handleEvents(AWTEvent e) { }
 
@@ -75,9 +92,11 @@ abstract class Screen {
         }
     }
 
+   // void refreshVolatileTextElements () { } 
+    
     /*
-     * gets all GUI elements (both screen and map relative) and overrides the 
-     * game element representations which are overlaid 
+     * gets all GUI elements (both screen and map relative) and overrides 
+     * the game element representations which are overlaid 
      */
     void overlayGUI() {
         for(int i = 0; i < activeGUIElements.size(); i++){
@@ -96,7 +115,6 @@ abstract class Screen {
             else {
                 currGUIElement.displayOnto(mainImRepMatrix);
             }
-
         }
     }
 

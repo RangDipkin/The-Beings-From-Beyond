@@ -173,6 +173,7 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
     public void displayOnto(ImageRepresentation[][] displayArea) {
         int inX = x;
         int inY = y;
+        
         if(mapOverlay) {
             inX = 0;
             inY = 0;
@@ -187,9 +188,10 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
             
             //turns the choice's name into an array of ints
             int[] choiceNameIntegers = Translator.translate(currText.getName());
+            //loop over all the integers (representing chars)
             for(int j = 0; j < choiceNameIntegers.length ;j++){
                 int currentLetter = choiceNameIntegers[j];
-                ImageRepresentation currentImg = null;
+                ImageRepresentation currentImg;
                 if(currText.isAncillary()) {
                     currentImg = new ImageRepresentation(DEFAULT_ANCILLARY_TEXT_COLOR, ImageRepresentation.BLACK, currentLetter);
                 }
@@ -198,8 +200,8 @@ public class ChoiceList extends ArrayList<GUIText> implements VisibleItem{
                 } 
                 else {
                     currentImg = new ImageRepresentation(this.getInactiveColor(), ImageRepresentation.BLACK, currentLetter);
-                }
-                displayArea[currentX][currentY] = currentImg;
+                }        
+                displayArea[(currText.specX >= 0) ? currText.specX + j : currentX][(currText.specY >= 0) ? currText.specY :currentY] = currentImg;
                 currentX++;
             }
             currentX = inX;

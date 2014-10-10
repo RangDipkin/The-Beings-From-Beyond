@@ -52,4 +52,14 @@ public class Inventory extends ArrayList<GameObject> implements Location {
         System.out.println("Invalid attempt to modify the x/y position of "
                 + "an item in an inventory");
     }
+
+    @Override
+    public void setX(int newX) {
+        System.out.println("Not supported yet.");
+    }
+
+    @Override
+    public void setY(int newY) {
+        System.out.println("Not supported yet.");
+    }
 }

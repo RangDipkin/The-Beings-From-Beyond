@@ -31,22 +31,26 @@ import objects.GameObject;
 
 public class Building extends ArrayList<Room>{
     GameMap handledMap;
+    int width,height;
+    Room externalWalls;
     
     public Building(GameMap inHandledMap) {
         handledMap = inHandledMap;
         
-        System.out.println("creating structural elements...");
+        createExternalWalls();
         createStructuralElements();
-        System.out.println("structural elements created!");
     }
     
     /*
      * creates a wall and floors
      */
     private void createStructuralElements() {
-        ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
-        GameObject whiteWallObject = new GameObject("White Wall", whiteWall, true, false, 1, handledMap); 
-        createRectangularRoom(new Coordinate(0,0),new Coordinate(10, 0),new Coordinate(0,10),new Coordinate(10, 10),whiteWallObject);
+        Wall entranceWall = externalWalls.randomWall();
+        
+        final int TEST_WIDTH = 8;
+        final int TEST_HEIGHT = 7;
+        final ImageRepresentation TEST_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
+        final GameObject TEST_WALL_OBJECT = new GameObject("White Wall", TEST_WALL_IMAGE, true, false, 1, handledMap);
         
         for(int i = 0; i < handledMap.width ; i++) {
             for(int j = 0; j < handledMap.height ; j++) {
@@ -66,34 +70,17 @@ public class Building extends ArrayList<Room>{
         }
     }
     
-    Room createRectangularRoom(Coordinate topLeft, Coordinate topRight, Coordinate bottomLeft, Coordinate bottomRight, GameObject wallType) {
-        Room outputRoom = new Room();
+    //creates external Walls of random width and height, sets the new 
+    //room to externalWalls, a class variable
+    void createExternalWalls() {
+        ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
+        GameObject whiteWallObject = new GameObject("White Wall", whiteWall, true, false, 1, handledMap); 
         
-        //create the top wall
-        Wall topWall = new Wall(topLeft,topRight,wallType,handledMap);
-        outputRoom.add(topWall);
-        outputRoom.setTopWall(topWall);
-        
-        //create the left wall
-        Wall leftWall = new Wall(topLeft,bottomLeft,wallType,handledMap);
-        outputRoom.add(leftWall);
-        outputRoom.setLeftWall(leftWall);
-        
-        //create the right wall
-        Wall rightWall = new Wall(topRight,bottomRight,wallType,handledMap);
-        outputRoom.add(rightWall);
-        outputRoom.setRightWall(rightWall);
-        
-        //create the bottom wall
-        System.out.println("makin a bottom wall");
-        Wall bottomWall = new Wall(bottomLeft,bottomRight,wallType,handledMap);
-        outputRoom.add(bottomWall);
-        outputRoom.setBottomWall(bottomWall);
-        
-        return outputRoom;
-    }  
-    
-    void fitMapSizeToExternalWalls() {
-        
+        externalWalls = new Room(new Coordinate(0,0),
+                                 new Coordinate(handledMap.width-1,0),
+                                 new Coordinate(0,handledMap.height-1),
+                                 new Coordinate(handledMap.width-1,handledMap.height-1),
+                                 whiteWallObject, 
+                                 handledMap);
     }
 }

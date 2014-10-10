@@ -50,8 +50,10 @@ public class Wall extends HashMap<GameObject, Coordinate>{
                     while(currentX >= start.getY()) {
                         GameObject newWall = wallType;
                         if(!handledMap.getTile(currentX,currentY).hasBlockingObject()) {
-                            put(newWall, new Coordinate(currentX, currentY));
-                            handledMap.addObject(newWall, new Coordinate(currentX, currentY));
+                            Coordinate newCoord = new Coordinate(currentX, currentY);
+                            //System.out.println(newCoord);
+                            put(newWall, newCoord);
+                            handledMap.addObject(newWall, newCoord);
                         }
                         currentX--;
                     }
@@ -59,10 +61,10 @@ public class Wall extends HashMap<GameObject, Coordinate>{
                     currentX = end.getX();
                 }
             }
-            //check if the wall is moving downwards ,rightwards, or is a 
+            //check if the wall is moving downwards, rightwards, or is a 
             //single-tile wall
             else if(start.getY() <= end.getY() || start.getX() <= end.getX()) {
-                System.out.println("running D/R");
+                //System.out.println("running D/R...");
                 int currentX = start.getX();
                 int currentY = start.getY();
 
@@ -70,8 +72,10 @@ public class Wall extends HashMap<GameObject, Coordinate>{
                     while(currentX <= end.getX()) {
                         GameObject newWall = wallType;
                         if(!handledMap.getTile(currentX,currentY).hasBlockingObject()) {
-                            put(newWall, new Coordinate(currentX, currentY));
-                            handledMap.addObject(newWall, new Coordinate(currentX, currentY));
+                            Coordinate newCoord = new Coordinate(currentX, currentY);
+                            //System.out.println(newCoord);
+                            put(newWall, newCoord);
+                            handledMap.addObject(newWall, newCoord);
                         }
                         currentX++;
                     }
@@ -80,14 +84,42 @@ public class Wall extends HashMap<GameObject, Coordinate>{
                 }      
             }
             else {
-                System.out.println("If this is printed, I made a big mistake");
+                System.out.println("If this is printed, I made a big mistake.");
             }
         }
        
     }
     
+    int getWidth() {
+        return Math.abs(end.getX() - start.getX()) + Math.abs(end.getY() - start.getY());
+    }
+    
     GameObject getMidpoint() {
         return null;
     }
+
+    //what the heck is the purpose of this method    
+    //I want a method that creates a vestibule (a centrally located room) off a given wall
+    void connectedRoom(int TEST_WIDTH, int TEST_HEIGHT, CenteringScheme myCenteringScheme, DoorType myDoorType) {
+        //top wall, build down
+        if(start.getY() == 0 && end.getY() == 0) {
+            
+        }
+        //left wall, build right
+        else if(start.getX() == 0 && end.getX() == 0) {
+            
+        }
+        //right wall, build left
+        else if(start.getX() == end.getX()) {
+            
+        }
+        //bottom wall, build up
+        else if(start.getY() == end.getY()) {
+            
+        } 
+    }
+    
+
+    
 }
             
