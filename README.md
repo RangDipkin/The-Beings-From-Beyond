@@ -1,6 +1,5 @@
-#Atlas Of India
+![Atlas of India Promo Image](promo.png)
 ###Experimental Roguelike 
-
 Current Features:
 * A\* Navigation
 * Field of View
@@ -13,4 +12,4 @@ Features on the Horizon:
 * Custom Controls
 * Screen Sizes
 
-![Atlas of India Promo Image](promo.png)
+
