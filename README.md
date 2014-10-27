@@ -1,3 +1,5 @@
 #Atlas Of India
 
-A prototype of a roguelike I'm working on.
+This thing's gonna knock your socks off.
+
+![Atlas of India Promo Image](promo_2.png)
