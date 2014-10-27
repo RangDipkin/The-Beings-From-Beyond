@@ -1,5 +1,5 @@
 #Atlas Of India
 
--> A prototype of a roguelike I'm working on. <-
+This thing's gonna knock your socks off.
 
-![alt text](promo_2.png)
+![Atlas of India Promo Image](promo_2.png)
