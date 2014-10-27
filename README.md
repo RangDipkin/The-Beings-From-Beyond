@@ -1,5 +1,5 @@
 ![Atlas of India Promo Image](promo.png)
-###Experimental Roguelike 
+###An Experimental Roguelike 
 Current Features:
 * A\* Navigation
 * Field of View
