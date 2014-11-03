@@ -28,14 +28,9 @@ import grammars.XMLparser;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
@@ -77,7 +72,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.11";
+        final static String VERSION_NUMBER = "Alpha v0.1.12";
            
 	MainFrame() {
             //initialize the main game window
@@ -100,13 +95,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             myPane = this.getContentPane();
             myPane.setLayout(null);
 
-            Image icon = null;
-            try {
-                    icon = (BufferedImage)ImageIO.read(new File("src/drawing/AppIcon.png"));
-              }  catch (IOException e) {
-                System.out.println("Failed loading image!");
-            }
-            setIconImage(icon);
+            this.setIconImage(getCustomIcon());
 
             //do some fancy system optimizations
             dasEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -171,47 +160,30 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             BufferedImage rawCharSheet = null;
             System.out.println("Try to load charsheet");
             try {
-                //URL url = Thread.currentThread().getContextClassLoader().getResource("/Atlas-Of-India/src/drawing/charsheet.bmp");        
-                //rawCharSheet = ImageIO.read(is);
-                System.out.println("getting class: " + MainFrame.class);
                 InputStream is = MainFrame.class.getResourceAsStream("/images/charsheet.bmp");
-                System.out.println("InputStream: " + is);
                 rawCharSheet = ImageIO.read(is);
-                //InputStreamReader isr = new InputStreamReader(is);
-                //BufferedReader br = new BufferedReader(isr);
-                //InputStream is = currentScreen.getClass().getResourceAsStream("charsheet.bmp");
-                //InputStreamReader isr = new InputStreamReader(is);
-                //BufferedReader br = new BufferedReader(isr);
-                //ClassLoader sysLoader = ClassLoader.getSystemClassLoader();
-                //Icon saveIcon  = new ImageIcon(cl.getResource("images/save.gif"));
-                //Icon cutIcon   = new ImageIcon(cl.getResource("images/cut.gif"));
-                //InputStream charSheetStream = ClassLoader.getSystemClassLoader().getResourceAsStream("charsheet.bmp");
-                //System.out.println("charSheetStream: " + url.toString());
-                //BufferedReader configReader = new BufferedReader(new InputStreamReader(charSheetStream, "UTF-8"));
-                //URI someResourceURI = URI.create("/Atlas-Of-India/src/drawing/charsheet.bmp");
-                //System.out.println("URI of resource = " + someResourceURI);
-                //File file = new File(someResourceURI.getPath());
-                //System.out.println("file = " + file);
-                //rawCharSheet = (BufferedImage)ImageIO.read(file);
-                //System.out.println("rawCharSheet = " + rawCharSheet);
-                System.out.println("Successfully loaded character sheet: " + rawCharSheet);
-                //clean up and close
-                //is.close();  
+                is.close();  
             } catch (IOException ex) {
                 System.out.println("Failed to load character sheet");
                 ex.printStackTrace();
-            }              
-                
-//            try {
-//                rawCharSheet = (BufferedImage)ImageIO.read(new File("/Atlas-Of-India/src/drawing/charsheet.bmp"));
-//            }  catch (IOException e) {
-//                System.out.println("Failed loading the character sheet!");
-//                System.exit(0);
-//            }
-     
+            }                   
             //separates the character sheet into 256 individual tiles
-            charSheet = separateSheet(rawCharSheet);
-            
+            charSheet = separateSheet(rawCharSheet);        
+        }
+        
+        static BufferedImage getCustomIcon() {
+            //read in the character sheet for drawing stuff
+            BufferedImage icon = null;
+            System.out.println("Try to load charsheet");
+            try {
+                InputStream is = MainFrame.class.getResourceAsStream("/images/AppIcon.png");
+                icon = ImageIO.read(is);
+                is.close();  
+            } catch (IOException ex) {
+                System.out.println("Failed to load application icon");
+                ex.printStackTrace();
+            }      
+            return icon;
         }
         
         /*
