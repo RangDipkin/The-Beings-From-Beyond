@@ -42,7 +42,9 @@ public class XMLparser {
             
             System.out.println("shapeRuleName: " + shapeRuleName);
         }
-        catch(ParserConfigurationException | SAXException | IOException pce) {}
+        catch(ParserConfigurationException | SAXException | IOException pce) {
+            System.out.println("Failed to load grammar");
+        }
     }
     
     public Node getNode(String tagName, NodeList nodes) {

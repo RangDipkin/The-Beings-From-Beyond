@@ -24,24 +24,23 @@ package drawing;
 
 import event.EventProcessable;
 import event.EventProcessor;
+import grammars.XMLparser;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import objects.GameMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import utils.Translator;
 
 public class MainFrame extends JFrame implements EventProcessable, KeyListener , ComponentListener{
@@ -78,7 +77,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.10";
+        final static String VERSION_NUMBER = "Alpha v0.1.11";
            
 	MainFrame() {
             //initialize the main game window
@@ -121,7 +120,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                 charSheetHelper();
             }
             
-            loadPlaceGrammar();           
+            XMLparser parser = new XMLparser();           
             loadCharSheet();
             loadTitleScreen();
             initializeMap();    
@@ -138,16 +137,9 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             while(true) {                 
                 eventProcessor.processEventList();
                 timeSinceLastRender = System.nanoTime() - startTime;
-                //System.out.println("timeSinceLastRender = " + timeSinceLastRender);
                 forceRender(timeSinceLastRender);
                 timeSinceLastRender = 0;
                 startTime = System.nanoTime();
-                //duration = (endTime - startTime); 
-                //nanosSinceLastFlicker += duration;
-                //if(nanosSinceLastFlicker >= FLICKER_TIME_IN_NANOS) {
-                //    FPS = frames / (1000000000 / duration+1) + "";
-                //    nanosSinceLastFlicker-=FLICKER_TIME_IN_NANOS;
-                //}
             }
 	}
         
@@ -177,14 +169,49 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static void loadCharSheet() {
             //read in the character sheet for drawing stuff
             BufferedImage rawCharSheet = null;
+            System.out.println("Try to load charsheet");
             try {
-                    rawCharSheet = (BufferedImage)ImageIO.read(new File("src/drawing/charsheet.bmp"));
-            }  catch (IOException e) {
-                System.out.println("Failed loading the character sheet!");
-                System.exit(0);
-            }
+                //URL url = Thread.currentThread().getContextClassLoader().getResource("/Atlas-Of-India/src/drawing/charsheet.bmp");        
+                //rawCharSheet = ImageIO.read(is);
+                System.out.println("getting class: " + MainFrame.class);
+                InputStream is = MainFrame.class.getResourceAsStream("/images/charsheet.bmp");
+                System.out.println("InputStream: " + is);
+                rawCharSheet = ImageIO.read(is);
+                //InputStreamReader isr = new InputStreamReader(is);
+                //BufferedReader br = new BufferedReader(isr);
+                //InputStream is = currentScreen.getClass().getResourceAsStream("charsheet.bmp");
+                //InputStreamReader isr = new InputStreamReader(is);
+                //BufferedReader br = new BufferedReader(isr);
+                //ClassLoader sysLoader = ClassLoader.getSystemClassLoader();
+                //Icon saveIcon  = new ImageIcon(cl.getResource("images/save.gif"));
+                //Icon cutIcon   = new ImageIcon(cl.getResource("images/cut.gif"));
+                //InputStream charSheetStream = ClassLoader.getSystemClassLoader().getResourceAsStream("charsheet.bmp");
+                //System.out.println("charSheetStream: " + url.toString());
+                //BufferedReader configReader = new BufferedReader(new InputStreamReader(charSheetStream, "UTF-8"));
+                //URI someResourceURI = URI.create("/Atlas-Of-India/src/drawing/charsheet.bmp");
+                //System.out.println("URI of resource = " + someResourceURI);
+                //File file = new File(someResourceURI.getPath());
+                //System.out.println("file = " + file);
+                //rawCharSheet = (BufferedImage)ImageIO.read(file);
+                //System.out.println("rawCharSheet = " + rawCharSheet);
+                System.out.println("Successfully loaded character sheet: " + rawCharSheet);
+                //clean up and close
+                //is.close();  
+            } catch (IOException ex) {
+                System.out.println("Failed to load character sheet");
+                ex.printStackTrace();
+            }              
+                
+//            try {
+//                rawCharSheet = (BufferedImage)ImageIO.read(new File("/Atlas-Of-India/src/drawing/charsheet.bmp"));
+//            }  catch (IOException e) {
+//                System.out.println("Failed loading the character sheet!");
+//                System.exit(0);
+//            }
+     
             //separates the character sheet into 256 individual tiles
             charSheet = separateSheet(rawCharSheet);
+            
         }
         
         /*
@@ -192,7 +219,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
          * frame, and finally creates a new title screen
          */
         static void loadTitleScreen() {
-            File folder = new File("src/TitleFrames");
+            File folder = new File("src/images/titleframes");
             File[] listOfFiles = folder.listFiles();
             ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<>();
             
@@ -212,34 +239,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             //create the frame
             MainFrame mainFrame = new MainFrame();
             currentScreen = previousScreen = grandparentScreen = new TitleScreen(translatedFrames);
-        }
-         
-        static void loadPlaceGrammar() {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            Document dom = null;
-
-            try {
-                //Using factory get an instance of document builder
-                DocumentBuilder db = dbf.newDocumentBuilder();
-
-                //parse using builder to get DOM representation of the XML file
-                dom = db.parse("src/drawing/testGrammar01.xml");
-            }catch(ParserConfigurationException pce) {
-                pce.printStackTrace();
-            }catch(SAXException se) {
-                se.printStackTrace();
-            }catch(IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-            //get the root element
-            Element docEle;
-            //Iterating through the nodes and extracting the data.
-            NodeList nodeList = dom.getDocumentElement().getChildNodes();
-            Node node = nodeList.item(0);
-            System.out.println("Node Name: " + node.getNodeName());
-            System.out.println("Node Last Child Name: " + node.getLastChild());
-        }
+        }     
         
         /*
          * sends a render command to whatever the current screen is
