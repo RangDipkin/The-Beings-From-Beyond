@@ -14,31 +14,43 @@
    limitations under the License.
  * 
  * 
- * MainFrame.java
- * 
- * This is the main class of this project.  It handles all of the lowest level 
- * methods, including creating the frame and drawing onto it
  */
 package drawing;
 
-
 import event.EventProcessable;
 import event.EventProcessor;
-import grammars.XMLparser;
+import grammars.YAMLparser;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import objects.GameMap;
 import utils.Translator;
 
-public class MainFrame extends JFrame implements EventProcessable, KeyListener , ComponentListener{
+/**
+ * @author      Travis Pressler <travisp471@gmail.com>
+ * 
+ * MainFrame.java
+ * 
+ * This is the main class of this project.  It handles all of the lowest level 
+ * methods, including creating the frame and drawing onto it.
+ */
+public class MainFrame extends JFrame implements EventProcessable, KeyListener , 
+        ComponentListener{
 	static EventProcessor eventProcessor;
 	static Container myPane;    
 	
@@ -72,7 +84,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.12";
+        final static String VERSION_NUMBER = "Alpha v0.1.13";
            
 	MainFrame() {
             //initialize the main game window
@@ -103,15 +115,18 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
 
             this.createBufferStrategy(2);
 	}
-	
-	public static void main(String[] args) {
+	 
+	public static void main(String[] args) throws IOException {
             if(charSheetHelp) {
                 charSheetHelper();
             }
             
-            XMLparser parser = new XMLparser();           
+            //create the frame
+            MainFrame mainFrame = new MainFrame();
+            YAMLparser parser = new YAMLparser();           
             loadCharSheet();
-            loadTitleScreen();
+            rosetta = new Translator();
+            currentScreen = previousScreen = grandparentScreen = new TitleScreen(loadTitleScreen());
             initializeMap();    
 
             //run the main loop          
@@ -132,6 +147,11 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             }
 	}
         
+        /**
+        * Prints all characters from 0 to 256.
+        *
+        * @author Travis Pressler <travisp471@gmail.com>
+        */
         static void charSheetHelper() {
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 16; j++) {
@@ -150,10 +170,10 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             }
         }
         
-        /*
+        /**
          * Loads the character sheet graphics, and then turns it into a two-
          * dimensional array of booleans for quick drawing, which is stored in 
-         * charSheet
+         * charSheet. 
          */
         static void loadCharSheet() {
             //read in the character sheet for drawing stuff
@@ -171,6 +191,13 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             charSheet = separateSheet(rawCharSheet);        
         }
         
+        /**
+         * Loads the character sheet graphics, and then turns it into a two-
+         * dimensional array of booleans for quick drawing, which is stored in 
+         * charSheet
+         * 
+         * @return the icon as a BufferedImage 
+         */
         static BufferedImage getCustomIcon() {
             //read in the character sheet for drawing stuff
             BufferedImage icon = null;
@@ -186,20 +213,25 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             return icon;
         }
         
-        /*
-         * Reads a title screen image as a bitmap image, then creates the main
-         * frame, and finally creates a new title screen
+        /**
+         * Reads title screen images as a bitmaps, then creates the main
+         * frame, and finally creates a new title screen.
          */
-        static void loadTitleScreen() {
-            File folder = new File("src/images/titleframes");
+        static ArrayList<ImageRepresentation[][]> loadTitleScreen() {
+            String pathBase = "src/images/titleframes/";
+            File folder = new File(pathBase);
             File[] listOfFiles = folder.listFiles();
             ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<>();
             
             BufferedImage currFrame = null;
+            
             for(File file : listOfFiles) {
+                System.out.println("loading " + file.getName() + "...");
                 if (file.isFile()) {
                     try {
-                        currFrame = (BufferedImage)ImageIO.read(file);
+                        InputStream is = MainFrame.class.getResourceAsStream("/images/titleframes/"+ file.getName());
+                        currFrame = ImageIO.read(is);
+                        is.close(); 
                     }  catch (IOException e) {
                         System.out.println("Failed loading title screen!");
                         System.exit(0);
@@ -207,14 +239,62 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                     translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
                 }
             }
-            rosetta = new Translator();
-            //create the frame
-            MainFrame mainFrame = new MainFrame();
-            currentScreen = previousScreen = grandparentScreen = new TitleScreen(translatedFrames);
-        }     
+            return translatedFrames;
+        }  
         
-        /*
-         * sends a render command to whatever the current screen is
+        /**
+        * List directory contents for a resource folder. Not recursive.
+        * This is basically a brute-force implementation.
+        * Works for regular files and also JARs.
+        * 
+        * @author Greg Briggs
+        * @param clazz Any java class that lives in the same place as the resources you want.
+        * @param path Should end with "/", but not start with one.
+        * @return Just the name of each member item, not the full paths.
+        * @throws URISyntaxException 
+        * @throws IOException 
+        */
+        String[] getResourceListing(Class clazz, String path) throws URISyntaxException, IOException {
+           URL dirURL = clazz.getClassLoader().getResource(path);
+           if (dirURL != null && dirURL.getProtocol().equals("file")) {
+               /* A file path: easy enough */
+               return new File(dirURL.toURI()).list();
+           } 
+           if (dirURL == null) {
+               /* 
+                * In case of a jar file, we can't actually find a directory.
+                * Have to assume the same jar as clazz.
+                */
+                String me = clazz.getName().replace(".", "/")+".class";
+                dirURL = clazz.getClassLoader().getResource(me);
+           }
+           if (dirURL.getProtocol().equals("jar")) {
+                /* A JAR path */
+                String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
+                JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
+                Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+                Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
+                while(entries.hasMoreElements()) {
+                  String name = entries.nextElement().getName();
+                  if (name.startsWith(path)) { //filter according to the path
+                    String entry = name.substring(path.length());
+                    int checkSubdir = entry.indexOf("/");
+                    if (checkSubdir >= 0) {
+                      // if it is a subdirectory, we just return the directory name
+                      entry = entry.substring(0, checkSubdir);
+                    }
+                    result.add(entry);
+                  }
+                }
+                return result.toArray(new String[result.size()]);
+          }    
+          throw new UnsupportedOperationException("Cannot list files for URL "+dirURL);
+        }
+        
+        /**
+         * Sends a render command to whatever the current screen is.
+         * @param timeSinceLastRender this is useful for proper regulation of
+         *                            how the animation happens
          */
         public static void forceRender(long timeSinceLastRender){
             Graphics contentGraphics = myPane.getGraphics();
@@ -222,8 +302,8 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             contentGraphics.dispose();
         }
         
-        /*
-         * creates a game map of random size and populates it
+        /**
+         * Creates a game map of random size and populates it.
          */
         static void initializeMap() {
             Random dice = new Random();
@@ -292,8 +372,12 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             return rosetta;
         }
         
-        /*
-         * turns a charsheet into 256 separate boolean images for faster drawing
+        /**
+         * Turns a charsheet into 256 separate boolean images for faster drawing
+         * 
+         * @param srcSheet the charsheet as a single image
+         * @return the BooleanImages which represent the pixels of each 
+         *         character as booleans
          */
         static BooleanImage[][] separateSheet(BufferedImage srcSheet) {
             BooleanImage[][] booleanArray = new BooleanImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];  

@@ -13,8 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * AI.java
-   * Contains an A* pathfinding algorithm used for traversing
 */
 package AI;
 
@@ -24,10 +22,27 @@ import java.util.Stack;
 import objects.GameMap;
 import objects.Tile;
 
+/**
+   * @author Travis Pressler <travisp471@gmail.com>
+   * 
+   * AI.java
+   * Contains an A* pathfinding algorithm used for traversing
+*/
 public class AI {
     final static double PLACEHOLDER_MOVE_COST = 1;
     
-    //returns a stack of Tiles representing the shortest path from one Tile to another
+    /**
+        * Returns a stack of Tiles representing the shortest path from one Tile 
+        * to another Tile
+        *
+        * @author Travis Pressler <travisp471@gmail.com>
+        * @param start the starting point
+        * @param goal  the ending point
+        * @param map   the map on which the algorithm will be performed
+        * @return the stack will contain the tiles which are the path computed 
+        *         by A*. All that needs to be done is to keep popping Tiles off
+        *         the stack until you reach your goal.
+    */
     public static Stack AStar(Tile start, Tile goal, GameMap map) {                  
         //The set of nodes already evaluated
         ArrayList<Tile> closedSet = new ArrayList<>();
@@ -73,9 +88,12 @@ public class AI {
 
         return path;
     }
-	
-    //no longer used, but is a nifty tool
-    //TODO: use this to visualize the lightmap?
+
+    /**
+     * Visualize the openset. Use this to visualize the lightmap?
+     * 
+     * @param openSet The set of tiles to be visualized
+    */
     private static void opensetVis(PriorityQueue openSet) {
         ArrayList<Tile> bin = new ArrayList<>();
         for(int i = 0; i < openSet.size(); i++){ 

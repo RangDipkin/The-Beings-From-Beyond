@@ -1,0 +1,41 @@
+---
+name:  af_split2v
+label: afsplit
+constants:
+  - name:  s
+    value: 20
+  - name: testConst2
+    value: 15
+constraints:
+  - lhs:  height
+    ineq: <
+    rhs:  5
+  - lhs:  weight
+    ineq: >
+    rhs:  5
+  - lhs:  aspect
+    ineq: >
+    rhs:  0.2
+output:
+  shape-spec:
+    labels:
+       - value: afsplit
+         weight: splitp
+       - value: af_z
+         weight: truedep
+    vertices:
+       - {x: 0,y: 0,z: 0}
+       - {x: s,y: 0,z: 0}
+       - {x: s,y: 1,z: 0}
+       - {x: 0,y: 1,z: 0}
+  shape-spec: 
+    labels:
+       - value: afsplit
+         weight: splitp
+       - value: af_z
+         weight: truedep
+    vertices:
+       - {x: s,y: 0,z: 0}
+       - {x: 1,y: 0,z: 0}
+       - {x: 1,y: 1,z: 0}
+       - {x: s,y: 1,z: 0}
