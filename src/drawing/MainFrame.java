@@ -87,7 +87,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.15";
+        final static String VERSION_NUMBER = "Alpha v0.1.16";
            
 	MainFrame() {
             //initialize the main game window
@@ -119,7 +119,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             this.createBufferStrategy(2);
 	}
 	 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, URISyntaxException {
             if(charSheetHelp) {
                 charSheetHelper();
             }
@@ -221,111 +221,55 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
          * Reads title screen images as a bitmaps, then creates the main
          * frame, and finally creates a new title screen.
          */
-        static ArrayList<ImageRepresentation[][]> loadTitleScreen() throws IOException {
+        static ArrayList<ImageRepresentation[][]> loadTitleScreen() throws IOException, URISyntaxException {
             System.out.println("loading TitleScreen...");
-            
             ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<>();  
             BufferedImage currFrame = null;
+            String folderPath = "images/titleframes/";
             
-            CodeSource src = MainFrame.class.getProtectionDomain().getCodeSource();
-            if (src != null) {
-              URL jar = src.getLocation();
-              ZipInputStream zip = new ZipInputStream(jar.openStream());
-              while(true) {
-                ZipEntry e = zip.getNextEntry();
-                if (e == null) {break;}
-                String name;
-                name = e.getName();
-                if (name.startsWith("images/titleframes/")  && 
-                        !name.endsWith("/")) {
-                    System.out.println(name);
-                    InputStream is = MainFrame.class.getResourceAsStream("/" + name);
+            URL dirURL = MainFrame.class.getClassLoader().getResource(folderPath);
+            
+            if (dirURL.getProtocol().equals("file")) {
+               System.out.println("Working not from a JAR");
+               String[] allFiles  = new File(dirURL.toURI()).list();
+               for(String file : allFiles) {
+                    System.out.println(file);
+                    InputStream is = MainFrame.class.getResourceAsStream("/" + folderPath + file);
                     System.out.println(is);
                     currFrame = ImageIO.read(is);
                     translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
-                }
-              }
-              System.out.println("finished loading images...");
-            } 
-            else {
-              System.out.println("MainFrame's Code Source is null!");
+               }
             }
+            else {
+               System.out.println("Working from a JAR");
+               CodeSource src = MainFrame.class.getProtectionDomain().getCodeSource();
+               if (src != null) {
+                  URL jar = src.getLocation();
+                  ZipInputStream zip = new ZipInputStream(jar.openStream());
+                  while(true) {
+                    ZipEntry e = zip.getNextEntry();
+                    if (e == null) {break;}
+                    String name;
+                    name = e.getName();
+                    if (name.startsWith("images/titleframes/")  && 
+                            !name.endsWith("/")) {
+                        System.out.println(name);
+                        InputStream is = MainFrame.class.getResourceAsStream("/" + name);
+                        System.out.println(is);
+                        currFrame = ImageIO.read(is);
+                        translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
+                    }
+                  }
+                  //System.out.println("finished loading images...");
+               } 
+               else {
+                  System.out.println("MainFrame's Code Source is null!");
+               }
+            }    
               
-//            String pathBase = "/src/images/titleframes/";
-//            File folder = new File(pathBase);
-//            System.out.println("folder = " + folder);
-//            System.out.println("folder.listFiles() = " + folder.listFiles());
-//            File[] listOfFiles = folder.listFiles();
-            
-//            
-//            BufferedImage currFrame = null;
-//            
-//            for(File file : listOfFiles) {
-//                System.out.println("loading " + file.getName() + "...");
-//                if (file.isFile()) {
-//                    try {
-//                        InputStream is = MainFrame.class.getResourceAsStream("/images/titleframes/"+ file.getName());
-//                        currFrame = ImageIO.read(is);
-//                        is.close(); 
-//                    }  catch (IOException e) {
-//                        System.out.println("Failed loading title screen!");
-//                        System.exit(0);
-//                    }
-//                    translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
-//                }
-//            }
             return translatedFrames;
         }  
-        
-        /**
-        * List directory contents for a resource folder. Not recursive.
-        * This is basically a brute-force implementation.
-        * Works for regular files and also JARs.
-        * 
-        * @author Greg Briggs
-        * @param clazz Any java class that lives in the same place as the resources you want.
-        * @param path Should end with "/", but not start with one.
-        * @return Just the name of each member item, not the full paths.
-        * @throws URISyntaxException 
-        * @throws IOException 
-        */
-        String[] getResourceListing(Class clazz, String path) throws URISyntaxException, IOException {
-           URL dirURL = clazz.getClassLoader().getResource(path);
-           if (dirURL != null && dirURL.getProtocol().equals("file")) {
-               /* A file path: easy enough */
-               return new File(dirURL.toURI()).list();
-           } 
-           if (dirURL == null) {
-               /* 
-                * In case of a jar file, we can't actually find a directory.
-                * Have to assume the same jar as clazz.
-                */
-                String me = clazz.getName().replace(".", "/")+".class";
-                dirURL = clazz.getClassLoader().getResource(me);
-           }
-           if (dirURL.getProtocol().equals("jar")) {
-                /* A JAR path */
-                String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
-                JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
-                Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-                Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
-                while(entries.hasMoreElements()) {
-                  String name = entries.nextElement().getName();
-                  if (name.startsWith(path)) { //filter according to the path
-                    String entry = name.substring(path.length());
-                    int checkSubdir = entry.indexOf("/");
-                    if (checkSubdir >= 0) {
-                      // if it is a subdirectory, we just return the directory name
-                      entry = entry.substring(0, checkSubdir);
-                    }
-                    result.add(entry);
-                  }
-                }
-                return result.toArray(new String[result.size()]);
-          }    
-          throw new UnsupportedOperationException("Cannot list files for URL "+dirURL);
-        }
-        
+
         /**
          * Sends a render command to whatever the current screen is.
          * @param timeSinceLastRender this is useful for proper regulation of
