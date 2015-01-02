@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -36,6 +37,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import objects.GameMap;
@@ -84,7 +87,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.13";
+        final static String VERSION_NUMBER = "Alpha v0.1.15";
            
 	MainFrame() {
             //initialize the main game window
@@ -181,6 +184,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             System.out.println("Try to load charsheet");
             try {
                 InputStream is = MainFrame.class.getResourceAsStream("/images/charsheet.bmp");
+                System.out.println(is);
                 rawCharSheet = ImageIO.read(is);
                 is.close();  
             } catch (IOException ex) {
@@ -217,28 +221,59 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
          * Reads title screen images as a bitmaps, then creates the main
          * frame, and finally creates a new title screen.
          */
-        static ArrayList<ImageRepresentation[][]> loadTitleScreen() {
-            String pathBase = "src/images/titleframes/";
-            File folder = new File(pathBase);
-            File[] listOfFiles = folder.listFiles();
-            ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<>();
+        static ArrayList<ImageRepresentation[][]> loadTitleScreen() throws IOException {
+            System.out.println("loading TitleScreen...");
             
+            ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<>();  
             BufferedImage currFrame = null;
             
-            for(File file : listOfFiles) {
-                System.out.println("loading " + file.getName() + "...");
-                if (file.isFile()) {
-                    try {
-                        InputStream is = MainFrame.class.getResourceAsStream("/images/titleframes/"+ file.getName());
-                        currFrame = ImageIO.read(is);
-                        is.close(); 
-                    }  catch (IOException e) {
-                        System.out.println("Failed loading title screen!");
-                        System.exit(0);
-                    }
+            CodeSource src = MainFrame.class.getProtectionDomain().getCodeSource();
+            if (src != null) {
+              URL jar = src.getLocation();
+              ZipInputStream zip = new ZipInputStream(jar.openStream());
+              while(true) {
+                ZipEntry e = zip.getNextEntry();
+                if (e == null) {break;}
+                String name;
+                name = e.getName();
+                if (name.startsWith("images/titleframes/")  && 
+                        !name.endsWith("/")) {
+                    System.out.println(name);
+                    InputStream is = MainFrame.class.getResourceAsStream("/" + name);
+                    System.out.println(is);
+                    currFrame = ImageIO.read(is);
                     translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
                 }
+              }
+              System.out.println("finished loading images...");
+            } 
+            else {
+              System.out.println("MainFrame's Code Source is null!");
             }
+              
+//            String pathBase = "/src/images/titleframes/";
+//            File folder = new File(pathBase);
+//            System.out.println("folder = " + folder);
+//            System.out.println("folder.listFiles() = " + folder.listFiles());
+//            File[] listOfFiles = folder.listFiles();
+            
+//            
+//            BufferedImage currFrame = null;
+//            
+//            for(File file : listOfFiles) {
+//                System.out.println("loading " + file.getName() + "...");
+//                if (file.isFile()) {
+//                    try {
+//                        InputStream is = MainFrame.class.getResourceAsStream("/images/titleframes/"+ file.getName());
+//                        currFrame = ImageIO.read(is);
+//                        is.close(); 
+//                    }  catch (IOException e) {
+//                        System.out.println("Failed loading title screen!");
+//                        System.exit(0);
+//                    }
+//                    translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
+//                }
+//            }
             return translatedFrames;
         }  
         

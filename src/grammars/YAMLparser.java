@@ -16,10 +16,7 @@ public class YAMLparser {
         InputStream is = YAMLparser.class.getResourceAsStream("testGrammar01.yaml");
         System.out.println(is);
         LinkedHashMap list = (LinkedHashMap)yaml.load(is);
-         
-        
-        System.out.println(list);
-        
+        System.out.println(list);       
         is.close();
         System.out.println("YAML Parser complete!");
     }
