@@ -34,12 +34,17 @@ public class TitleScreen extends Screen {
     ChoiceList lowerLeftCorner;
     ChoiceList lowerRightCorner;
     
+    //if the screen size is larger than 80x25, xOffset and yOffset represent
+    //the distance between the left edge of the title screen and the left edge
+    //of the frame (in ImageRepresentation cells)
     int xOffset, xRemainder;
     int yOffset, yRemainder;
     
     int defaultBackColor;
     
     final String NEW_GAME = "START";
+    final String LOAD_GAME = "LOAD";
+    final String OPTIONS   = "OPTIONS";
     final String EXIT_GAME = "EXIT";
     
     int currentStep = 0;
@@ -58,17 +63,18 @@ public class TitleScreen extends Screen {
         //initialize main menu choices       
         MainMenuChoices = new ChoiceList(ImageRepresentation.GRAY, ImageRepresentation.RED, 35 + xOffset, 20 + yOffset);
         MainMenuChoices.add(new GUIText(NEW_GAME,  25+xOffset, 11+yOffset));
-        MainMenuChoices.add(new GUIText("LOAD",    33+xOffset, 11+yOffset));
-        MainMenuChoices.add(new GUIText("OPTIONS", 40+xOffset, 11+yOffset));
+        MainMenuChoices.add(new GUIText(LOAD_GAME,    33+xOffset, 11+yOffset));
+        MainMenuChoices.add(new GUIText(OPTIONS, 40+xOffset, 11+yOffset));
         MainMenuChoices.add(new GUIText(EXIT_GAME, 50+xOffset, 11+yOffset));
                 
-        lowerLeftCorner = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, 0,24);
+        lowerLeftCorner = new ChoiceList(ImageRepresentation.GRAY, 0+xOffset,24+yOffset);
+        lowerLeftCorner.add(new GUIText("by Travis Pressler"));
         
         //Space for version number
         lowerRightCorner = new ChoiceList(ImageRepresentation.GRAY, 67 + xOffset, 24 + yOffset);
         lowerRightCorner.add(new GUIText(MainFrame.VERSION_NUMBER));
         
-        refreshVolatileTextElements();
+        //refreshVolatileTextElements();
         
         activeGUIElements.add(MainMenuChoices);
         activeGUIElements.add(lowerLeftCorner);
@@ -108,9 +114,15 @@ public class TitleScreen extends Screen {
                 if(MainMenuChoices.getCurrentChoiceName().equals(NEW_GAME)){
                     stepScreenForwards(new MainScreen(MainFrame.testMap, MainFrame.testMap.mainChar, MainFrame.WIDTH_IN_SLOTS, MainFrame.HEIGHT_IN_SLOTS));
                 }
+                else if(MainMenuChoices.getCurrentChoiceName().equals(LOAD_GAME)) {
+                    stepScreenForwards(new LoadScreen());
+                }     
+                else if(MainMenuChoices.getCurrentChoiceName().equals(OPTIONS)) {
+                    stepScreenForwards(new OptionsScreen());
+                }
                 else if(MainMenuChoices.getCurrentChoiceName().equals(EXIT_GAME)) {
                     System.exit(0);
-                }
+                } 
             }
             else if(keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
                 MainMenuChoices.cycleUp();

@@ -28,15 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
@@ -87,7 +81,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
         static GraphicsConfiguration dasConfig; 
         static Translator rosetta; 
 
-        final static String VERSION_NUMBER = "Alpha v0.1.16";
+        final static String VERSION_NUMBER = "Alpha v0.1.17";
            
 	MainFrame() {
             //initialize the main game window
@@ -228,9 +222,8 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
             String folderPath = "images/titleframes/";
             
             URL dirURL = MainFrame.class.getClassLoader().getResource(folderPath);
-            
+            System.out.println("working with protocol: " + dirURL.getProtocol());
             if (dirURL.getProtocol().equals("file")) {
-               System.out.println("Working not from a JAR");
                String[] allFiles  = new File(dirURL.toURI()).list();
                for(String file : allFiles) {
                     System.out.println(file);
@@ -241,16 +234,19 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                }
             }
             else {
-               System.out.println("Working from a JAR");
                CodeSource src = MainFrame.class.getProtectionDomain().getCodeSource();
                if (src != null) {
                   URL jar = src.getLocation();
+                  System.out.println("URL jar = "+ jar);
                   ZipInputStream zip = new ZipInputStream(jar.openStream());
+                  System.out.println("ZipInputStream zip = "+ zip);
                   while(true) {
                     ZipEntry e = zip.getNextEntry();
+                    System.out.println("ZipEntry e = "+e);
                     if (e == null) {break;}
                     String name;
                     name = e.getName();
+                    System.out.println(name);
                     if (name.startsWith("images/titleframes/")  && 
                             !name.endsWith("/")) {
                         System.out.println(name);
@@ -260,7 +256,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener ,
                         translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
                     }
                   }
-                  //System.out.println("finished loading images...");
+                  System.out.println("finished loading images...");
                } 
                else {
                   System.out.println("MainFrame's Code Source is null!");
