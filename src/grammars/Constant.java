@@ -17,8 +17,10 @@
  */
 package grammars;
 
-import java.util.HashMap;
-
-public class Constant extends HashMap<String, Double>{
-    
+/**
+ * correspond to the variables of a CFG
+ */
+public class Constant{
+    public String name;
+    public float value;
 }

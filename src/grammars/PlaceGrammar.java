@@ -17,6 +17,30 @@
  */
 package grammars;
 
+import java.util.List;
+
+/**
+ * @author      Travis Pressler <travisp471@gmail.com>
+ * 
+ * The following description is copied from Section 7 "Alex Pytel--Shape
+ * Grammars and Recursive Construction" of "An Evaluation of Shape/Split 
+ * Grammars for Architecture" by Huang et al.: 
+ * --
+ * A place grammar is a new formulation of a shape grammar that attempts to 
+ * integrate three types of operations typically involved in modeling with 
+ * shape grammars:
+ *  * combinatoric composition of abstract features based on grammar derivation
+ *  * specification and placement (transformation) of concrete geometric 
+ *    features according to the first item
+ *  * control of grammar rule application with several types of constraints 
+ *    such as those based on labels
+ * The placement of geometric features in the second item takes place by 
+ * transforming each new shape into the coordinate system of a parent shape.  In
+ * this way, a place grammar operates on the 2D shell of a 3D object.  The 
+ * geometry created by each place grammar rule can, in principle, be an 
+ * arbitrary mesh. 
+ */
 public class PlaceGrammar {
-    
+    public List<Constant> constants;
+    public List<ShapeRule> shapeRules;
 }

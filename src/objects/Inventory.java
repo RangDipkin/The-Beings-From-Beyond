@@ -1,7 +1,4 @@
 /**
- *
- * @author Travis
- * 
  * Copyright 2013 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,29 +15,37 @@
    * 
    * Inventory.java
    * 
-   * An inventory is a set of items being held by an item. 
+   * An inventory is a set of items being held by a ObjectTemplate. 
  */
 package objects;
 
 import java.util.ArrayList;
 
-public class Inventory extends ArrayList<GameObject> implements Location {
-    GameObject holdingObject;
+public class Inventory extends ArrayList<PlacedObject> implements Location {
+    PlacedObject holdingObject;
     
-    Inventory() {
-        super();
+    Inventory(PlacedObject holdingObject) {
+        this.holdingObject = holdingObject;
     }
     
     @Override
-    public void setObjectLocation(GameObject targetObject) {
+    public void addObject(PlacedObject targetObject) {
+        targetObject.location = this;
         add(targetObject);
     }
     
-    public int getX() {
-        return holdingObject.getX();
+    @Override
+    public void removeObject(PlacedObject targetObject) {
+        this.remove(targetObject);
     }
+    
+    @Override
+    public int getX() {
+        return holdingObject.getMapX();
+    }
+    @Override
     public int getY() {
-        return holdingObject.getY();
+        return holdingObject.getMapY();
     }
     
     public void setX() {
@@ -52,14 +57,12 @@ public class Inventory extends ArrayList<GameObject> implements Location {
         System.out.println("Invalid attempt to modify the x/y position of "
                 + "an item in an inventory");
     }
-
+    
+    /**
+     * Gets the map where the inventory exists. Possible recursion.
+     */
     @Override
-    public void setX(int newX) {
-        System.out.println("Not supported yet.");
-    }
-
-    @Override
-    public void setY(int newY) {
-        System.out.println("Not supported yet.");
+    public GameMap getMap() {
+        return holdingObject.location.getMap();
     }
 }

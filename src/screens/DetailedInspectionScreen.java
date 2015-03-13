@@ -22,25 +22,26 @@
  * within an InventoryScreen
  * 
  */
-package drawing;
+package screens;
 
-import GUI.ChoiceList;
 import GUI.GUIText;
+import GUI.ScreenText;
+import drawing.ImageRepresentation;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
-import objects.GameObject;
+import objects.PlacedObject;
 
 public class DetailedInspectionScreen extends Screen {
-    GameObject inspectedObj;
+    PlacedObject inspectedObj;
     
     String detailedDescription;
     
-    DetailedInspectionScreen(GameObject inInspectedObj) {
+    DetailedInspectionScreen(PlacedObject inInspectedObj) {
         inspectedObj = inInspectedObj;
         
         detailedDescription = inspectedObj.getDetailedDescription();
         
-        ChoiceList detailedDescriptor = new ChoiceList(ImageRepresentation.WHITE, 0, 0);
+        ScreenText detailedDescriptor = new ScreenText(ImageRepresentation.WHITE, 0, 0);
         detailedDescriptor.add(new GUIText(detailedDescription));
         activeGUIElements.add(detailedDescriptor);
     }

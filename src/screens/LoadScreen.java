@@ -12,23 +12,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  * 
- * OptionsScreen.java
+ * LoadScreen.java
  * 
- * A screen which is accessible from the title screen which allows for 
- * modifying program options (such as window size)
+ * A screen which is accessible from the title screen which allows for loading
+ * previously-saved files.
 */
-package drawing;
+package screens;
 
-import GUI.ChoiceList;
 import GUI.GUIText;
+import GUI.ScreenText;
+import GUI.TextCollection;
+import drawing.ImageRepresentation;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
 
-public class OptionsScreen extends Screen {
-    public OptionsScreen() {
-        ChoiceList placeholder = new ChoiceList(ChoiceList.DEFAULT_ACTIVE_COLOR, 37,0);
-        placeholder.add(new GUIText("OPTIONS"));
-        
+public class LoadScreen extends Screen {
+    public LoadScreen() {
+        ScreenText placeholder = new ScreenText(TextCollection.DEFAULT_ACTIVE_COLOR, 36,0);
+        placeholder.add(new GUIText("LOAD FILE"));
         activeGUIElements.add(placeholder);
     }
     

@@ -1,7 +1,5 @@
-/**
+/*
  *
- * @author Travis
- * 
  * Copyright 2013 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * VisibleItem.java
+   * MapRelativeItem.java
    * 
    * A visible item is any item which is visible on screen (both GUI and game 
    * elements)
@@ -24,11 +22,12 @@
 package drawing;
 
 import AI.MovementDesire;
+import objects.GameMap;
 
-public interface VisibleItem {     
-    public int getX();
+public interface MapRelativeItem {     
+    public int getMapX();
     
-    public int getY(); 
+    public int getMapY();
     
-    public void resolveImmediateDesire(MovementDesire curr);
+    public void resolveImmediateDesire(MovementDesire curr, GameMap map);
 }

@@ -17,22 +17,17 @@
  */
 package grammars;
 
-import java.util.ArrayList;
-
+/*
+ * correspond to the productions of a CFG
+*/
 public class ShapeRule {
-    String name;
-    String label;
-    ArrayList<Constant> constants;
-    ArrayList<Constraint> constraints;
+    //optional, used to clarify what a rule does
+    public String name;
+    public String label;
     
-    ArrayList<ShapeSpec> output;
-    
-    public ShapeRule(String inName, String inLabel, ArrayList<Constant> inConstants, 
-            ArrayList<Constraint> inConstraints, ArrayList<ShapeSpec> inOutput) {
-        name = inName;
-        label = inLabel;
-        constants = inConstants;
-        constraints = inConstraints;
-        output = inOutput;
-    }
+    public String constants; 
+    public String repeat;  
+    public String constraints;  
+    public String shapeGroups;
+    public Output output;
 }

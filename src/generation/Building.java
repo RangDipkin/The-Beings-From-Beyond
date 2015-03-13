@@ -1,7 +1,5 @@
-/**
+/*
  *
- * @author Travis
- * 
  * Copyright 2013 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,63 +22,56 @@
 package generation;
 
 import drawing.ImageRepresentation;
-import java.util.ArrayList;
-import objects.Coordinate;
+import grammars.ShapeSpec;
+import grammars.Vertex;
+import grammars.YAMLparser;
+import java.util.HashSet;
 import objects.GameMap;
-import objects.GameObject;
+import objects.PlacedObject;
 
-public class Building extends ArrayList<Room>{
-    GameMap handledMap;
+public class Building extends HashSet<Room>{
+    GameMap map;
     int width,height;
     Room externalWalls;
     
     public Building(GameMap inHandledMap) {
-        handledMap = inHandledMap;
-        
-        createExternalWalls();
+        map = inHandledMap; 
+        createInternalRooms();
         createStructuralElements();
     }
-    
-    /*
-     * creates a wall and floors
+
+    /**
+     * Creates a wall and floors.
      */
     private void createStructuralElements() {
-        Wall entranceWall = externalWalls.randomWall();
-        
-        final int TEST_WIDTH = 8;
-        final int TEST_HEIGHT = 7;
-        final ImageRepresentation TEST_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
-        final GameObject TEST_WALL_OBJECT = new GameObject("White Wall", TEST_WALL_IMAGE, true, false, 1, handledMap);
-        
-        for(int i = 0; i < handledMap.width ; i++) {
-            for(int j = 0; j < handledMap.height ; j++) {
+        for(int i = 0; i < map.getWidth() ; i++) {
+            for(int j = 0; j < map.getHeight() ; j++) {
                 ImageRepresentation tileFloor1 = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK   , 197);
-                ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);
-                               
-                if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-                    handledMap.addObject(new GameObject("Black Tiled Floor", tileFloor1, false, false, 0, handledMap), new Coordinate(i, j));
-                }
-                else {
-                    handledMap.addObject(new GameObject("Tiled Floor", tileFloor2, false, false, 0, handledMap),new Coordinate(i, j));
+                ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.LIGHT_BLUE, ImageRepresentation.BLUE, 197);                           
+                if(!map.getTile(i,j).hasBlockingObject()) {
+                    if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
+                        PlacedObject.placedObjectWrapper("Black Tiled Floor", tileFloor1, false, false, 0, map.getTile(i, j));
+                    }
+                    else if (!map.getTile(i,j).hasBlockingObject()) {
+                        PlacedObject.placedObjectWrapper("Tiled Floor", tileFloor2, false, false, 0, map.getTile(i, j));
+                    }
                 }
             }
         }           
-        for(int i = 0; i < (handledMap.width * handledMap.height)/10; i++) {
-            handledMap.addObject(new GameObject("Pillar", new ImageRepresentation(ImageRepresentation.WHITE, 7), true, false, 1, handledMap), handledMap.randomValidCoord());
-        }
+//        for(int i = 0; i < (map.width * map.height)/10; i++) {
+//            map.placeObjectFromTemplate(new ObjectTemplate("Pillar", new ImageRepresentation(ImageRepresentation.WHITE, 7), true, false, 1, map), map.randomValidCoord());
+//        }
     }
-    
-    //creates external Walls of random width and height, sets the new 
-    //room to externalWalls, a class variable
-    void createExternalWalls() {
-        ImageRepresentation whiteWall  = new ImageRepresentation(ImageRepresentation.WHITE  , ImageRepresentation.MAGENTA, 219);
-        GameObject whiteWallObject = new GameObject("White Wall", whiteWall, true, false, 1, handledMap); 
-        
-        externalWalls = new Room(new Coordinate(0,0),
-                                 new Coordinate(handledMap.width-1,0),
-                                 new Coordinate(0,handledMap.height-1),
-                                 new Coordinate(handledMap.width-1,handledMap.height-1),
-                                 whiteWallObject, 
-                                 handledMap);
+
+    private void createInternalRooms() {
+        for(ShapeSpec shapeSpec : YAMLparser.mainGrammar.shapeRules.get(0).output.shapeSpecs) {
+            //shapeSpec.translateLCStoWCS(map.getHeight()-1, map.getWidth()-1);
+            shapeSpec.translateLCStoWCS(19, 19);
+            Room currRoom = new Room();
+            for(Vertex vertex : shapeSpec.vertices) {
+                currRoom.runWall(vertex, shapeSpec.getNextVertex(vertex), map);
+            }
+            this.add(currRoom);
+        }
     }
 }

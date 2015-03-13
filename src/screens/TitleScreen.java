@@ -19,24 +19,25 @@
    * of options (New game, options, exit game), and a version number specified
    * in MainFrame.VERSION_NUMBER
  */
-package drawing;
+package screens;
 
-import GUI.ChoiceList;
 import GUI.GUIText;
+import GUI.ScreenText;
+import drawing.ImageRepresentation;
+import drawing.MainFrame;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class TitleScreen extends Screen {
     public static ArrayList<ImageRepresentation[][]> titleFrames;
-    
-    ChoiceList MainMenuChoices;
-    ChoiceList lowerLeftCorner;
-    ChoiceList lowerRightCorner;
-    
-    //if the screen size is larger than 80x25, xOffset and yOffset represent
-    //the distance between the left edge of the title screen and the left edge
-    //of the frame (in ImageRepresentation cells)
+    ScreenText mainMenuChoices;
+    ScreenText lowerLeftCorner;
+    ScreenText lowerRightCorner;
+    /* If the screen size is larger than 80x25, xOffset and yOffset represent
+     * the distance between the left edge of the title screen and the left edge
+     * of the frame (in ImageRepresentation cells)
+     */
     int xOffset, xRemainder;
     int yOffset, yRemainder;
     
@@ -49,7 +50,7 @@ public class TitleScreen extends Screen {
     
     int currentStep = 0;
     
-    TitleScreen(ArrayList<ImageRepresentation[][]> inPixels){
+    public TitleScreen(ArrayList<ImageRepresentation[][]> inPixels){
         titleFrames = inPixels;                
         xOffset = (MainFrame.WIDTH_IN_SLOTS - titleFrames.get(0).length) / 2;
         yOffset = (MainFrame.HEIGHT_IN_SLOTS - titleFrames.get(0)[0].length) / 2;      
@@ -61,31 +62,25 @@ public class TitleScreen extends Screen {
         defaultBackColor = titleFrames.get(0)[0][0].getBackColor();    
         
         //initialize main menu choices       
-        MainMenuChoices = new ChoiceList(ImageRepresentation.GRAY, ImageRepresentation.RED, 35 + xOffset, 20 + yOffset);
-        MainMenuChoices.add(new GUIText(NEW_GAME,  25+xOffset, 11+yOffset));
-        MainMenuChoices.add(new GUIText(LOAD_GAME,    33+xOffset, 11+yOffset));
-        MainMenuChoices.add(new GUIText(OPTIONS, 40+xOffset, 11+yOffset));
-        MainMenuChoices.add(new GUIText(EXIT_GAME, 50+xOffset, 11+yOffset));
+        mainMenuChoices = new ScreenText(ImageRepresentation.GRAY, ImageRepresentation.RED, 35 + xOffset, 20 + yOffset);
+        mainMenuChoices.add(new GUIText(NEW_GAME,  25+xOffset, 11+yOffset));
+        mainMenuChoices.add(new GUIText(LOAD_GAME,    33+xOffset, 11+yOffset));
+        mainMenuChoices.add(new GUIText(OPTIONS, 40+xOffset, 11+yOffset));
+        mainMenuChoices.add(new GUIText(EXIT_GAME, 50+xOffset, 11+yOffset));
                 
-        lowerLeftCorner = new ChoiceList(ImageRepresentation.GRAY, 0+xOffset,24+yOffset);
+        lowerLeftCorner = new ScreenText(ImageRepresentation.GRAY, 0+xOffset,24+yOffset);
         lowerLeftCorner.add(new GUIText("by Travis Pressler"));
         
         //Space for version number
-        lowerRightCorner = new ChoiceList(ImageRepresentation.GRAY, 67 + xOffset, 24 + yOffset);
+        lowerRightCorner = new ScreenText(ImageRepresentation.GRAY, 74 + xOffset, 24 + yOffset);
         lowerRightCorner.add(new GUIText(MainFrame.VERSION_NUMBER));
         
         //refreshVolatileTextElements();
         
-        activeGUIElements.add(MainMenuChoices);
+        activeGUIElements.add(mainMenuChoices);
         activeGUIElements.add(lowerLeftCorner);
         activeGUIElements.add(lowerRightCorner);
     }     
-    
-    //this is straight up dumb, but I'm in a funk and should clean up later
-    void refreshVolatileTextElements () {
-        lowerLeftCorner.clear();
-        lowerLeftCorner.add(new GUIText(MainFrame.FPS));                
-    }
     
     /**
      *
@@ -93,7 +88,6 @@ public class TitleScreen extends Screen {
     @Override
     public void handleFrameChange() { 
         currentStep = (currentStep + 1) % titleFrames.size();
-        //System.out.println("STEP " + currentStep);
     }
     
     @Override
@@ -111,24 +105,24 @@ public class TitleScreen extends Screen {
         if(e.getID() == KeyEvent.KEY_PRESSED) {
             KeyEvent keyEvent = (KeyEvent) e;
             if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-                if(MainMenuChoices.getCurrentChoiceName().equals(NEW_GAME)){
-                    stepScreenForwards(new MainScreen(MainFrame.testMap, MainFrame.testMap.mainChar, MainFrame.WIDTH_IN_SLOTS, MainFrame.HEIGHT_IN_SLOTS));
+                if(mainMenuChoices.getCurrentChoiceName().equals(NEW_GAME)){
+                    stepScreenForwards(new MainScreen(MainFrame.WIDTH_IN_SLOTS, MainFrame.HEIGHT_IN_SLOTS));
                 }
-                else if(MainMenuChoices.getCurrentChoiceName().equals(LOAD_GAME)) {
+                else if(mainMenuChoices.getCurrentChoiceName().equals(LOAD_GAME)) {
                     stepScreenForwards(new LoadScreen());
                 }     
-                else if(MainMenuChoices.getCurrentChoiceName().equals(OPTIONS)) {
+                else if(mainMenuChoices.getCurrentChoiceName().equals(OPTIONS)) {
                     stepScreenForwards(new OptionsScreen());
                 }
-                else if(MainMenuChoices.getCurrentChoiceName().equals(EXIT_GAME)) {
+                else if(mainMenuChoices.getCurrentChoiceName().equals(EXIT_GAME)) {
                     System.exit(0);
                 } 
             }
             else if(keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
-                MainMenuChoices.cycleUp();
+                mainMenuChoices.cycleUp();
             }
             else if(keyEvent.getKeyCode() == KeyEvent.VK_RIGHT){
-                MainMenuChoices.cycleDown();
+                mainMenuChoices.cycleDown();
             }
         }
     }

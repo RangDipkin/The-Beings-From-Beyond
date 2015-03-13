@@ -17,12 +17,39 @@
  */
 package grammars;
 
+import java.util.List;
+
 public class Vertex {
-    Expression x,y,z;
-    
-    public Vertex(Expression inX, Expression inY, Expression inZ) {
-        x = inX;
-        y = inY;
-        z = inZ;
+    public String x,y,z; 
+    float parsedX, parsedY, parsedZ;
+    //World-Coordinate-Space
+    public int WCSx, WCSy, WCSz;
+
+    void parseVertex(List<Constant> env) {
+        this.parsedX = this.parseCoord(x, env);
+        this.parsedY = this.parseCoord(y, env);
+        this.parsedZ = this.parseCoord(z, env);
+    }
+
+    float parseCoord(String XYorZ, List<Constant> env) {
+        try {
+            float retVal = Float.parseFloat(XYorZ);
+            return retVal;
+        } catch (Exception e) {
+            //Otherwise, it's a complicated expression or a singleton
+            //ignore complicated expressions for now
+            for(Constant constant : env) {
+                if(constant.name.equals(XYorZ)) {
+                    return constant.value;
+                }
+            }
+        }
+        return 0.0f;
+    }
+
+    void toWCS(int height, int width) {
+        this.WCSx = Math.round(width * parsedX);
+        this.WCSy = Math.round(height * parsedY);
+        this.WCSz = 0;
     }
 }

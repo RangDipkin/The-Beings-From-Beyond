@@ -22,14 +22,18 @@
  */
 package objects;
 
-public interface Location {
-    public void setObjectLocation(GameObject targetObject);
+public interface Location {    
+    /**
+     * Given a location, this method moves the targetObject there.
+     * @param targetObject the object to be moved
+     */
+    public void addObject(PlacedObject targetObject);
+    
+    public void removeObject(PlacedObject object);
     
     public int getX();
     
     public int getY();
     
-    public void setX(int newX);
-    
-    public void setY(int newY);
+    public GameMap getMap();
 }

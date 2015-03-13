@@ -16,7 +16,11 @@
    * Tile.java
    * 
    * Represents a a single cell of the game map which contains one or more game
-   * objects.
+   * objects. 
+   * 
+   * TODO: migrate public G, H, and F scores into a 3-tuple which will form the 
+   * values for a key-value pairing (The tile will be the key in this
+   * relationship)
  */
 package objects;
 
@@ -25,191 +29,188 @@ import drawing.ImageRepresentation;
 import java.util.ArrayList;
 import lighting.LightingElement;
 
-public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, MovementDesire {
-	//"Path-Cost Function"...cost frome starting node to current node
-	double gScore;
-	//"Heuristic Estimate"...estimated distance to goal
-	double hScore;
-	//The sum of gScore and hScore
-	double fScore;
-	
-	Tile parent;
-	
-	GameMap handlingMap;
+public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, MovementDesire, Location {
+    //Path-Cost Function (cost frome starting node to current node)
+    double gScore;
+    //Heuristic Estimate (estimated distance to goal)
+    double hScore;
+    //The sum of gScore and hScore
+    double fScore;
+    Tile parent;
+    GameMap map;
+    ArrayList<LightingElement> lights = new ArrayList<>();
+    boolean visible  = false;
+    //TODO: set this back to false, true is used for testing purposes only
+    boolean lit      = true;
+    boolean litDelay = false;
+    int x, y;
+
+    public Tile() {}
+
+    Tile(int x, int y, GameMap handlingMap) {
+            this.x = x;
+            this.y = y;
+            this.map = handlingMap;
+            this.visible = handlingMap.DEBUG_VISIBILITY;
+    }
         
-        ArrayList<LightingElement> lights = new ArrayList<>();
-        
-        boolean visible  = false;
-        //TODO: set this back to false, true is used for testing purposes only
-        boolean lit      = true;
-        boolean litDelay = false;
-        
-        ImageRepresentation finalOutput;
-	
-        public Tile() {}
-        
-        Tile(int x, int y, GameMap handlingMap) {
-		this.x = x;
-		this.y = y;
-		this.handlingMap = handlingMap;
-	}
-        
-	public double getG() {
-		return gScore;
-	}
-	public double getH() {
-            return hScore;
+    public double getG() {
+            return gScore;
+    }
+    public double getH() {
+        return hScore;
+    }
+
+    public double getF() {
+            return fScore;
+    }
+
+    public double calculateH(Tile start, Tile goal) {
+        hScore = Math.max(Math.abs(this.getX() - goal.getX()) , Math.abs(this.getY() - goal.getY()));
+
+        int dx1 = Math.abs(this.getX()  - goal.getX());
+        int dy1 = Math.abs(this.getY()  - goal.getY());
+        int dx2 = Math.abs(start.getX() - goal.getX());
+        int dy2 = Math.abs(start.getY() - goal.getY());
+
+        int cross = Math.abs(dx1 * dy2 - dx2 * dy1);
+
+        hScore += cross * 0.0001;   
+        return hScore;
+    }
+
+    public void setG(double newGScore) {
+            this.gScore = newGScore;
+    }
+    public void setH(double newHScore) {
+            this.hScore = newHScore;
+    }
+    public void setF(double newFScore) {
+            this.fScore = newFScore;
+    }
+
+    public void setParent(Tile parent) {
+            this.parent = parent;
+    }
+
+    public Tile getParent(){
+        return this.parent;
+    }
+
+    public boolean hasParent() {
+            return this.parent != null;
+    }
+    
+    @Override
+    public int getX() {return x;}
+    
+    @Override
+    public int getY() {return y;}
+    
+    @Override
+    public GameMap getMap() {
+        return this.map;
+    }
+    
+    @Override
+    public int[] getCoordsWithRespectTo(Tile origin) {
+            int[] coords = {getX(), getY()};
+            return coords;
+    }
+
+    @Override
+    public String toString() {
+        String output = "[";
+        for(PlacedObject object : this) {
+            output = output + object.getName() + " ";
         }
-        
-	public double getF() {
-		return fScore;
-	}
-        
-        public double calculateH(Tile start, Tile goal) {
-            hScore = Math.max(Math.abs(this.getX() - goal.getX()) , Math.abs(this.getY() - goal.getY()));
-            
-            int dx1 = Math.abs(this.getX()  - goal.getX());
-            int dy1 = Math.abs(this.getY()  - goal.getY());
-            int dx2 = Math.abs(start.getX() - goal.getX());
-            int dy2 = Math.abs(start.getY() - goal.getY());
-            
-            int cross = Math.abs(dx1 * dy2 - dx2 * dy1);
-           
-            hScore += cross * 0.0001;   
-            return hScore;
-	}
-        
-     
-	public void setG(double newGScore) {
-		this.gScore = newGScore;
-	}
-	public void setH(double newHScore) {
-		this.hScore = newHScore;
-	}
-	public void setF(double newFScore) {
-		this.fScore = newFScore;
-	}
-	
-	public void setParent(Tile parent) {
-		this.parent = parent;
-	}
-        
-        public Tile getParent(){
-            return this.parent;
+        output += "](" + getX() + "," + getY() + ")";
+        return output;
+    }
+
+    //this whole method is probably really inefficient and dumb.
+    public ArrayList<Tile> getNeighboringNodes() {
+        ArrayList<Tile> neighbors = new ArrayList<>();
+        int originX = this.getX();
+        int originY = this.getY();
+
+        int left   = originX-1;
+        int right  = originX+1;
+        int top    = originY-1;
+        int bottom = originY+1;
+
+        boolean validLeft   = left   > 0;
+        boolean validRight  = right  < map.getWidth();
+        boolean validBottom = bottom < map.getHeight();
+        boolean validTop    = top    > 0;
+
+        Tile currTile;
+        //add left-top node if possible
+        if(validLeft && validTop) {
+            currTile = map.getTile(left, top);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
         }
-	
-        public boolean hasParent() {
-		return this.parent != null;
-	}
-	
-	int x, y;
-	
-	public int getX() {return x;}
-	public int getY() {return y;}
-	
-   
-        @Override
-	public int[] getCoords(Tile origin) {
-		int[] coords = {getX(), getY()};
-		return coords;
-	}
-	
-        @Override
-	public String toString() {
-                String output = "[";
-		
-		for(GameObject go : this) {
-			output = output + go.getName() + " ";
-                }
-		
-		output += "](" + getX() + "," + getY() + ")";
-		
-		return output;
-	}
-	
-	//this whole method is probably really inefficient and dumb, oh well.
-	public ArrayList<Tile> getNeighboringNodes() {
-		ArrayList<Tile> neighbors = new ArrayList<>();
-		int originX = this.getX();
-		int originY = this.getY();
-		
-		int left   = originX-1;
-		int right  = originX+1;
-		int top    = originY-1;
-		int bottom = originY+1;
-		
-		boolean validLeft   = left   > 0;
-		boolean validRight  = right  < handlingMap.width;
-		boolean validBottom = bottom < handlingMap.height;
-		boolean validTop    = top    > 0;
-		
-		Tile currTile;
-                //add left-top node if possible
-                if(validLeft && validTop) {
-                    currTile = handlingMap.getTile(left, top);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add top node if possible
-                if(validTop) {
-                    currTile = handlingMap.getTile(originX, top);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add right-top node if possible
-                if(validRight && validTop){
-                    currTile = handlingMap.getTile(right, top);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add right node if possible
-                if(validRight) {
-                    currTile = handlingMap.getTile(right, originY);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add right-bottom node if possible
-                if(validRight && validBottom) {
-                    currTile = handlingMap.getTile(right, bottom);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add bottom node if possible
-                if(validBottom) {
-                    currTile = handlingMap.getTile(originX, bottom);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add left-bottom node if possible
-                if(validLeft && validBottom) {
-                    currTile = handlingMap.getTile(left, bottom);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-		//add left node if possible
-                if(validLeft){
-                    currTile = handlingMap.getTile(left, originY);
-                    if(!currTile.hasBlockingObject()) {
-                        neighbors.add(currTile);
-                    }
-                }
-                return neighbors;
-	}
-        
-        void setColor(int color) {
-            getMin().getRepresentation().setBackColor(color);
+        //add top node if possible
+        if(validTop) {
+            currTile = map.getTile(originX, top);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
         }
-	
-        int getBackgroundColor() {
-            return getMin().getRepresentation().getBackColor();
+        //add right-top node if possible
+        if(validRight && validTop){
+            currTile = map.getTile(right, top);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
         }
+        //add right node if possible
+        if(validRight) {
+            currTile = map.getTile(right, originY);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
+        }
+        //add right-bottom node if possible
+        if(validRight && validBottom) {
+            currTile = map.getTile(right, bottom);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
+        }
+        //add bottom node if possible
+        if(validBottom) {
+            currTile = map.getTile(originX, bottom);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
+        }
+        //add left-bottom node if possible
+        if(validLeft && validBottom) {
+            currTile = map.getTile(left, bottom);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
+        }
+        //add left node if possible
+        if(validLeft){
+            currTile = map.getTile(left, originY);
+            if(!currTile.hasBlockingObject()) {
+                neighbors.add(currTile);
+            }
+        }
+        return neighbors;
+    }
+
+    void setColor(int color) {
+        getMin().getRepresentation().setBackColor(color);
+    }
+
+    int getBackgroundColor() {
+        return getMin().getRepresentation().getBackColor();
+    }
         
     @Override
     public int compareTo(Tile other) {
@@ -248,24 +249,22 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
     
     public boolean hasBlockingObject() {
         boolean hasBlocker = false;
-
         for(int i = 0; i < size(); i++) {
             if (get(i).blocking) {
                 hasBlocker = true;
             }
         }
-
         return hasBlocker;
     }  
     
-    public void doFOVaction(GameObject origin, boolean adjacent) {
-        if(origin == handlingMap.mainChar && (lit || adjacent)) {
+    public void doFOVaction(PlacedObject origin, boolean adjacent) {
+        if(origin == map.mainChar && (lit || adjacent)) {
             visible = true;
-            handlingMap.visibleTiles.add(this);
+            map.visibleTiles.add(this);
         }
     } 
     
-    /*
+    /**
      * Calculates the final graphic which should be outputted by the tile for a
      * given render command. Grabs the character and foreground color of the 
      * highest-precedence object in the tile, and grabs the background color of 
@@ -274,13 +273,10 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
      */
     ImageRepresentation getFinalOutput() { 
         if(this.size() == 0) {
-            finalOutput = new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.MAGENTA, 63);
-            return finalOutput;
+            return new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.MAGENTA, 63);
         }
-        
-        GameObject min = get(0);
-        GameObject max = get(0);
-
+        PlacedObject min = get(0);
+        PlacedObject max = get(0);
         for(int i = 0; i < size(); i++) {
             if(min.getPrecedence() != 0 && get(i).getPrecedence() < min.getPrecedence()) {
                 min = get(i);
@@ -289,23 +285,23 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
                 max = get(i);
             }
         }
-        
         //get the foreground character and color of the highest-precedence object of the tile
         int foreColor = max.getForeColor();
         int imgChar   = max.getImgChar();
         //get the background color of the lowest-precedence object in the tile
         int backColor = min.getBackColor();
-        
         if(foreColor == backColor) {
             backColor = ImageRepresentation.MAGENTA;
         }
-        //return the resulting ImageRepresentation
-        finalOutput = new ImageRepresentation(foreColor, backColor, imgChar);
-        return finalOutput;
+        return new ImageRepresentation(foreColor, backColor, imgChar);
     }
     
-    GameObject getMin() {
-        GameObject min = get(0);
+    /**
+     * Calculates the lowest-precedence object in the list.
+     * @return the lowest-precedence object int the list.
+     */
+    PlacedObject getMin() {
+        PlacedObject min = get(0);
          for(int i = 0; i < size(); i++) {
             if(min.getPrecedence() != 0 && get(i).getPrecedence() < min.getPrecedence()) {
                 min = get(i);
@@ -317,5 +313,16 @@ public class Tile extends ArrayList<GameObject> implements Comparable<Tile>, Mov
     
     public boolean isVisible() {
         return visible;
+    }
+
+    @Override
+    public void addObject(PlacedObject targetObject) {
+        targetObject.location = this;
+        add(targetObject);
+    }
+    
+    @Override
+    public void removeObject(PlacedObject object) {
+        this.remove(object);
     }
 }

@@ -1,0 +1,33 @@
+---
+constants: 
+   - !grammars.Constant {name: splitp, value: 0.15}
+   - !grammars.Constant {name: trudep, value: 0.80}
+   - !grammars.Constant {name: s, value: 0.20}
+shapeRules: 
+ - !grammars.ShapeRule
+   name: facade_af 
+   label: afpattern
+   constants: 
+   repeat:   
+   constraints:  
+   shapeGroups: 
+   output:
+     !grammars.Output
+     shapeGroupCommands:
+     shapeSpecs:
+       - !grammars.ShapeSpec
+         labelControl: terminal
+         labels:
+         vertices:
+           - !grammars.Vertex {x: 0,y: 0,z: 0}
+           - !grammars.Vertex {x: s,y: 0,z: 0}
+           - !grammars.Vertex {x: s,y: 1,z: 0}
+           - !grammars.Vertex {x: 0,y: 1,z: 0}
+       - !grammars.ShapeSpec
+         labelControl: terminal
+         labels:
+         vertices:
+           - !grammars.Vertex {x: s,y: 0,z: 0}
+           - !grammars.Vertex {x: 1,y: 0,z: 0}
+           - !grammars.Vertex {x: 1,y: 1,z: 0}
+           - !grammars.Vertex {x: s,y: 1,z: 0}

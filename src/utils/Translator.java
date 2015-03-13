@@ -49,7 +49,7 @@ public class Translator {
             intToChar.put(',', 44);
             intToChar.put('-', 45);
             intToChar.put('.', 46);
-            intToChar.put('/', 47); 		
+            intToChar.put('/', 47);
             intToChar.put('0', 48);
             intToChar.put('1', 49);
             intToChar.put('2', 50);

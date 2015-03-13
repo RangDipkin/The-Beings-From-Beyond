@@ -23,25 +23,26 @@
  * one valid item to be grabbed, the item is simply grabbed
  * 
  */
-package drawing;
+package screens;
 
-import GUI.ChoiceList;
+import GUI.AncillaryGUIText;
 import GUI.GUIText;
+import GUI.ScreenText;
+import GUI.TextCollection;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import objects.GameMap;
-import objects.GameObject;
+import objects.PlacedObject;
 import objects.Tile;
 
 public class GrabScreen extends MainScreen{
-    ChoiceList grabbableItemGUIOverlay = new ChoiceList(ChoiceList.DEFAULT_INACTIVE_COLOR, ChoiceList.DEFAULT_ACTIVE_COLOR, 0, 0);
+    ScreenText grabbableItemGUIOverlay = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR, TextCollection.DEFAULT_ACTIVE_COLOR, 0, 0);
+    PlacedObject grabber;
     
-    GameObject grabber;
-    GrabScreen(GameMap inMap, GameObject inGrabber) {     
+    GrabScreen(GameMap inMap, PlacedObject inGrabber) {     
         handledMap = inMap;
         grabber = inGrabber;
-        
         trackedObject = inGrabber;
     }
     
@@ -71,8 +72,8 @@ public class GrabScreen extends MainScreen{
         }
     }
     
-    ArrayList<GameObject> grabbableItems() {
-        ArrayList<GameObject> grabbableItems = new ArrayList<>();
+    ArrayList<PlacedObject> grabbableItems() {
+        ArrayList<PlacedObject> grabbableItems = new ArrayList<>();
         
         Tile currentTile = grabber.getTile();
         for(int i = 0; i < currentTile.size(); i++) {
@@ -83,7 +84,7 @@ public class GrabScreen extends MainScreen{
         return grabbableItems;
     }
     
-    void createGrabGUI(ArrayList<GameObject> grabbableItems) {
+    void createGrabGUI(ArrayList<PlacedObject> grabbableItems) {
         if(grabbableItems.isEmpty()) {
             stepScreenBackwards();
         }
@@ -95,10 +96,9 @@ public class GrabScreen extends MainScreen{
             for(int i = 0; i < grabbableItems.size(); i++) {
                 grabbableItemGUIOverlay.add(new GUIText(grabbableItems.get(i).getName()) , grabbableItems.get(i));
             }
-            grabbableItemGUIOverlay.add(new GUIText("Use + and - to navigate this list", true));
-            grabbableItemGUIOverlay.add(new GUIText("Press Enter to pick up the selected item", true));
-            grabbableItemGUIOverlay.add(new GUIText("Press Escape to exit inspection mode", true));
-
+            grabbableItemGUIOverlay.add(new AncillaryGUIText("Use + and - to navigate this list"));
+            grabbableItemGUIOverlay.add(new AncillaryGUIText("Press Enter to pick up the selected item"));
+            grabbableItemGUIOverlay.add(new AncillaryGUIText("Press Escape to exit inspection mode"));
             activeGUIElements.add(grabbableItemGUIOverlay);
         }
     }

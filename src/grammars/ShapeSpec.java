@@ -17,14 +17,42 @@
  */
 package grammars;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ShapeSpec {
-    ArrayList<String> labels;
-    ArrayList<Vertex> vertices;
+    public String labels; 
+    public String labelControl;
+    public List<Vertex> vertices;
     
-    public ShapeSpec(ArrayList<String> inLabels, ArrayList<Vertex> inVertices) {
-        labels = inLabels;
-        vertices = inVertices;
+    void parseVertices(List<Constant> env) {
+        for(Vertex vertex : vertices) {
+            vertex.parseVertex(env);
+        }
+    }
+    
+    /**
+     * Translates Local-Coordinate-Space to World-Coordinate-Space. 
+     * @param height
+     * @param width 
+     */
+    public void translateLCStoWCS(int height, int width) {
+        for(Vertex vertex : vertices) {
+            vertex.toWCS(height,width);
+        }
+    }
+    
+    /**
+     * "this.vertices" is assumed to be stored in clockwise-order, and also not
+     * to hold any duplicates. 
+     */
+    public Vertex getNextVertex(Vertex currVertex) {
+        int currIndex = this.vertices.indexOf(currVertex);
+        if(currIndex == this.vertices.size()-1) {
+            //wraparound
+            return this.vertices.get(0);
+        }
+        else {
+            return this.vertices.get(currIndex+1);
+        }
     }
 }

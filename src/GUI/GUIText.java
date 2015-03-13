@@ -1,7 +1,4 @@
-/**
- *
- * @author Travis
- * 
+/*
  * Copyright 2013 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,45 +17,62 @@
  * GUIText.java
  * 
  * A GUIText object is basically just a string with additional functionality for
- * distinguishing between mainstream text items and ancillary text items (usually
- * ancillary text is used for information related to the ChoiceList to which the
+ * distinguishing between mainstream textString items and ancillary textString items (usually
+ * ancillary textString is used for information related to the ChoiceList to which the
  * GUIText is linked)
- * 
  */
 package GUI;
 
+import utils.Translator;
+
 public class GUIText {
-    String name;
-    
-    //if a GUIText element is a BGthief, it will steal the color from the
-    //element underneath
+    int[] textCodes;
+    String textString;
+    /** If a GUIText element is a BGthief, it will steal the color from the
+      *element underneath. */
     public boolean BGthief = false;
-    
-    boolean ancillaryText = false;
-    
     int specX = -1;
     int specY = -1;
     
-    public GUIText(String inName) {
-        name = inName;
+    public GUIText() {}
+    
+    /**
+     * Basic constructor for a textString item.
+     * @param inName the textString to be displayed
+     */
+    public GUIText(String text) {
+        this.textString = text;
+        textCodes = Translator.translate(text);
     }
     
-    public GUIText(String inName, boolean inAncillaryText) {
-        name = inName;
-        ancillaryText = inAncillaryText;
+    /**
+     * Constructor for a textString item with a specified position
+     * @param inName the textString to be displayed
+     * @param inSpecX the x position of the textString item
+     * @param inSpecY the y position of the textString item
+     */
+    public GUIText(String text, int specX, int specY) {
+        this.textString = text;
+        textCodes = Translator.translate(text);
+        this.specX = specX;
+        this.specY = specY;
     }
     
-    public GUIText(String inName, int inSpecX, int inSpecY) {
-        name = inName;
-        specX = inSpecX;
-        specY = inSpecY;
-    }
-    
+    /**
+     * This is dangerous.  If the GUIText is initialized with integers rather 
+     * than with strings, there may be unprintable characters. 
+     * @return 
+     */
     String getName(){
-        return this.name;
+        if(this.textString != null) {
+            return this.textString;
+        }
+        else {
+            return "!ERROR!";
+        }
     }
     
-    boolean isAncillary() {
-        return ancillaryText;
+    int[] getTextCodes() {
+        return this.textCodes;
     }
 }
