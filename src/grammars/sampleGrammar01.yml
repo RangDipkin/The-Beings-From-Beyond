@@ -1,11 +1,9 @@
 ---
-
 constants:
   - name:  s
     value: 0.20
   - name: testConst2
     value: 15
-    
 shapeRules:
   - name:  af_split2v
     label: afsplit

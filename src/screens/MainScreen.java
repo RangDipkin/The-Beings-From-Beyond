@@ -44,7 +44,7 @@ public class MainScreen extends Screen{
 //        int x = dice.nextInt(200);
 //        int y = dice.nextInt(60);
 //        handledMap = new GameMap(x + 10, y + 10);
-        handledMap = new GameMap(20, 20);
+        handledMap = new GameMap(79, 31);
         trackedObject = handledMap.populate();
     }
     

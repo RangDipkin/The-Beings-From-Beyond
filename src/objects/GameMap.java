@@ -56,7 +56,7 @@ public class GameMap {
      * @return the main character (default initial camera position)
      */
     public PlacedObject populate() {
-        new Building(this); 
+        new Building(this, width, height); 
         
         mainChar = PlacedObject.placedObjectWrapper("Test Player", 
                 new ImageRepresentation(ImageRepresentation.WHITE, 64), 

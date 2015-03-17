@@ -36,7 +36,6 @@ public class Room extends HashSet<PlacedObject>{
     }
         
     public void runWall(Tile start, Tile end, ObjectTemplate wallType) {
-        System.out.println("From " + start + " to " + end);
         GameMap daMap;
         if(start.getMap() != end.getMap()) {
             System.out.println("coordinates in different maps");

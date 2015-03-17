@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener,
      *   *MINOR version when you add FUNCTIONALITY (backwards compatible)
      *   *PATCH version when you make BUG FIXES(backwards compatible)
     */
-    public final static String VERSION_NUMBER = "v0.2.0";
+    public final static String VERSION_NUMBER = "v0.3.0";
     public static Container myPane;    
     //default cmd emulation = 80
     //to fill 1680x1000 = 210
@@ -103,7 +103,7 @@ public class MainFrame extends JFrame implements EventProcessable, KeyListener,
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         MainFrame mainFrame = new MainFrame();
-        YAMLparser parser = new YAMLparser();           
+        YAMLparser parser = new YAMLparser();
         loadCharSheet();
         rosetta = new Translator();
         currentScreen = previousScreen = grandparentScreen = new TitleScreen(loadTitleScreen());

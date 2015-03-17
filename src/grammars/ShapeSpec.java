@@ -35,9 +35,9 @@ public class ShapeSpec {
      * @param height
      * @param width 
      */
-    public void translateLCStoWCS(int height, int width) {
+    public void translateLCStoWCS(int width, int height) {
         for(Vertex vertex : vertices) {
-            vertex.toWCS(height,width);
+            vertex.toWCS(width, height);
         }
     }
     
