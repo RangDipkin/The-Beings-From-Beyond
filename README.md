@@ -6,9 +6,9 @@ Current Features:
 * Title Screen Loader
 * Animated Title Screens
 * Graphical User Interface
+* Shape Grammar Interpreter
 
 Features on the Horizon:
-* Shape Grammar Interpreter
 * Custom Controls
 * Screen Sizes
 
