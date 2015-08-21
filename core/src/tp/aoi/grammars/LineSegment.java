@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Travis Pressler
+ * Copyright 2015 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,8 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * Expression.java
+   * PlaceGrammar.java
  */
 package tp.aoi.grammars;
 
-public class Expression {}
+/**
+ *
+ * @author Travis
+ */
+public class LineSegment {
+    Vertex v1;
+    Vertex v2;
+    String shapeSpecName;
+    
+    public LineSegment(Vertex v1, Vertex v2, String shapeSpecName) {
+        this.v1 = v1; 
+        this.v2 = v2;
+        this.shapeSpecName = shapeSpecName;
+    }
+    
+    public Vertex getV1() {
+        return v1;
+    }
+    
+    public Vertex getV2() {
+        return v2;
+    }
+    
+    public String getName() {
+        return this.shapeSpecName;
+    }
+}

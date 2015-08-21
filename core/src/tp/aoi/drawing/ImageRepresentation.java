@@ -28,11 +28,22 @@ import java.awt.image.BufferedImage;
 
 public class ImageRepresentation {
     int foreColor;
+    int rawImgChar;
     int backColor;
     
-    int rawImgChar;
-    
     int[][] RGBMatrix;
+    
+    final public static int EMPTY_CELL  = 0;
+    final public static int FILLED_CELL = 219;
+    final public static int LIGHT_MIST  = 176;
+    final public static int MIST        = 177;
+    final public static int HEAVY_MIST  = 178;
+    final public static int DONUT       = 7;
+    final public static int PLAYER_SYMBOL = 64;
+    final public static int TORCH_GRAPHIC = 47;
+    final public static int HAT_GRAPHIC   = 254;
+    final public static int CENTERED_DOT  = 250;
+    final public static int QUESTION_MARK = 63;
     
     final public static int BLACK              = 0xFF000000;
     final public static int BLUE               = 0xFF0000AA;
@@ -50,12 +61,36 @@ public class ImageRepresentation {
     final public static int LIGHT_MAGENTA      = 0xFFFF55FF;
     final public static int YELLOW             = 0xFFFFFF55;
     final public static int WHITE              = 0xFFFFFFFF;
+    
     final public static int CONTROL_COLOR      = 0xFF33236B;
     final static public int CONTROL_FORECOLOR  = WHITE;
     
-    /*
+    final static public int WOOD       = 0xFF4A2E20;
+    final static public int LIGHT_WOOD = 0xFF573626;
+    
+    /**
+     * An ImageRepresentation where only the foreColor is explicitly 
+     * defined, the backColor is likely to be implied by the background 
+     * color of the floor below it.
+     * @param foreColor
+     * @param rawImgChar
+     */
+    public ImageRepresentation(int foreColor, int rawImgChar) {
+        this.foreColor = foreColor;
+        this.rawImgChar = rawImgChar;
+        
+        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH][AtlasOfIndia.CHAR_PIXEL_HEIGHT];
+        
+        int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
+        int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
+    }
+    
+    /**
      *  An ImageRepresentation where the foreColor and backColor are 
-     *  explicitly defined
+     *  explicitly defined.
+     * @param foreColor
+     * @param backColor
+     * @param rawImgChar
      */
     public ImageRepresentation(int foreColor, int backColor, int rawImgChar) {
         this.foreColor = foreColor;
@@ -65,61 +100,20 @@ public class ImageRepresentation {
         
         int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
         int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
-        
-        //pixels = AtlasOfIndia.charSheet[srcPosX][srcPosY];
-        
-        //updateRGBMatrix();  
-    }
-    
-    /*
-     * An ImageRepresentation where only the foreColor is explicitly 
-     * defined, the backColor is likely to be implied by the background 
-     * color of the floor below it
-     */
-    public ImageRepresentation(int foreColor, int rawImgChar) {
-        this.foreColor = foreColor;
-        this.backColor = foreColor;
-        this.rawImgChar = rawImgChar;
-        
-        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH][AtlasOfIndia.CHAR_PIXEL_HEIGHT];
-        
-        int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
-        int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
-        
-        //pixels = AtlasOfIndia.charSheet[srcPosX][srcPosY];
-        
-        //pdateRGBMatrix();  
     }
 
-    //creates a black and white ImageRep
+    /**
+     * Creates a white ImageRep.
+     * @param rawImgChar
+     */
     public ImageRepresentation(int rawImgChar) {
         this.foreColor = WHITE;
-        this.backColor = BLACK;
         this.rawImgChar = rawImgChar;
         
         this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH][AtlasOfIndia.CHAR_PIXEL_HEIGHT];
         
         int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
         int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
-        
-        //pixels = AtlasOfIndia.charSheet[srcPosX][srcPosY];
-    }
-    
-//    private void updateRGBMatrix() {    
-//        for(int i = 0; i < pixels.getWidth(); i++) {  
-//            for(int j = 0; j < pixels.getHeight(); j++) {     
-//                if(pixels.isForeground(i, j)) {  
-//                    RGBMatrix[i][j] = foreColor;  
-//                }
-//                else if(!pixels.isForeground(i, j)) {
-//                    RGBMatrix[i][j] = backColor;
-//                }
-//            }  
-//        }  
-//    }
-
-    public int getBackColor(){
-        return this.backColor;
     }
     
     public int getForeColor() {
@@ -130,20 +124,24 @@ public class ImageRepresentation {
         return this.rawImgChar;
     }
     
-    public void setBackColor(int newBackColor) {
-            this.backColor = newBackColor;
-            //updateRGBMatrix();
-    }
-    
     public int[][] getRGBMatrix() {
         return RGBMatrix;
+    }
+    
+    
+    public int getBackColor() {
+        return this.backColor;
+    }
+    
+    public void setBackColor(int newBackColor) {
+        this.backColor = newBackColor;
     }
     
     /**
      * Nifty tool for translating a bitmap image into a two-dimensional 
      * array of ImageRepresentations, where the background color of every
      * ImageRepresentation is grabbed from the corresponding pixel of the 
-     * bitmap image
+     * bitmap image.
      */
     static ImageRepresentation[][] bmpToImRep(BufferedImage inBMP){
         ImageRepresentation[][] finishedImRepMatrix = new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];
@@ -153,7 +151,7 @@ public class ImageRepresentation {
         }
         for(int i=0;i<inBMP.getWidth();i++){
             for(int j=0;j<inBMP.getHeight(); j++){
-                finishedImRepMatrix[i][j] = new ImageRepresentation(WHITE,inBMP.getRGB(i,j),0);
+                finishedImRepMatrix[i][j] = new ImageRepresentation(inBMP.getRGB(i,j),FILLED_CELL);
             }
         }
         return finishedImRepMatrix;

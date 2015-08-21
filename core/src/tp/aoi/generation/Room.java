@@ -26,10 +26,14 @@ import tp.aoi.objects.PlacedObject;
 import tp.aoi.objects.Tile;
 
 public class Room extends HashSet<PlacedObject>{
-    static final ImageRepresentation WHITE_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.MAGENTA, 219);
+    static final ImageRepresentation WHITE_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.FILLED_CELL);
     static final ObjectTemplate WHITE_WALL_TEMPLATE = new ObjectTemplate("White Wall", WHITE_WALL_IMAGE, true, false, 1);
+
+    static final ImageRepresentation GRAY_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.FILLED_CELL);
+    static final ObjectTemplate GRAY_WALL_TEMPLATE = new ObjectTemplate("Gray Wall", GRAY_WALL_IMAGE, true, false, 1);
     
-    public Room() {}
+    public Room() {
+    }
     
     public void runWall(Tile inStart, Tile inEnd){
         runWall(inStart, inEnd, WHITE_WALL_TEMPLATE);
@@ -58,8 +62,7 @@ public class Room extends HashSet<PlacedObject>{
             while(smallX <= bigX) {
                 if(!daMap.getTile(smallX,smallY).hasBlockingObject()) {
                     //wallType must be copied
-                    PlacedObject placedWall = 
-                            WHITE_WALL_TEMPLATE.toPlacedObject(daMap.getTile(smallX,smallY));
+                    PlacedObject placedWall = GRAY_WALL_TEMPLATE.toPlacedObject(daMap.getTile(smallX,smallY));
                     this.add(placedWall);
                 }
                 smallX++;

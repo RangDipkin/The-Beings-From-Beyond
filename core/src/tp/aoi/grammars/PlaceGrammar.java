@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The following description is copied from Section 7 "Alex Pytel--Shape
  * Grammars and Recursive Construction" of "An Evaluation of Shape/Split 
- * Grammars for Architecture" by Huang et al.: 
+ * Grammars for Architecture" by Huang et al. : 
  * --
  * A place grammar is a new formulation of a shape grammar that attempts to 
  * integrate three types of operations typically involved in modeling with 

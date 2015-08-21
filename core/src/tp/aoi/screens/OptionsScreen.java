@@ -39,6 +39,7 @@ public class OptionsScreen extends Screen {
         return new ImageRepresentation(ImageRepresentation.BLACK, 0);
     }
     
+    @Override
     public void handleEvent(GameEvent event) {
         switch(event.getIntCode()) {
             case Keys.ESCAPE:

@@ -24,6 +24,8 @@ public class ShapeSpec {
     public String labelControl;
     public List<Vertex> vertices;
     public boolean terminal;
+    public List<PassagePlacer> passagePlacers;
+    public String name;
     
     void parseVertices(List<Constant> env) {
         for(Vertex vertex : vertices) {

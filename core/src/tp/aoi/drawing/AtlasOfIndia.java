@@ -27,10 +27,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,8 +51,7 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
      *   *MINOR version when you add FUNCTIONALITY (backwards compatible)
      *   *PATCH version when you make BUG FIXES(backwards compatible)
     */
-    public final static String VERSION_NUMBER = "v0.4.0";
-    public static Container myPane;    
+    public final static String VERSION_NUMBER = "v0.5.0";
     //default cmd emulation = 80
     //to fill 1680x1000 = 210
     public static int WIDTH_IN_SLOTS    = 80;
@@ -79,11 +74,7 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
     
     static EventProcessor eventProcessor;
     //static BooleanImage[][] charSheet;
-    Graphics contentGraphics;
-    
     static GameMap testMap;
-    static GraphicsEnvironment dasEnv;
-    static GraphicsConfiguration dasConfig; 
     static Translator rosetta; 
     
     final int FRAME_ROWS = 16;
@@ -120,9 +111,6 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
         } catch (URISyntaxException ex) {
             Logger.getLogger(AtlasOfIndia.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-
-        
         batch = new SpriteBatch();
         spriteSheet = new Texture("charsheet.bmp");
         vertexShader = Gdx.files.internal("vertex.glsl").readString();
@@ -130,7 +118,7 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
         shader = new ShaderProgram(vertexShader, fragmentShader);
         shader.pedantic = false;
     }
-
+    
     @Override
     public void render () {
         eventProcessor.processEventList(currentScreen);
@@ -173,7 +161,6 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
                         8, 12,                                                                  //source width and height in texels
                         false,false                                                             //whether to flip the sprite horizontally or vertically
                 );
-
                 batch.flush();
             }
         }
@@ -191,24 +178,16 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
     }
     
     @Override
-    public void dispose() {
-        
-    }
+    public void dispose() {}
     
     @Override
-    public void pause() {
-        
-    }
+    public void pause() {}
     
     @Override
-    public void resize(int width, int height) {
-        
-    }
+    public void resize(int width, int height) {}
     
     @Override
-    public void resume() {
-        
-    }
+    public void resume() {}
     
     /**
      * Reads title screen images as a bitmaps, then creates the main
@@ -220,57 +199,12 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
         BufferedImage currFrame = null;
         FileHandle dirHandle = Gdx.files.internal("titleframes");
         
-        System.out.print("loading title frames from "+ dirHandle.path() + "(" + dirHandle.isDirectory() + "): ");
         for (FileHandle entry: dirHandle.list()) {
             InputStream is = entry.read();
             currFrame = ImageIO.read(is);
             translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
-            System.out.print("[" + entry.path() + "] ");
         }
-        System.out.println();
-//        String folderPath = "tp/aoi/resources/images/titleframes/";
-//
-//        URL dirURL = AtlasOfIndia.class.getClassLoader().getResource(folderPath);
-//        System.out.println("working with protocol: " + dirURL.getProtocol());
-//        if (dirURL.getProtocol().equals("file")) {
-//           String[] allFiles  = new File(dirURL.toURI()).list();
-//           for(String file : allFiles) {
-//                System.out.println(file);
-//                InputStream is = AtlasOfIndia.class.getResourceAsStream("/" + folderPath + file);
-//                System.out.println(is);
-//                currFrame = ImageIO.read(is);
-//                translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
-//           }
-//        }
-//        else {
-//           CodeSource src = AtlasOfIndia.class.getProtectionDomain().getCodeSource();
-//           if (src != null) {
-//              URL jar = src.getLocation();
-//              System.out.println("URL jar = "+ jar);
-//              ZipInputStream zip = new ZipInputStream(jar.openStream());
-//              System.out.println("ZipInputStream zip = "+ zip);
-//              while(true) {
-//                ZipEntry e = zip.getNextEntry();
-//                System.out.println("ZipEntry e = "+e);
-//                if (e == null) {break;}
-//                String name;
-//                name = e.getName();
-//                System.out.println(name);
-//                if (name.startsWith("/tp/aoi/resources/images/titleframes/")  && 
-//                        !name.endsWith("/")) {
-//                    System.out.println(name);
-//                    InputStream is = AtlasOfIndia.class.getResourceAsStream("/" + name);
-//                    System.out.println(is);
-//                    currFrame = ImageIO.read(is);
-//                    translatedFrames.add(ImageRepresentation.bmpToImRep(currFrame));
-//                }
-//              }
-//              System.out.println("finished loading images...");
-//           } 
-//           else {
-//              System.out.println("MainFrame's Code Source is null!");
-//           }
-//        }
+        
         return translatedFrames;
     }  
 
@@ -307,7 +241,7 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
                             booleanArray[i][j].flipOn(k,l);
                         }
                     }
-                }       
+                }
             }
         }
         return booleanArray;

@@ -105,8 +105,6 @@ public class TitleScreen extends Screen {
     
     @Override
     public void handleEvent(GameEvent event) { 
-        System.out.println("handling event: (char " + event.getIntCode() + ") (int " + event.getIntCode() + ")");
-        
         if(event.getIntCode() == Keys.ENTER) {
             if(mainMenuChoices.getCurrentChoiceName().equals(NEW_GAME)){
                 stepScreenForwards(new MainScreen(AtlasOfIndia.WIDTH_IN_SLOTS, AtlasOfIndia.HEIGHT_IN_SLOTS));

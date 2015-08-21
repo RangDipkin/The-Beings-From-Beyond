@@ -48,6 +48,7 @@ public class MainScreen extends Screen{
         trackedObject = handledMap.populate();
     }
     
+    @Override
     public void handleEvent(GameEvent event) { 
         switch(event.getIntCode()) { 
             case Keys.X:

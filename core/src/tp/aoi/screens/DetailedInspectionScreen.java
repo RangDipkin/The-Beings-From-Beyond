@@ -57,6 +57,6 @@ public class DetailedInspectionScreen extends Screen implements EventProcessable
     
     @Override
     ImageRepresentation getCurrentCell(int i, int j) {
-        return new ImageRepresentation(ImageRepresentation.BLACK, 0);
+        return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.EMPTY_CELL);
     }
 }

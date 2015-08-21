@@ -59,9 +59,8 @@ public class GameMap {
         new Building(this, width, height); 
         
         mainChar = PlacedObject.placedObjectWrapper("Test Player", 
-                new ImageRepresentation(ImageRepresentation.WHITE, 64), 
-                false, false, 2, this.getTile(0,1));
-        System.out.println("");
+                new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.PLAYER_SYMBOL), 
+                false, false, 2, this.getTile(1,1));
         
 //        for(int i = 0; i < 2; i++) {
 //            ObjectTemplate greenSmiley = new ObjectTemplate("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, false, 1);
@@ -69,10 +68,10 @@ public class GameMap {
 //            placeObjectFromTemplate(greenSmiley, randomValidCoord());
 //        }
         PlacedObject torch = PlacedObject.placedObjectWrapper("Torch", 
-                new ImageRepresentation(ImageRepresentation.BROWN, 47), false, 
+                new ImageRepresentation(ImageRepresentation.BROWN, ImageRepresentation.TORCH_GRAPHIC), false, 
                 true, 1, mainChar.myInventory);
         PlacedObject topHat = PlacedObject.placedObjectWrapper("Top hat", 
-                new ImageRepresentation(ImageRepresentation.BLACK, 254), false, 
+                new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.HAT_GRAPHIC), false, 
                 true, 1, mainChar.myInventory);
         if(!DEBUG_VISIBILITY) {
             mainChar.FOVscan(250);
@@ -113,13 +112,16 @@ public class GameMap {
     /**
      * Returns the object in a specific map tile with the smallest 
      * precedence.
+     * @param x
+     * @param y
+     * @return 
      */
     public ImageRepresentation getRepresentation(int x, int y) {
         if(!isValidTile(x,y)) { 
-            return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, 250);
+            return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, ImageRepresentation.CENTERED_DOT);
         }
         else if (!isVisibleTile(x, y)) {
-            return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, 250);
+            return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, ImageRepresentation.CENTERED_DOT);
         }
         return map[x][y].getFinalOutput();
     }
@@ -205,6 +207,11 @@ public class GameMap {
 
     public Tile getTile(int x, int y) {
         return map[x][y];
+    }
+    
+    public void removeAll(int x, int y) {
+        Tile grabTile = getTile(x,y);
+        grabTile.clear();
     }
 
     public Tile getTile(double x, double y) {

@@ -53,11 +53,12 @@ public class InspectScreen extends MainScreen {
         target.add(new GUIText("X"));
         activeGUIElements.add(target);
         trackedObject = target;
+        System.out.println("changed tracked object to GUI X!");
         displayInspectedTile(handledMap.getTile(targetStartX, targetStartY));
     }
     
     @Override
-    public void handleEvents(GameEvent event) {
+    public void handleEvent(GameEvent event) {
         switch(event.getIntCode()) { 
             case Keys.ESCAPE:
                 stepScreenBackwards();
@@ -118,7 +119,7 @@ public class InspectScreen extends MainScreen {
                 break;
 
             default:
-                System.out.println("Some other key was pressed! ");
+                System.out.println("(Inspect Screen) Some other key was pressed! ");
                 break;
         }
     }

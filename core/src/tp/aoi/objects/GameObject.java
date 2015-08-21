@@ -58,6 +58,7 @@ abstract class GameObject {
     int getBackColor() { 
         return this.ir.getBackColor();
     }
+    
     public String getDetailedDescription() {
         return detailedDescription;
     }

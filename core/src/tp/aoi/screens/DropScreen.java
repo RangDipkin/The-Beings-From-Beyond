@@ -53,7 +53,7 @@ public class DropScreen extends InventoryScreen {
     }
     
     
-    public void handleEvents(GameEvent e) {
+    public void handleEvent(GameEvent e) {
         switch(e.getIntCode()) {
             case Keys.ESCAPE:
                 stepScreenBackwards();

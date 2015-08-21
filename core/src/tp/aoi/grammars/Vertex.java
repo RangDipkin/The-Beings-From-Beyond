@@ -22,7 +22,7 @@ import java.util.List;
 public class Vertex {
     public String x,y,z; 
     float parsedX, parsedY, parsedZ;
-    //World-Coordinate-Space
+    //World-Coordinate-Space, these are only avaliable after parseVertex is invoked
     public int WCSx, WCSy, WCSz;
 
     void parseVertex(List<Constant> env) {
@@ -66,6 +66,7 @@ public class Vertex {
                         return constant.value;
                     }
                 }
+                System.out.println("ERROR: Constant " + expression + " not found");
             }
         }
         return 0.0f;

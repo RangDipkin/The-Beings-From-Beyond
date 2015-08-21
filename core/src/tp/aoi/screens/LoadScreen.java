@@ -38,6 +38,7 @@ public class LoadScreen extends Screen {
         return new ImageRepresentation(ImageRepresentation.BLACK, 0);
     }
     
+    @Override
     public void handleEvent(GameEvent e) {
         switch(e.getIntCode()) {
             case Keys.ESCAPE:

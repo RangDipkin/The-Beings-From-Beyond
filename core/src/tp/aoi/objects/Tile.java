@@ -273,7 +273,7 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
      */
     ImageRepresentation getFinalOutput() { 
         if(this.size() == 0) {
-            return new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.MAGENTA, 63);
+            return new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.QUESTION_MARK);
         }
         PlacedObject min = get(0);
         PlacedObject max = get(0);

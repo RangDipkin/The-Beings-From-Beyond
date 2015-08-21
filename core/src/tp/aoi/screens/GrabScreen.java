@@ -47,7 +47,7 @@ public class GrabScreen extends MainScreen{
     }
     
     @Override
-    public void handleEvents(GameEvent event) {
+    public void handleEvent(GameEvent event) {
         switch(event.getIntCode()) {
             case Keys.PLUS:
                 grabbableItemGUIOverlay.cycleDown();
