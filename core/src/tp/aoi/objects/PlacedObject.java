@@ -41,7 +41,7 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
      * @param location
      * @return 
      */
-    private PlacedObject(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, int precedence) {
+    private PlacedObject(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence) {
         super(name, ir, blocking, grabbable, precedence);
     }
     
@@ -59,7 +59,7 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
      * @param location
      * @return 
      */
-    public static PlacedObject placedObjectWrapper(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, int precedence, Location location) {
+    public static PlacedObject placedObjectWrapper(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence, Location location) {
         PlacedObject placedObject = new PlacedObject(name, ir, blocking, grabbable, precedence);
         placedObject.location = location;
         location.addObject(placedObject);

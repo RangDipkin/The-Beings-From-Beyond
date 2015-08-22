@@ -23,14 +23,15 @@ import java.util.HashSet;
 import tp.aoi.objects.GameMap;
 import tp.aoi.objects.ObjectTemplate;
 import tp.aoi.objects.PlacedObject;
+import tp.aoi.objects.PrecedenceClass;
 import tp.aoi.objects.Tile;
 
 public class Room extends HashSet<PlacedObject>{
     static final ImageRepresentation WHITE_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.FILLED_CELL);
-    static final ObjectTemplate WHITE_WALL_TEMPLATE = new ObjectTemplate("White Wall", WHITE_WALL_IMAGE, true, false, 1);
+    static final ObjectTemplate WHITE_WALL_TEMPLATE = new ObjectTemplate("White Wall", WHITE_WALL_IMAGE, true, false, PrecedenceClass.NORMAL);
 
     static final ImageRepresentation GRAY_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.FILLED_CELL);
-    static final ObjectTemplate GRAY_WALL_TEMPLATE = new ObjectTemplate("Gray Wall", GRAY_WALL_IMAGE, true, false, 1);
+    static final ObjectTemplate GRAY_WALL_TEMPLATE = new ObjectTemplate("Gray Wall", GRAY_WALL_IMAGE, true, false, PrecedenceClass.NORMAL);
     
     public Room() {
     }

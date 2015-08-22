@@ -22,12 +22,12 @@ package tp.aoi.objects;
 import tp.aoi.drawing.ImageRepresentation;
 
 public class ObjectTemplate extends GameObject { 
-    public ObjectTemplate(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, int precedence) {
+    public ObjectTemplate(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence) {
         super(name, ir, blocking, grabbable, precedence);
     }
     
     public PlacedObject toPlacedObject(Location loc) {
-        PlacedObject placedObject = PlacedObject.placedObjectWrapper(name, ir, blocking, grabbable,precedence, loc);
+        PlacedObject placedObject = PlacedObject.placedObjectWrapper(name, ir, blocking, grabbable, precedence, loc);
         return placedObject;
     }
 }

@@ -60,7 +60,7 @@ public class GameMap {
         
         mainChar = PlacedObject.placedObjectWrapper("Test Player", 
                 new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.PLAYER_SYMBOL), 
-                false, false, 2, this.getTile(1,1));
+                false, false, PrecedenceClass.KEY_INFORMATION, this.getTile(1,1));
         
 //        for(int i = 0; i < 2; i++) {
 //            ObjectTemplate greenSmiley = new ObjectTemplate("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, false, 1);
@@ -69,10 +69,10 @@ public class GameMap {
 //        }
         PlacedObject torch = PlacedObject.placedObjectWrapper("Torch", 
                 new ImageRepresentation(ImageRepresentation.BROWN, ImageRepresentation.TORCH_GRAPHIC), false, 
-                true, 1, mainChar.myInventory);
+                true, PrecedenceClass.NORMAL, mainChar.myInventory);
         PlacedObject topHat = PlacedObject.placedObjectWrapper("Top hat", 
                 new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.HAT_GRAPHIC), false, 
-                true, 1, mainChar.myInventory);
+                true, PrecedenceClass.NORMAL, mainChar.myInventory);
         if(!DEBUG_VISIBILITY) {
             mainChar.FOVscan(250);
         }
@@ -140,7 +140,7 @@ public class GameMap {
 
         for(int i = 0; i < map[x][y].size(); i++) {
             PlacedObject currObject = map[x][y].get(i);
-            if(currObject.getPrecedence() >= floor.getPrecedence()) {
+            if(currObject.getPrecedence().comparePrecedence(floor.getPrecedence()) == -1) {
                 floor = currObject;
             }
         }

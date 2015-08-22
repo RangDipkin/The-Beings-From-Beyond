@@ -25,7 +25,7 @@ import java.util.Stack;
 import tp.aoi.lighting.LightingElement;
 
 abstract class GameObject {
-    public int precedence;
+    public PrecedenceClass precedence;
     public boolean blocking = false;
     public boolean grabbable = false;
     public ImageRepresentation ir;
@@ -46,7 +46,7 @@ abstract class GameObject {
      * @param grabbable
      * @param precedence 
      */
-    GameObject(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, int precedence) {
+    GameObject(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence) {
         this.blocking = blocking;
         this.grabbable = grabbable;
         this.ir = ir;
@@ -81,7 +81,7 @@ abstract class GameObject {
         return this.name;
     }
     
-    int getPrecedence() {
+    PrecedenceClass getPrecedence() {
         return this.precedence;
     }
     

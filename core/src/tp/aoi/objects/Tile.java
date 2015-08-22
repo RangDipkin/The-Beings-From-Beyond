@@ -270,26 +270,55 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
      * highest-precedence object in the tile, and grabs the background color of 
      * the lowest-precedence object in the tile. After grabbing these three 
      * attributes, it combines them and outputs a final graphic.
+     * 
+     * Special Case: Overhangs are a little tricky, they display the FOREGROUND
+     * color of any key-information-precedence-class objects beneath them, so
+     * when you pass under arches you can see your player color appear under 
+     * the arch
      */
     ImageRepresentation getFinalOutput() { 
         if(this.size() == 0) {
             return new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.QUESTION_MARK);
         }
+        
         PlacedObject min = get(0);
         PlacedObject max = get(0);
+        
+        boolean hasOverhang = false;
+        int overhangForeColor = 0;
+        boolean hasKeyInformaion = false;
+        int keyInformationBackColor = 0;
         for(int i = 0; i < size(); i++) {
-            if(min.getPrecedence() != 0 && get(i).getPrecedence() < min.getPrecedence()) {
+            if(get(i).getPrecedence().comparePrecedence(min.getPrecedence()) == -1) {
                 min = get(i);
             }
-            if(get(i).getPrecedence() > max.getPrecedence()) {
+            if(get(i).getPrecedence().comparePrecedence(max.getPrecedence()) == 1) {
                 max = get(i);
             }
+            
+            if(get(i).getPrecedence() == PrecedenceClass.OVERHANG) {
+                hasOverhang = true;
+                overhangForeColor = get(i).getForeColor();
+            }
+            if(get(i).getPrecedence() == PrecedenceClass.KEY_INFORMATION) {
+                hasKeyInformaion = true;
+                keyInformationBackColor = get(i).getForeColor();
+            }
         }
-        //get the foreground character and color of the highest-precedence object of the tile
-        int foreColor = max.getForeColor();
+        
+        int foreColor, backColor;
+        if(hasOverhang && hasKeyInformaion) {
+            foreColor = overhangForeColor;
+            backColor = keyInformationBackColor;
+        }
+        else {
+            //get the color of the highest-precedence object of the tile
+            foreColor = max.getForeColor();
+            //get the background color of the lowest-precedence object in the tile
+            backColor = min.getBackColor();
+        }
+        //get the foreground character of the highest-precedence object of the tile
         int imgChar   = max.getImgChar();
-        //get the background color of the lowest-precedence object in the tile
-        int backColor = min.getBackColor();
         if(foreColor == backColor) {
             backColor = ImageRepresentation.MAGENTA;
         }
@@ -298,12 +327,12 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
     
     /**
      * Calculates the lowest-precedence object in the list.
-     * @return the lowest-precedence object int the list.
+     * @return the lowest-precedence object in the list.
      */
     PlacedObject getMin() {
         PlacedObject min = get(0);
          for(int i = 0; i < size(); i++) {
-            if(min.getPrecedence() != 0 && get(i).getPrecedence() < min.getPrecedence()) {
+            if(get(i).getPrecedence().comparePrecedence(min.getPrecedence()) == -1) {
                 min = get(i);
             }
         }

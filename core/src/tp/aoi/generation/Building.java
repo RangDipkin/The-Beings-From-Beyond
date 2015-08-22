@@ -33,6 +33,7 @@ import tp.aoi.grammars.PassagePlacer;
 import tp.aoi.objects.GameMap;
 import tp.aoi.objects.ObjectTemplate;
 import tp.aoi.objects.PlacedObject;
+import tp.aoi.objects.PrecedenceClass;
 
 public class Building extends HashSet<Room>{
     GameMap map;
@@ -40,16 +41,16 @@ public class Building extends HashSet<Room>{
     Room externalWalls;
     
     static final ImageRepresentation DOOR_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.MAGENTA, 219);
-    static final ObjectTemplate DOOR_TEMPLATE = new ObjectTemplate("Archway", DOOR_IMAGE, true, false, 1);
+    static final ObjectTemplate DOOR_TEMPLATE = new ObjectTemplate("Archway", DOOR_IMAGE, true, false, PrecedenceClass.NORMAL);
     
     static final ImageRepresentation WEST_ARCH_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, 16);
-    static final ObjectTemplate WEST_ARCH_TEMPLATE = new ObjectTemplate("Archway", WEST_ARCH_IMAGE, false, false, 1);
+    static final ObjectTemplate WEST_ARCH_TEMPLATE = new ObjectTemplate("Archway", WEST_ARCH_IMAGE, false, false, PrecedenceClass.OVERHANG);
     static final ImageRepresentation EAST_ARCH_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, 17);
-    static final ObjectTemplate EAST_ARCH_TEMPLATE = new ObjectTemplate("Archway", EAST_ARCH_IMAGE, false, false, 1);
+    static final ObjectTemplate EAST_ARCH_TEMPLATE = new ObjectTemplate("Archway", EAST_ARCH_IMAGE, false, false, PrecedenceClass.OVERHANG);
     static final ImageRepresentation NORTH_ARCH_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, 31);
-    static final ObjectTemplate NORTH_ARCH_TEMPLATE = new ObjectTemplate("Archway", NORTH_ARCH_IMAGE, false, false, 1);
+    static final ObjectTemplate NORTH_ARCH_TEMPLATE = new ObjectTemplate("Archway", NORTH_ARCH_IMAGE, false, false, PrecedenceClass.OVERHANG);
     static final ImageRepresentation SOUTH_ARCH_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, 30);
-    static final ObjectTemplate SOUTH_ARCH_TEMPLATE = new ObjectTemplate("Archway", SOUTH_ARCH_IMAGE, false, false, 1);
+    static final ObjectTemplate SOUTH_ARCH_TEMPLATE = new ObjectTemplate("Archway", SOUTH_ARCH_IMAGE, false, false, PrecedenceClass.OVERHANG);
     
     public Building(GameMap inHandledMap, int width, int height) {
         map = inHandledMap; 
@@ -67,10 +68,10 @@ public class Building extends HashSet<Room>{
                 ImageRepresentation tileFloor2 = new ImageRepresentation(ImageRepresentation.MAGENTA, ImageRepresentation.LIGHT_WOOD, ImageRepresentation.EMPTY_CELL);
                 if(!map.getTile(i,j).hasBlockingObject()) {
                     if((i%2==0&&j%2==0)||(j%2 == 1 && i%2==1)) {
-                        PlacedObject.placedObjectWrapper("Black Tiled Floor", tileFloor1, false, false, 0, map.getTile(i, j));
+                        PlacedObject.placedObjectWrapper("Black Tiled Floor", tileFloor1, false, false, PrecedenceClass.FLOOR, map.getTile(i, j));
                     }
                     else if (!map.getTile(i,j).hasBlockingObject()) {
-                        PlacedObject.placedObjectWrapper("Tiled Floor", tileFloor2, false, false, 0, map.getTile(i, j));
+                        PlacedObject.placedObjectWrapper("Tiled Floor", tileFloor2, false, false, PrecedenceClass.FLOOR , map.getTile(i, j));
                     }
                 }
             }
@@ -133,7 +134,7 @@ public class Building extends HashSet<Room>{
                 double length = Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
                 double dx = x2-x1;
                 double dy = y2-y1;
-                System.out.println("v1 ("+ x1 + "," + y1 + "), v2 (" + x2 + "," + y2 + ")");
+//                System.out.println("v1 ("+ x1 + "," + y1 + "), v2 (" + x2 + "," + y2 + ")");
 //                System.out.println("dx: " + dx);
 //                System.out.println("dy: " + dy);
                 
@@ -150,7 +151,7 @@ public class Building extends HashSet<Room>{
 //                System.out.println("Building Passageway at ("+ x3 + "," + y3 + ")");
 //                System.out.println();
                 if(passage.passageType.equals("MEDIUM_ARCH")) {
-                    System.out.println("Removing (" + x3int + "," + y3int + ")");
+//                    System.out.println("Removing (" + x3int + "," + y3int + ")");
                     map.removeAll(x3int, y3int);
                     
                     //determine where the second opening should lie
@@ -166,7 +167,7 @@ public class Building extends HashSet<Room>{
                     
                     int secondOpeningX = x3int + xParam;
                     int secondOpeningY = y3int + yParam;
-                    System.out.println("Removing (" + secondOpeningX + "," + secondOpeningY + ")");
+//                    System.out.println("Removing (" + secondOpeningX + "," + secondOpeningY + ")");
                     
                     
                     map.removeAll(secondOpeningX, secondOpeningY);

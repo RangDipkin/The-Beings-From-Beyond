@@ -51,7 +51,7 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
      *   *MINOR version when you add FUNCTIONALITY (backwards compatible)
      *   *PATCH version when you make BUG FIXES(backwards compatible)
     */
-    public final static String VERSION_NUMBER = "v0.5.0";
+    public final static String VERSION_NUMBER = "v0.6.0";
     //default cmd emulation = 80
     //to fill 1680x1000 = 210
     public static int WIDTH_IN_SLOTS    = 80;
