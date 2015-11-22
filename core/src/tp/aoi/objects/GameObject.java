@@ -46,7 +46,8 @@ abstract class GameObject {
      * @param grabbable
      * @param precedence 
      */
-    GameObject(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence) {
+    GameObject(String name, ImageRepresentation ir, boolean blocking,
+            boolean grabbable, PrecedenceClass precedence) {
         this.blocking = blocking;
         this.grabbable = grabbable;
         this.ir = ir;

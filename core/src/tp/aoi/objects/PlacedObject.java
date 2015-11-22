@@ -41,14 +41,15 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
      * @param location
      * @return 
      */
-    private PlacedObject(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence) {
+    private PlacedObject(String name, ImageRepresentation ir, boolean blocking, 
+            boolean grabbable, PrecedenceClass precedence) {
         super(name, ir, blocking, grabbable, precedence);
     }
     
     /**
      * Creates a placedObject and handles bookkeeping. Current bookkeeping of
      * placed objects are the following constraints:
-     *      * Each object has a reference to its location (PlacedObject.location)
+     *      * Each object has a reference to its location(PlacedObject.location)
      *      * Each location has a reference to each object in it
      *      * Each map has a list of all objects in it
      * @param name
@@ -59,8 +60,11 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
      * @param location
      * @return 
      */
-    public static PlacedObject placedObjectWrapper(String name, ImageRepresentation ir, boolean blocking, boolean grabbable, PrecedenceClass precedence, Location location) {
-        PlacedObject placedObject = new PlacedObject(name, ir, blocking, grabbable, precedence);
+    public static PlacedObject placedObjectWrapper(String name, 
+            ImageRepresentation ir, boolean blocking, boolean grabbable, 
+            PrecedenceClass precedence, Location location) {
+        PlacedObject placedObject = new PlacedObject(name, ir, blocking, 
+                grabbable, precedence);
         placedObject.location = location;
         location.addObject(placedObject);
         location.getMap().objectList.add(placedObject);
@@ -94,7 +98,8 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
      * ObjectTemplate in its object list (through the use of addObject)
      * (called from GameMap.resolveDesires())
      * Preconditions: given a class instance, and a desire for direction
-     * Postconditions: the ObjectTemplate instance is moved in the desired direction
+     * Postconditions: the ObjectTemplate instance is moved in the desired 
+     *                 direction
      * @param other
      * @param map 
      */
@@ -150,7 +155,8 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
         final int MIN_PATH_LENGTH = 3;
         final int MAX_PATH_LENGTH = 10;
         int roll = dice.nextInt(dirs.length);
-        int randomPathLength = dice.nextInt(MAX_PATH_LENGTH-MIN_PATH_LENGTH) + MIN_PATH_LENGTH;
+        int randomPathLength = 
+                dice.nextInt(MAX_PATH_LENGTH-MIN_PATH_LENGTH) + MIN_PATH_LENGTH;
         
         for(int i = 0; i < randomPathLength; i++) {
             move(dirs[roll]);
@@ -197,13 +203,16 @@ public class PlacedObject extends GameObject implements MapRelativeItem{
     }
     
     public void FOVscan(int range) {
-        for(int octant = 0; octant < FieldOfViewScan.NUMBER_OF_OCTANTS; octant++) {
+        for(int octant = 0; 
+            octant < FieldOfViewScan.NUMBER_OF_OCTANTS; 
+            octant++) {
             FieldOfViewScan.scanLine(FieldOfViewScan.START_DEPTH,
-                    FieldOfViewScan.START_STARTSLOPE,FieldOfViewScan.DEFAULT_ENDSLOPE, 
+                    FieldOfViewScan.START_STARTSLOPE,
+                    FieldOfViewScan.DEFAULT_ENDSLOPE, 
                     octant,this, range, getMap());
         }
         //set the tiles to be visible
-        getMap().getTile(this.getMapX(), this.getMapY()).doFOVaction(this, true);
+        getMap().getTile(this.getMapX(),this.getMapY()).doFOVaction(this, true);
     }
     
     public Location getLocation() {

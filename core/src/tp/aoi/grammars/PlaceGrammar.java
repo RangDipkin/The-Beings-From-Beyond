@@ -38,7 +38,9 @@ import java.util.List;
  * geometry created by each place grammar rule can, in principle, be an 
  * arbitrary mesh. 
  */
-public class PlaceGrammar {
+public class PlaceGrammar implements YAMLloadable{
+    //correspond to the variables of a CFG
     public List<Constant> constants;
+    //correspond to the productions of a CFG.
     public List<ShapeRule> shapeRules;
 }

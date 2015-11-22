@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Travis Pressler
+ * Copyright 2015 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,12 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * Constraint.java
-   *
-   * An existing shape's dimensions in the world coordinate system(WCS)  
-   * must meet each constraint clause in order for the given shape rule to be 
-   * applied.
+   * AnnotatedEdge.java
  */
-package tp.aoi.grammars;
+package tp.aoi.topology;
 
-class Constraint {}
+public class AnnotatedEdge extends TopologicalElement {
+    AnnotatedNode nodeA;
+    AnnotatedNode nodeB;
+    
+    public AnnotatedEdge(AnnotatedNode nodeA,AnnotatedNode nodeB) {
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+    }
+
+    @Override
+    boolean isNode() {
+        return false;
+    }
+}

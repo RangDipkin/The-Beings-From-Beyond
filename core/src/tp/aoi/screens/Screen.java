@@ -29,7 +29,8 @@ import tp.aoi.event.GameEvent;
 
 public abstract class Screen implements EventProcessable {
     private ImageRepresentation[][] mainImRepMatrix;
-    ArrayList<TextCollection> activeGUIElements = new ArrayList<TextCollection>();
+    ArrayList<TextCollection> activeGUIElements = 
+            new ArrayList<TextCollection>();
     //
     public int originX, originY;
     long nanosSinceLastRender = 0;
@@ -50,7 +51,8 @@ public abstract class Screen implements EventProcessable {
         //this handles animation frame changes
         sendFrameChangeEvery(NANO_TO_MS_FACTOR * FRAME_TIME_IN_MS);
         
-        mainImRepMatrix = new ImageRepresentation[AtlasOfIndia.WIDTH_IN_SLOTS][AtlasOfIndia.HEIGHT_IN_SLOTS];
+        mainImRepMatrix = new ImageRepresentation[AtlasOfIndia.WIDTH_IN_SLOTS]
+                        [AtlasOfIndia.HEIGHT_IN_SLOTS];
         
         //first, prepare the representations (add them to mainImRepMatrix)
         prepareReps();
@@ -78,7 +80,8 @@ public abstract class Screen implements EventProcessable {
     private void prepareReps() {
         for(int i = 0; i < mainImRepMatrix.length; i++) {
             for(int j = 0; j < mainImRepMatrix[i].length; j++) {
-                mainImRepMatrix[i][j] = AtlasOfIndia.currentScreen.getCurrentCell(i,j);
+                mainImRepMatrix[i][j] = 
+                        AtlasOfIndia.currentScreen.getCurrentCell(i,j);
             }
         }
     }

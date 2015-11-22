@@ -41,7 +41,8 @@ public class GameMap {
     public GameMap(int width, int height) {
         this.width  = width;
         this.height = height;
-        System.out.println("Generating map of size " + width + " tiles wide and " + height + " tiles high.");
+        System.out.println("Generating map of size " + width 
+                + " tiles wide and " + height + " tiles high.");
         //create a 2-dimensional array of null-reference tiles
         map = new Tile[width][height];
         for(int i = 0; i < width ; i++) {
@@ -59,8 +60,11 @@ public class GameMap {
         new Building(this, width, height); 
         
         mainChar = PlacedObject.placedObjectWrapper("Test Player", 
-                new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.PLAYER_SYMBOL), 
-                false, false, PrecedenceClass.KEY_INFORMATION, this.getTile(1,1));
+                new ImageRepresentation(ImageRepresentation.WHITE, 
+                        ImageRepresentation.PLAYER_SYMBOL), 
+                false, false, PrecedenceClass.KEY_INFORMATION, 
+                this.getTile(1,1));
+        
         
 //        for(int i = 0; i < 2; i++) {
 //            ObjectTemplate greenSmiley = new ObjectTemplate("enemy", new ImageRepresentation(ImageRepresentation.GREEN, 2), false, false, 1);
@@ -68,10 +72,12 @@ public class GameMap {
 //            placeObjectFromTemplate(greenSmiley, randomValidCoord());
 //        }
         PlacedObject torch = PlacedObject.placedObjectWrapper("Torch", 
-                new ImageRepresentation(ImageRepresentation.BROWN, ImageRepresentation.TORCH_GRAPHIC), false, 
+                new ImageRepresentation(ImageRepresentation.BROWN, 
+                        ImageRepresentation.TORCH_GRAPHIC), false, 
                 true, PrecedenceClass.NORMAL, mainChar.myInventory);
         PlacedObject topHat = PlacedObject.placedObjectWrapper("Top hat", 
-                new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.HAT_GRAPHIC), false, 
+                new ImageRepresentation(ImageRepresentation.BLACK, 
+                        ImageRepresentation.HAT_GRAPHIC), false, 
                 true, PrecedenceClass.NORMAL, mainChar.myInventory);
         if(!DEBUG_VISIBILITY) {
             mainChar.FOVscan(250);
@@ -118,10 +124,14 @@ public class GameMap {
      */
     public ImageRepresentation getRepresentation(int x, int y) {
         if(!isValidTile(x,y)) { 
-            return new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.BLACK, ImageRepresentation.CENTERED_DOT);
+            return new ImageRepresentation(ImageRepresentation.GRAY, 
+                    ImageRepresentation.BLACK, 
+                    ImageRepresentation.CENTERED_DOT);
         }
         else if (!isVisibleTile(x, y)) {
-            return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.BLACK, ImageRepresentation.CENTERED_DOT);
+            return new ImageRepresentation(ImageRepresentation.BLACK, 
+                    ImageRepresentation.BLACK, 
+                    ImageRepresentation.CENTERED_DOT);
         }
         return map[x][y].getFinalOutput();
     }
@@ -140,7 +150,8 @@ public class GameMap {
 
         for(int i = 0; i < map[x][y].size(); i++) {
             PlacedObject currObject = map[x][y].get(i);
-            if(currObject.getPrecedence().comparePrecedence(floor.getPrecedence()) == -1) {
+            if(currObject.getPrecedence()
+                    .comparePrecedence(floor.getPrecedence()) == -1) {
                 floor = currObject;
             }
         }
@@ -217,7 +228,8 @@ public class GameMap {
     public Tile getTile(double x, double y) {
         int checkX = (int)Math.floor(x);
         int checkY = (int)Math.floor(y);
-        if(checkX > map.length || checkY > map[0].length || checkX < 0 || checkY < 0) {
+        if(checkX > map.length || checkY > map[0].length || 
+                checkX < 0 || checkY < 0) {
             return new Tile();
         }
         else {
@@ -241,13 +253,15 @@ public class GameMap {
     public boolean isValidTile(double x, double y) {
         int upperLeftX = (int)Math.floor(x);
         int upperLeftY = (int)Math.floor(y);
-        return upperLeftX < width && upperLeftY < height && upperLeftX >= 0 && upperLeftY >= 0;
+        return upperLeftX < width && upperLeftY < height 
+                && upperLeftX >= 0 && upperLeftY >= 0;
     }
 
     public boolean isValidTile(PreciseCoordinate coords) {
         int upperLeftX = (int)Math.floor(coords.getX());
         int upperLeftY = (int)Math.floor(coords.getY());
-        return upperLeftX < width && upperLeftY < height && upperLeftX >= 0 && upperLeftY >= 0;
+        return upperLeftX < width && upperLeftY < height 
+                && upperLeftX >= 0 && upperLeftY >= 0;
     }
 
     void clearFGH() { 

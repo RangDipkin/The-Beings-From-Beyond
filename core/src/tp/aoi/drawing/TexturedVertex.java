@@ -18,19 +18,26 @@ public class TexturedVertex {
     public static final int textureElementCount = 2;
      
     // Bytes per parameter
-    public static final int positionBytesCount = positionElementCount * elementBytes;
-    public static final int colorByteCount = colorElementCount * elementBytes;
-    public static final int textureByteCount = textureElementCount * elementBytes;
+    public static final int positionBytesCount = 
+            positionElementCount * elementBytes;
+    public static final int colorByteCount = 
+            colorElementCount * elementBytes;
+    public static final int textureByteCount = 
+            textureElementCount * elementBytes;
      
     // Byte offsets per parameter
     public static final int positionByteOffset = 0;
-    public static final int colorByteOffset = positionByteOffset + positionBytesCount;
-    public static final int textureByteOffset = colorByteOffset + colorByteCount;
+    public static final int colorByteOffset = 
+            positionByteOffset + positionBytesCount;
+    public static final int textureByteOffset = 
+            colorByteOffset + colorByteCount;
      
     // The amount of elements that a vertex has
-    public static final int elementCount = positionElementCount + colorElementCount + textureElementCount;    
+    public static final int elementCount = 
+            positionElementCount + colorElementCount + textureElementCount;
     // The size of a vertex in bytes, like in C/C++: sizeof(Vertex)
-    public static final int stride = positionBytesCount + colorByteCount + textureByteCount;
+    public static final int stride = 
+            positionBytesCount + colorByteCount + textureByteCount;
      
     // Setters
     public void setXYZ(float x, float y, float z) {
@@ -76,11 +83,13 @@ public class TexturedVertex {
     }
      
     public float[] getXYZW() {
-        return new float[] {this.xyzw[0], this.xyzw[1], this.xyzw[2], this.xyzw[3]};
+        return new float[] {this.xyzw[0], this.xyzw[1], 
+            this.xyzw[2], this.xyzw[3]};
     }
      
     public float[] getRGBA() {
-        return new float[] {this.rgba[0], this.rgba[1], this.rgba[2], this.rgba[3]};
+        return new float[] {this.rgba[0], this.rgba[1], 
+            this.rgba[2], this.rgba[3]};
     }
      
     public float[] getST() {

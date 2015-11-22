@@ -45,13 +45,14 @@ import tp.aoi.screens.Screen;
 import tp.aoi.screens.TitleScreen;
 import tp.aoi.utils.Translator;
 
-public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, EventProcessable {
+public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
+        EventProcessable {
     /* Major.Minor.Patch (http://semver.org/)
      *   *MAJOR version when you make incompatible API changes
      *   *MINOR version when you add FUNCTIONALITY (backwards compatible)
      *   *PATCH version when you make BUG FIXES(backwards compatible)
     */
-    public final static String VERSION_NUMBER = "v0.6.0";
+    public final static String VERSION_NUMBER = "v0.7.0";
     //default cmd emulation = 80
     //to fill 1680x1000 = 210
     public static int WIDTH_IN_SLOTS    = 80;
@@ -90,26 +91,27 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
     public void create () {
         eventProcessor = new EventProcessor(this);
         Gdx.input.setInputProcessor(this);
-            //        setSize(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS  + insets.left + insets.right,
-            //                CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS + insets.top  + insets.bottom);
-            //        setMinimumSize(new Dimension(CHAR_PIXEL_WIDTH  * WIDTH_IN_SLOTS + insets.left + insets.right,
-            //                                     CHAR_PIXEL_HEIGHT * HEIGHT_IN_SLOTS+ insets.top  + insets.bottom));
         try {
             YAMLparser parser = new YAMLparser();
         } catch (IOException ex) {
-            Logger.getLogger(AtlasOfIndia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AtlasOfIndia.class.getName())
+                    .log(Level.SEVERE, null, ex);
         } catch (YamlException ex) {
-            Logger.getLogger(AtlasOfIndia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AtlasOfIndia.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
         //loadCharSheet();
         rosetta = new Translator();
         
         try {
-            currentScreen = previousScreen = grandparentScreen = new TitleScreen(loadTitleScreen());
+            currentScreen = previousScreen = grandparentScreen = 
+                    new TitleScreen(loadTitleScreen());
         } catch (IOException ex) {
-            Logger.getLogger(AtlasOfIndia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AtlasOfIndia.class.getName())
+                    .log(Level.SEVERE, null, ex);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(AtlasOfIndia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AtlasOfIndia.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
         batch = new SpriteBatch();
         spriteSheet = new Texture("charsheet.bmp");
@@ -124,7 +126,8 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
         eventProcessor.processEventList(currentScreen);
         
         timeSinceLastRender = System.nanoTime() - startTime;
-        ImageRepresentation[][] cellsToDraw = currentScreen.render(timeSinceLastRender/1000);
+        ImageRepresentation[][] cellsToDraw = 
+                currentScreen.render(timeSinceLastRender/1000);
         timeSinceLastRender = 0;
         startTime = System.nanoTime();
         
@@ -151,15 +154,29 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
                 int charCodeX = currCell.rawImgChar % IMAGE_GRID_WIDTH;
                 int charCodeY = currCell.rawImgChar / IMAGE_GRID_WIDTH;
                 
-                batch.draw(spriteSheet, 
-                        row * CHAR_PIXEL_WIDTH , (HEIGHT_IN_SLOTS - col - 1) * CHAR_PIXEL_HEIGHT,   //coordinates in screen space
-                        row * CHAR_PIXEL_WIDTH , (HEIGHT_IN_SLOTS - col - 1) * CHAR_PIXEL_HEIGHT,   //coordinates of the scaling and rotation origin relative to the screen space coordinates
-                        CHAR_PIXEL_WIDTH, CHAR_PIXEL_HEIGHT,                                    //width and height in pixels
-                        1,1,                                                                    //scale of the rectangle around originX/originY
-                        0,                                                                      //the angle of counter clockwise rotation of the rectangle around originX/originY
-                        charCodeX * CHAR_PIXEL_WIDTH ,charCodeY * CHAR_PIXEL_HEIGHT,                                                                    //coordinates in texel space
-                        8, 12,                                                                  //source width and height in texels
-                        false,false                                                             //whether to flip the sprite horizontally or vertically
+                batch.draw(
+                        spriteSheet, 
+                        //coordinates in screen space
+                        row * CHAR_PIXEL_WIDTH , 
+                        (HEIGHT_IN_SLOTS - col - 1) * CHAR_PIXEL_HEIGHT,
+                        //coordinates of the scaling and rotation origin 
+                        //relative to the screen space coordinates
+                        row * CHAR_PIXEL_WIDTH , 
+                        (HEIGHT_IN_SLOTS - col - 1) * CHAR_PIXEL_HEIGHT,
+                        //width and height in pixels
+                        CHAR_PIXEL_WIDTH, CHAR_PIXEL_HEIGHT, 
+                        //scale of the rectangle around originX/originY
+                        1,1,
+                        //the angle of counter clockwise rotation of the 
+                        //rectangle around originX/originY
+                        0,
+                        //coordinates in texel space
+                        charCodeX * CHAR_PIXEL_WIDTH ,
+                        charCodeY * CHAR_PIXEL_HEIGHT, 
+                        //source width and height in texels
+                        8, 12,
+                        //whether to flip the sprite horizontally or vertically
+                        false,false
                 );
                 batch.flush();
             }
@@ -193,9 +210,11 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
      * Reads title screen images as a bitmaps, then creates the main
      * frame, and finally creates a new title screen.
      */
-    private static ArrayList<ImageRepresentation[][]> loadTitleScreen() throws IOException, URISyntaxException {
+    private static ArrayList<ImageRepresentation[][]> loadTitleScreen() 
+            throws IOException, URISyntaxException {
         System.out.println("loading TitleScreen...");
-        ArrayList<ImageRepresentation[][]> translatedFrames = new ArrayList<ImageRepresentation[][]>();  
+        ArrayList<ImageRepresentation[][]> translatedFrames = 
+                new ArrayList<ImageRepresentation[][]>();  
         BufferedImage currFrame = null;
         FileHandle dirHandle = Gdx.files.internal("titleframes");
         
@@ -229,11 +248,17 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
      *         character as booleans
      */
     static BooleanImage[][] separateSheet(BufferedImage srcSheet) {
-        BooleanImage[][] booleanArray = new BooleanImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];  
+        BooleanImage[][] booleanArray = 
+                new BooleanImage[IMAGE_GRID_WIDTH][IMAGE_GRID_WIDTH];  
         for(int i = 0; i < IMAGE_GRID_WIDTH; i++) {
             for(int j = 0; j < IMAGE_GRID_WIDTH; j++) {
-                BufferedImage currSubimage = srcSheet.getSubimage(i*CHAR_PIXEL_WIDTH,j*CHAR_PIXEL_HEIGHT,CHAR_PIXEL_WIDTH,CHAR_PIXEL_HEIGHT);   
-                booleanArray[i][j] = new BooleanImage(CHAR_PIXEL_WIDTH, CHAR_PIXEL_HEIGHT);
+                BufferedImage currSubimage = 
+                        srcSheet.getSubimage(i*CHAR_PIXEL_WIDTH,
+                                j*CHAR_PIXEL_HEIGHT,
+                                CHAR_PIXEL_WIDTH,
+                                CHAR_PIXEL_HEIGHT);   
+                booleanArray[i][j] = 
+                        new BooleanImage(CHAR_PIXEL_WIDTH, CHAR_PIXEL_HEIGHT);
                 for(int k = 0; k < currSubimage.getWidth(); k++) {
                     for(int l = 0; l < currSubimage.getHeight(); l++) {
                         int currPixel = currSubimage.getRGB(k,l);
@@ -266,7 +291,8 @@ public class AtlasOfIndia extends ApplicationAdapter implements InputProcessor, 
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    public boolean touchDown(int screenX, int screenY, 
+            int pointer, int button) {
         return false;
     }
 

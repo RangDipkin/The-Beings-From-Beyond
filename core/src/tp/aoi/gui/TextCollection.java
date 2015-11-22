@@ -36,20 +36,22 @@ public abstract class TextCollection extends ArrayList<GUIText> {
     final static int CONTROL_ACTIVE_COLOR = -1;
     public final static int DEFAULT_INACTIVE_COLOR = ImageRepresentation.WHITE;
     public final static int DEFAULT_ACTIVE_COLOR   = ImageRepresentation.YELLOW;
-    public final static int DEFAULT_ANCILLARY_TEXT_COLOR = ImageRepresentation.GRAY;
+    public final static int DEFAULT_ANCILLARY_TEXT_COLOR = 
+            ImageRepresentation.GRAY;
     int inactiveColor = ImageRepresentation.WHITE;
     int activeColor = ImageRepresentation.WHITE;
     //ArrayList<GUIText> ancillaryText;
-    Map<GUIText, PlacedObject> logicalObjectMap = new HashMap<GUIText, PlacedObject>();
+    Map<GUIText, PlacedObject> logicalObjectMap = 
+            new HashMap<GUIText, PlacedObject>();
     int currentChoiceIndex = 0;
     
     /**
      * Adds a GUIText element along with its corresponding ObjectTemplate to the 
      * TextCollection.
      * For example, add a new GUIText with the textString "Torch" along with a 
-     * specific ObjectTemplate with the textString Torch.  This is useful for the 
-     * inventory screen, for example. This providese a tie between the GUI textString 
-     * object and a logical game object.
+     * specific ObjectTemplate with the textString Torch.  This is useful for 
+     * the inventory screen, for example. This providese a tie between the GUI 
+     * textString object and a logical game object.
      * @param textString the textString to be displayed
      * @param obj the object corresponding to the textString.
      */
@@ -59,8 +61,8 @@ public abstract class TextCollection extends ArrayList<GUIText> {
     }
     
     /**
-     * Returns the maximum-length textString of a GUIText object within the current 
-     * TextCollection.
+     * Returns the maximum-length textString of a GUIText object within the 
+     * current TextCollection.
      * @return the width of the GUI item
     */
     public int getWidth() {
@@ -94,7 +96,8 @@ public abstract class TextCollection extends ArrayList<GUIText> {
     }
     
 //    /**
-//     * Adds ancillary textString (extra textString not included in the list proper).
+//     * Adds ancillary textString (extra textString not included in the list 
+//     * proper).
 //     */
 //    public void addAncillaryText(GUIText infoText) {
 //        ancillaryText.add(infoText);
@@ -120,7 +123,8 @@ public abstract class TextCollection extends ArrayList<GUIText> {
             currentChoiceIndex = this.size()-1;
         }
         else{
-            System.out.println("yo, cycleActiveUp in ChoiceList is bein' wierd");
+            System.out.println(
+                    "yo, cycleActiveUp in ChoiceList is bein' wierd");
         }
         
         if(this.get(currentChoiceIndex) instanceof AncillaryGUIText) {
@@ -172,15 +176,28 @@ public abstract class TextCollection extends ArrayList<GUIText> {
                 int currentLetter = choiceNameIntegers[j];
                 ImageRepresentation currentImg;
                 if(currText instanceof AncillaryGUIText) {
-                    currentImg = new ImageRepresentation(DEFAULT_ANCILLARY_TEXT_COLOR, ImageRepresentation.BLACK, currentLetter);
+                    currentImg = new ImageRepresentation(
+                                    DEFAULT_ANCILLARY_TEXT_COLOR, 
+                                    ImageRepresentation.BLACK, 
+                                    currentLetter);
                 }
-                else if(i == currentChoiceIndex && activeColor != CONTROL_ACTIVE_COLOR){
-                    currentImg = new ImageRepresentation(this.getActiveColor(), ImageRepresentation.BLACK, currentLetter);
+                else if((i == currentChoiceIndex) 
+                        && activeColor != CONTROL_ACTIVE_COLOR){
+                    currentImg = new ImageRepresentation(this.getActiveColor(), 
+                            ImageRepresentation.BLACK, currentLetter);
                 } 
                 else {
-                    currentImg = new ImageRepresentation(this.getInactiveColor(), ImageRepresentation.BLACK, currentLetter);
+                    currentImg = 
+                            new ImageRepresentation(this.getInactiveColor(), 
+                                    ImageRepresentation.BLACK, currentLetter);
                 }        
-                displayArea[(currText.specX >= 0) ? currText.specX + j : currentX][(currText.specY >= 0) ? currText.specY :currentY] = currentImg;
+                displayArea[(currText.specX >= 0) ? 
+                             currText.specX + j : 
+                             currentX]
+                           [(currText.specY >= 0) ? 
+                             currText.specY :
+                             currentY] = 
+                        currentImg;
                 currentX++;
             }
             currentX = getScreenX();

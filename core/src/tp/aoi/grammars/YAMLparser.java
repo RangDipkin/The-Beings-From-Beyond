@@ -27,27 +27,32 @@ import net.sourceforge.yamlbeans.YamlReader;
 public class YAMLparser {
     //mainGrammar is accessed from within Building.createInternalRooms()
     public static PlaceGrammar mainGrammar;
+    public static TopologyGrammar mainTG;
     
     public YAMLparser() throws IOException, YamlException {
-        System.out.println("Beginning YAML parser...");
-        FileHandle handle = Gdx.files.internal("grammars/testGrammar01.yml");
+        System.out.println("Parsing topology grammar...");
+        mainTG = (TopologyGrammar) loadYAML(TopologyGrammar.class, "grammars/topologyGrammar02.yml");
+        System.out.println("Topology grammar parsed!");
         
-        try {
-            YamlConfig config = new YamlConfig();
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            classLoader.loadClass("tp.aoi.grammars.Constant");
-            //System.out.println("aClass.getName() = " + aClass.getName());
-            config.readConfig.setClassLoader(Thread.currentThread().getContextClassLoader());
-            YamlReader reader = new YamlReader(handle.reader(), config);
-            
-            PlaceGrammar pg = (PlaceGrammar)reader.read(PlaceGrammar.class); 
-            for(ShapeSpec shapeSpec : pg.shapeRules.get(0).output.shapeSpecs) {
-                shapeSpec.parseVertices(pg.constants);
-            }
-            mainGrammar = pg;
-            System.out.println("YAML parser complete!");
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Class not found!");
+        System.out.println("Parsing shape grammar...");
+        // mainGrammar = (PlaceGrammar) loadYAML(PlaceGrammar.class, "grammars/testGrammar01.yml");
+        System.out.println("Shape grammar parsed!");
+        //parseGrammar(mainGrammar);
+    }
+    
+    public void parseGrammar(PlaceGrammar pg) {
+        for(ShapeSpec shapeSpec : pg.shapeRules.get(0).output.shapeSpecs) {
+            shapeSpec.parseVertices(pg.constants);
         }
+    }
+    
+    public Object loadYAML(Class daClass, String URL) throws YamlException {
+        FileHandle handle = Gdx.files.internal(URL);
+        
+        YamlConfig config = new YamlConfig();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        config.readConfig.setClassLoader(Thread.currentThread().getContextClassLoader());
+        YamlReader reader = new YamlReader(handle.reader(), config);
+        return reader.read(daClass);
     }
 }

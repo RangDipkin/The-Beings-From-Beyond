@@ -39,8 +39,8 @@ public enum PrecedenceClass {
             return 0;
         }
         else if(this == FLOOR ||
-           (this == NORMAL && (other == KEY_INFORMATION || other == OVERHANG)) ||
-           (this == KEY_INFORMATION && other == OVERHANG)) {
+           (this == NORMAL && (other == KEY_INFORMATION || other == OVERHANG))
+                || (this == KEY_INFORMATION && other == OVERHANG)) {
             return -1;
         }
         else {

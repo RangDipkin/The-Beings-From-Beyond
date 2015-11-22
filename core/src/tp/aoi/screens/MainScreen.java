@@ -58,7 +58,8 @@ public class MainScreen extends Screen{
                 stepScreenForwards(new InventoryScreen(handledMap.mainChar));
                 break;
             case Keys.G:
-                GrabScreen GrabGUI = new GrabScreen(handledMap, handledMap.mainChar);
+                GrabScreen GrabGUI = new GrabScreen(handledMap, 
+                        handledMap.mainChar);
                 stepScreenForwards(GrabGUI);
                 GrabGUI.createGrabGUI(GrabGUI.grabbableItems());
                 break;
@@ -110,7 +111,8 @@ public class MainScreen extends Screen{
     @Override
     ImageRepresentation getCurrentCell(int screenX, int screenY) {
         int[] originCoords = viewArea();
-        return handledMap.getRepresentation(screenX+originCoords[0],screenY+originCoords[1]);
+        return handledMap.getRepresentation(screenX+originCoords[0],
+                screenY+originCoords[1]);
     }
     
     /**
@@ -134,19 +136,27 @@ public class MainScreen extends Screen{
             int trackedX = trackedObject.getMapX();
             int minScreenCenterX = centerX;
             int XRemainder = screenWidth  % 2;
-            int maxScreenCenterX = (handledMap.getWidth()  - centerX) - XRemainder;
+            int maxScreenCenterX = 
+                    (handledMap.getWidth()  - centerX) - XRemainder;
             
             int cameraX = 0;
-            //if the map is thinner than the screen, put the camera at the center of the map
+            //if the map is thinner than the screen, put the camera at the 
+            //center of the map
             if (handledMap.getWidth() < screenWidth) {
                 cameraX = (handledMap.getWidth() - screenWidth)/2;
-            } //otherwise, if the tracked item is centerable, center on it
-            else if((trackedX >= minScreenCenterX) && (trackedX <= maxScreenCenterX)) {
+            } 
+            //otherwise, if the tracked item is centerable, center on it
+            else if((trackedX >= minScreenCenterX) && 
+                    (trackedX <= maxScreenCenterX)) {
                 cameraX = trackedX - centerX;
-            } //if the tracked item is too far left to be centerable, put the camera at minimum x
+            } 
+            //if the tracked item is too far left to be centerable, put the 
+            //camera at minimum x
             else if(trackedX < minScreenCenterX) {
                 cameraX = minScreenCenterX - centerX; 
-            } //if the tracked item is too far right to be centerable, put the camera at maximum x
+            } 
+            //if the tracked item is too far right to be centerable, put the 
+            //camera at maximum x
             else if(trackedX > maxScreenCenterX) {
                 cameraX = maxScreenCenterX - centerX;
             }
@@ -167,13 +177,15 @@ public class MainScreen extends Screen{
             int YRemainder = screenHeight % 2;
             int centerY = screenHeight/2;
             int minScreenCenterY = centerY;
-            int maxScreenCenterY = (handledMap.getHeight() - centerY) - YRemainder;
+            int maxScreenCenterY = 
+                    (handledMap.getHeight() - centerY) - YRemainder;
             int cameraY = 0;
             int trackedY = trackedObject.getMapY();
             if (handledMap.getHeight() < screenHeight) {
                 cameraY = (handledMap.getHeight() - screenHeight)/2;
             }
-            else if((trackedY >= minScreenCenterY) && (trackedY <= maxScreenCenterY)) {
+            else if((trackedY >= minScreenCenterY) 
+                    && (trackedY <= maxScreenCenterY)) {
                 cameraY = trackedY- centerY;
             }
             else if(trackedY < minScreenCenterY) {

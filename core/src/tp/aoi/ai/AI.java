@@ -37,7 +37,7 @@ public class AI {
      *         by A*. All that needs to be done is to keep popping Tiles off
      *         the stack until you reach your goal.
     */
-    public static Stack AStar(Tile start, Tile goal, GameMap map) {                  
+    public static Stack AStar(Tile start, Tile goal, GameMap map) { 
         //The set of nodes already evaluated
         ArrayList<Tile> closedSet = new ArrayList<Tile>();
         //The set of tentative nodes to be evaluated
@@ -56,9 +56,11 @@ public class AI {
                 if((closedSet.contains(neighbor)) && (cost < neighbor.getG())) {
                     closedSet.remove(neighbor);
                 }
-                if(!openSet.contains(neighbor) && !closedSet.contains(neighbor)) {
+                if(!openSet.contains(neighbor) 
+                        && !closedSet.contains(neighbor)) {
                     neighbor.setG(cost);
-                    neighbor.setF(neighbor.getG() + neighbor.calculateH(start, goal));  
+                    neighbor.setF(neighbor.getG() 
+                            + neighbor.calculateH(start, goal));  
                     openSet.add(neighbor);
                     neighbor.setParent(current); 
                 }
@@ -68,7 +70,8 @@ public class AI {
         Stack path = new Stack();
         Tile currTile = goal;
         while(currTile.hasParent()) {                  
-            //should clear f, g, and h values after pathfind...think it's screwing up the algorithm
+            //should clear f, g, and h values after pathfind...think it's 
+            //screwing up the algorithm
             path.push(currTile);
             currTile = currTile.getParent();
         }

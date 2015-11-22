@@ -16,7 +16,8 @@
    * EventProcessor.java
    * 
    * Implements a general placeholder list for all events
-   * individual handling of most key/mouse events should happen in their respective screens
+   * individual handling of most key/mouse events should happen in their 
+   * respective screens
  */
 package tp.aoi.event;
 

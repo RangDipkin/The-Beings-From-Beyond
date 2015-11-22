@@ -32,7 +32,8 @@ import tp.aoi.event.GameEvent;
 import tp.aoi.event.EventProcessable;
 import tp.aoi.objects.PlacedObject;
 
-public class DetailedInspectionScreen extends Screen implements EventProcessable {
+public class DetailedInspectionScreen extends Screen 
+                    implements EventProcessable {
     PlacedObject inspectedObj;
     
     String detailedDescription;
@@ -42,7 +43,8 @@ public class DetailedInspectionScreen extends Screen implements EventProcessable
         
         detailedDescription = inspectedObj.getDetailedDescription();
         
-        ScreenText detailedDescriptor = new ScreenText(ImageRepresentation.WHITE, 0, 0);
+        ScreenText detailedDescriptor = 
+                new ScreenText(ImageRepresentation.WHITE, 0, 0);
         detailedDescriptor.add(new GUIText(detailedDescription));
         activeGUIElements.add(detailedDescriptor);
     }
@@ -57,6 +59,7 @@ public class DetailedInspectionScreen extends Screen implements EventProcessable
     
     @Override
     ImageRepresentation getCurrentCell(int i, int j) {
-        return new ImageRepresentation(ImageRepresentation.BLACK, ImageRepresentation.EMPTY_CELL);
+        return new ImageRepresentation(ImageRepresentation.BLACK, 
+                ImageRepresentation.EMPTY_CELL);
     }
 }

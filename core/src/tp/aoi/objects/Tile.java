@@ -29,7 +29,8 @@ import tp.aoi.drawing.ImageRepresentation;
 import java.util.ArrayList;
 import tp.aoi.lighting.LightingElement;
 
-public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, MovementDesire, Location {
+public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, 
+        MovementDesire, Location {
     //Path-Cost Function (cost frome starting node to current node)
     double gScore;
     //Heuristic Estimate (estimated distance to goal)
@@ -66,7 +67,8 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
     }
 
     public double calculateH(Tile start, Tile goal) {
-        hScore = Math.max(Math.abs(this.getX() - goal.getX()) , Math.abs(this.getY() - goal.getY()));
+        hScore = Math.max(Math.abs(this.getX() - goal.getX()) , 
+                Math.abs(this.getY() - goal.getY()));
 
         int dx1 = Math.abs(this.getX()  - goal.getX());
         int dy1 = Math.abs(this.getY()  - goal.getY());
@@ -278,7 +280,8 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
      */
     ImageRepresentation getFinalOutput() { 
         if(this.size() == 0) {
-            return new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.QUESTION_MARK);
+            return new ImageRepresentation(ImageRepresentation.WHITE, 
+                    ImageRepresentation.QUESTION_MARK);
         }
         
         PlacedObject min = get(0);
@@ -289,10 +292,12 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
         boolean hasKeyInformaion = false;
         int keyInformationBackColor = 0;
         for(int i = 0; i < size(); i++) {
-            if(get(i).getPrecedence().comparePrecedence(min.getPrecedence()) == -1) {
+            if(get(i).getPrecedence()
+                    .comparePrecedence(min.getPrecedence()) == -1) {
                 min = get(i);
             }
-            if(get(i).getPrecedence().comparePrecedence(max.getPrecedence()) == 1) {
+            if(get(i).getPrecedence()
+                    .comparePrecedence(max.getPrecedence()) == 1) {
                 max = get(i);
             }
             
@@ -314,10 +319,12 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
         else {
             //get the color of the highest-precedence object of the tile
             foreColor = max.getForeColor();
-            //get the background color of the lowest-precedence object in the tile
+            //get the background color of the 
+            //lowest-precedence object in the tile
             backColor = min.getBackColor();
         }
-        //get the foreground character of the highest-precedence object of the tile
+        //get the foreground character of the 
+        //highest-precedence object of the tile
         int imgChar   = max.getImgChar();
         if(foreColor == backColor) {
             backColor = ImageRepresentation.MAGENTA;
@@ -332,7 +339,8 @@ public class Tile extends ArrayList<PlacedObject> implements Comparable<Tile>, M
     PlacedObject getMin() {
         PlacedObject min = get(0);
          for(int i = 0; i < size(); i++) {
-            if(get(i).getPrecedence().comparePrecedence(min.getPrecedence()) == -1) {
+            if(get(i).getPrecedence().comparePrecedence(min.getPrecedence()) 
+                    == -1) {
                 min = get(i);
             }
         }

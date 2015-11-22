@@ -53,26 +53,33 @@ public class TitleScreen extends Screen {
     public TitleScreen(ArrayList<ImageRepresentation[][]> inPixels){
         titleFrames = inPixels;                
         xOffset = (AtlasOfIndia.WIDTH_IN_SLOTS - titleFrames.get(0).length) / 2;
-        yOffset = (AtlasOfIndia.HEIGHT_IN_SLOTS - titleFrames.get(0)[0].length) / 2;      
+        yOffset = (AtlasOfIndia.HEIGHT_IN_SLOTS - titleFrames.get(0)[0].length) 
+                / 2;
         originX = xOffset;
         originY = yOffset;       
-        xRemainder = (AtlasOfIndia.WIDTH_IN_SLOTS - titleFrames.get(0).length) % 2;
-        yRemainder = (AtlasOfIndia.HEIGHT_IN_SLOTS - titleFrames.get(0)[0].length) % 2;
+        xRemainder = (AtlasOfIndia.WIDTH_IN_SLOTS - titleFrames.get(0).length) 
+                % 2;
+        yRemainder = 
+                (AtlasOfIndia.HEIGHT_IN_SLOTS - titleFrames.get(0)[0].length) 
+                % 2;
         
         defaultBackColor = titleFrames.get(0)[0][0].getBackColor();    
         
         //initialize main menu choices       
-        mainMenuChoices = new ScreenText(ImageRepresentation.GRAY, ImageRepresentation.RED, 35 + xOffset, 20 + yOffset);
+        mainMenuChoices = new ScreenText(ImageRepresentation.GRAY, 
+                        ImageRepresentation.RED, 35 + xOffset, 20 + yOffset);
         mainMenuChoices.add(new GUIText(NEW_GAME,  25+xOffset, 11+yOffset));
         mainMenuChoices.add(new GUIText(LOAD_GAME, 33+xOffset, 11+yOffset));
         mainMenuChoices.add(new GUIText(OPTIONS,   40+xOffset, 11+yOffset));
         mainMenuChoices.add(new GUIText(EXIT_GAME, 50+xOffset, 11+yOffset));
                 
-        lowerLeftCorner = new ScreenText(ImageRepresentation.GRAY, 0+xOffset,24+yOffset);
+        lowerLeftCorner = new ScreenText(ImageRepresentation.GRAY, 0+xOffset,
+                24+yOffset);
         lowerLeftCorner.add(new GUIText("by Travis Pressler"));
         
         //Space for version number
-        lowerRightCorner = new ScreenText(ImageRepresentation.GRAY, 74 + xOffset, 24 + yOffset);
+        lowerRightCorner = new ScreenText(ImageRepresentation.GRAY, 
+                74 + xOffset, 24 + yOffset);
         lowerRightCorner.add(new GUIText(AtlasOfIndia.VERSION_NUMBER));
         
         //refreshVolatileTextElements();
@@ -96,7 +103,8 @@ public class TitleScreen extends Screen {
             i >= AtlasOfIndia.WIDTH_IN_SLOTS - xOffset - xRemainder || 
             j < yOffset || 
             j >= AtlasOfIndia.HEIGHT_IN_SLOTS - yOffset - yRemainder) {
-            return new ImageRepresentation(ImageRepresentation.WHITE, defaultBackColor, 0);
+            return new ImageRepresentation(ImageRepresentation.WHITE, 
+                    defaultBackColor, 0);
         }
         else {
             return titleFrames.get(currentStep)[i-xOffset][j-yOffset];
@@ -107,7 +115,8 @@ public class TitleScreen extends Screen {
     public void handleEvent(GameEvent event) { 
         if(event.getIntCode() == Keys.ENTER) {
             if(mainMenuChoices.getCurrentChoiceName().equals(NEW_GAME)){
-                stepScreenForwards(new MainScreen(AtlasOfIndia.WIDTH_IN_SLOTS, AtlasOfIndia.HEIGHT_IN_SLOTS));
+                stepScreenForwards(new MainScreen(AtlasOfIndia.WIDTH_IN_SLOTS, 
+                        AtlasOfIndia.HEIGHT_IN_SLOTS));
             }
             else if(mainMenuChoices.getCurrentChoiceName().equals(LOAD_GAME)) {
                 stepScreenForwards(new LoadScreen());

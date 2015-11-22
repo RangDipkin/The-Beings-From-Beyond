@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Travis Pressler
+ * Copyright 2015 Travis Pressler
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * Constraint.java
-   *
-   * An existing shape's dimensions in the world coordinate system(WCS)  
-   * must meet each constraint clause in order for the given shape rule to be 
-   * applied.
+   * Label.java
  */
 package tp.aoi.grammars;
 
-class Constraint {}
+public class Label {
+    public String name;
+    public float weight;
+    public boolean terminal;
+}

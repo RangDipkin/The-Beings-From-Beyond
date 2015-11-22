@@ -20,7 +20,7 @@ package tp.aoi.grammars;
 import java.util.List;
 
 public class ShapeSpec {
-    public String labels; 
+    public List<Label> labels; 
     public String labelControl;
     public List<Vertex> vertices;
     public boolean terminal;
@@ -30,17 +30,6 @@ public class ShapeSpec {
     void parseVertices(List<Constant> env) {
         for(Vertex vertex : vertices) {
             vertex.parseVertex(env);
-        }
-    }
-    
-    /**
-     * Translates Local-Coordinate-Space to World-Coordinate-Space. 
-     * @param height
-     * @param width 
-     */
-    public void translateLCStoWCS(int width, int height) {
-        for(Vertex vertex : vertices) {
-            vertex.toWCS(width, height);
         }
     }
     

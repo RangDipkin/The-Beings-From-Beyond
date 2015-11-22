@@ -28,7 +28,8 @@ import tp.aoi.event.GameEvent;
 
 public class LoadScreen extends Screen {
     public LoadScreen() {
-        ScreenText placeholder = new ScreenText(TextCollection.DEFAULT_ACTIVE_COLOR, 36,0);
+        ScreenText placeholder = new ScreenText(
+                TextCollection.DEFAULT_ACTIVE_COLOR, 36,0);
         placeholder.add(new GUIText("LOAD FILE"));
         activeGUIElements.add(placeholder);
     }

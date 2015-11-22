@@ -1,0 +1,85 @@
+---
+rules:
+- !tp.aoi.grammars.TopologyRule
+   labels: 
+    - empty
+   output:
+    - entry
+
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - entry=A
+   output:
+    - entry=A
+    - hallway=B
+    - entry=A-hallway=B
+    - hallway=C
+    - entry=A-hallway=C
+    - room=D
+    - entry=A-room=D
+    - entry=A-room=D
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - entry-hallway=A
+   output:
+    - entry-hallway=A
+    - stairsUp=B
+    - hallway=A-stairsUp=B
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - entry-hallway=A
+   output:
+    - entry-hallway=A
+    - room=B
+    - hallway=A-room=B
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - hallway-stairsUp=A
+   output:
+    - hallway-stairsUp=A
+    - room=B
+    - stairsUp=A-room=B
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - hallway=A-room=B
+    - hallway=C-room=D
+   output:
+    - hallway=A-room=B
+    - hallway=C-room=D
+    - room=B-room=D
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - hallway=A-hallway=B
+    - hallway=C-hallway=D
+   output:
+    - hallway=A-hallway=B
+    - hallway=C-hallway=B
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - hallway=A-hallway=B
+    - hallway=C-hallway=B
+   output:
+    - hallway=A-hallway=B
+    - hallway=C-hallway=B
+    - room=D
+    - hallway=B-room=D
+    - stairsUp=E
+    - hallway=B-stairsUp=E
+    
+- !tp.aoi.grammars.TopologyRule
+   label: 
+    - hallway=A-hallway=B
+    - hallway=C-hallway=B
+   output:
+    - hallway=A-hallway=B
+    - hallway=C-hallway=B
+    - room=D
+    - hallway=B-room=D
+    - stairsUp=E
+    - hallway=B-stairsUp=E

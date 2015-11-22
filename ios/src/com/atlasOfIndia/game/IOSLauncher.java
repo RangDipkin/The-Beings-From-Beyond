@@ -5,7 +5,7 @@ import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.atlasOfIndia.game.AtlasOfIndia;
+import tp.aoi.drawing.AtlasOfIndia;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override

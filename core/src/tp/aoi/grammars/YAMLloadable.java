@@ -13,34 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
    * 
-   * PlaceGrammar.java
+   * YAMLloadable.java
  */
 package tp.aoi.grammars;
 
-/**
- *
- * @author Travis
- */
-public class LineSegment {
-    Vertex v1;
-    Vertex v2;
-    String shapeSpecName;
+public interface YAMLloadable {
     
-    public LineSegment(Vertex v1, Vertex v2, String shapeSpecName) {
-        this.v1 = v1; 
-        this.v2 = v2;
-        this.shapeSpecName = shapeSpecName;
-    }
-    
-    public Vertex getV1() {
-        return v1;
-    }
-    
-    public Vertex getV2() {
-        return v2;
-    }
-    
-    public String getName() {
-        return this.shapeSpecName;
-    }
 }

@@ -14,17 +14,20 @@
  * limitations under the License.
  * 
  * Vertex.java
+ *
+ * This is a basic representation of a Vertex which resides in a string-only
+ * All vertices are with respect to a local coordinate system (LCS)
  */
 package tp.aoi.grammars;
 
 import java.util.List;
+import tp.aoi.generation.WCSvertex;
 
 public class Vertex {
     public String x,y,z; 
+    //Blueprint-space, available after parsing strings
     float parsedX, parsedY, parsedZ;
-    //World-Coordinate-Space, these are only avaliable after parseVertex is invoked
-    public int WCSx, WCSy, WCSz;
-
+    
     void parseVertex(List<Constant> env) {
         this.parsedX = this.parseCoord(x, env);
         this.parsedY = this.parseCoord(y, env);
@@ -53,10 +56,13 @@ public class Vertex {
         } catch (Exception e) {
             String trimmedExp = expression.trim();
             //System.out.println("Parsing expression: '" + trimmedExp + "'");
-            //Expression is assumed to be well-formed (left parens match with right parens
+            //Expression is assumed to be well-formed 
+            //(left parens match with right parens
             if(trimmedExp.charAt(0) == '(') { 
-                String parenTrimmed = trimmedExp.substring(3,trimmedExp.length());
-                String[] leftAndRight = separateLeftAndRight(parenTrimmed.trim());
+                String parenTrimmed = 
+                        trimmedExp.substring(3,trimmedExp.length());
+                String[] leftAndRight = 
+                        separateLeftAndRight(parenTrimmed.trim());
                 return parseCoord(leftAndRight[0], env) - 
                        parseCoord(leftAndRight[1], env);
             }
@@ -66,7 +72,8 @@ public class Vertex {
                         return constant.value;
                     }
                 }
-                System.out.println("ERROR: Constant " + expression + " not found");
+                System.out.println("ERROR: Constant " + 
+                        expression + " not found");
             }
         }
         return 0.0f;
@@ -82,7 +89,6 @@ public class Vertex {
         //System.out.println("Separating '" + expression + "'");
         String[] leftAndRight = new String[2];
         if(expression.startsWith("(")) {
-            //System.out.println("Found expression starting with left parenthesis");
             int unclosedLefts = 1;
             int i = 0;
             while(unclosedLefts > 0) {
@@ -98,7 +104,6 @@ public class Vertex {
             leftAndRight[1] = expression.substring(i+1, expression.length()-1);
         }
         else {
-            //System.out.println("Found expression not starting with left parenthesis");
             int firstSpace = -1;
             int i = 0;
             while(firstSpace<0) {
@@ -108,9 +113,9 @@ public class Vertex {
                 i++;
             }
             leftAndRight[0] = expression.substring(0, firstSpace);
-            leftAndRight[1] = expression.substring(firstSpace+1, expression.length()-1);
+            leftAndRight[1] = expression.substring(firstSpace+1, 
+                    expression.length()-1);
         }
-        //System.out.println("Separated '" + leftAndRight[0] + "' and '" + leftAndRight[1] + "'");
         return leftAndRight;
     }
     
@@ -119,10 +124,13 @@ public class Vertex {
      * world space.
      * @param width
      * @param height 
+     * @return  
      */
-    void toWCS(int width, int height) {
-        this.WCSx = Math.round(width * parsedX);
-        this.WCSy = Math.round(height * parsedY);
-        this.WCSz = 0;
+    public WCSvertex toWCS(int width, int height) {
+        int x = Math.round(width * parsedX);
+        int y = Math.round(height * parsedY);
+        int z = 0;
+        
+        return new WCSvertex(x,y,z);
     }
 }

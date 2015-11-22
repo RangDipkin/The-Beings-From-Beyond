@@ -79,7 +79,8 @@ public class ImageRepresentation {
         this.foreColor = foreColor;
         this.rawImgChar = rawImgChar;
         
-        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH][AtlasOfIndia.CHAR_PIXEL_HEIGHT];
+        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH]
+                        [AtlasOfIndia.CHAR_PIXEL_HEIGHT];
         
         int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
         int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
@@ -94,9 +95,10 @@ public class ImageRepresentation {
      */
     public ImageRepresentation(int foreColor, int backColor, int rawImgChar) {
         this.foreColor = foreColor;
-        this.backColor = backColor;             
+        this.backColor = backColor;
         this.rawImgChar = rawImgChar;
-        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH][AtlasOfIndia.CHAR_PIXEL_HEIGHT];
+        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH]
+                [AtlasOfIndia.CHAR_PIXEL_HEIGHT];
         
         int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
         int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
@@ -110,7 +112,8 @@ public class ImageRepresentation {
         this.foreColor = WHITE;
         this.rawImgChar = rawImgChar;
         
-        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH][AtlasOfIndia.CHAR_PIXEL_HEIGHT];
+        this.RGBMatrix = new int[AtlasOfIndia.CHAR_PIXEL_WIDTH]
+                [AtlasOfIndia.CHAR_PIXEL_HEIGHT];
         
         int srcPosX = rawImgChar % AtlasOfIndia.IMAGE_GRID_WIDTH;
         int srcPosY = rawImgChar / AtlasOfIndia.IMAGE_GRID_WIDTH;
@@ -144,14 +147,16 @@ public class ImageRepresentation {
      * bitmap image.
      */
     static ImageRepresentation[][] bmpToImRep(BufferedImage inBMP){
-        ImageRepresentation[][] finishedImRepMatrix = new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];
+        ImageRepresentation[][] finishedImRepMatrix = 
+                new ImageRepresentation[inBMP.getWidth()][inBMP.getHeight()];
         if((inBMP.getWidth() > AtlasOfIndia.WIDTH_IN_SLOTS)||
            (inBMP.getHeight() > AtlasOfIndia.HEIGHT_IN_SLOTS)){
             System.out.println("Yo, something's wrong with the title screen size.");
         }
         for(int i=0;i<inBMP.getWidth();i++){
             for(int j=0;j<inBMP.getHeight(); j++){
-                finishedImRepMatrix[i][j] = new ImageRepresentation(inBMP.getRGB(i,j),FILLED_CELL);
+                finishedImRepMatrix[i][j] = 
+                        new ImageRepresentation(inBMP.getRGB(i,j),FILLED_CELL);
             }
         }
         return finishedImRepMatrix;

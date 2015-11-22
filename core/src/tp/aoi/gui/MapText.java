@@ -39,7 +39,8 @@ public class MapText extends TextCollection implements MapRelativeItem {
       *        position is not explicitly assigned with GUIText.specY)
       * @param overlaidMap the map onto which this text is overlaid
     */
-    public MapText(int inactive, int mapX, int mapY, GameMap map, MainScreen screen) {
+    public MapText(int inactive, int mapX, int mapY, GameMap map, 
+            MainScreen screen) {
         this.inactiveColor = inactive;
         this.activeColor = CONTROL_ACTIVE_COLOR;
         this.mapX = mapX;
@@ -59,7 +60,8 @@ public class MapText extends TextCollection implements MapRelativeItem {
       *        position is not explicitly assigned with GUIText.specY)
       * @param overlaidMap the map onto which this text is overlaid
     */
-    public MapText(int inactive, int inputActive, int mapX, int mapY, GameMap map, MainScreen screen){
+    public MapText(int inactive, int inputActive, int mapX, int mapY, 
+            GameMap map, MainScreen screen){
         this.inactiveColor = inactive;
         this.activeColor   = inputActive;
         this.mapX = mapX;
@@ -96,7 +98,8 @@ public class MapText extends TextCollection implements MapRelativeItem {
     @Override
     public void resolveImmediateDesire(MovementDesire curr, GameMap map) {
         if(map == null) {
-            System.out.println("resolveImmediateDesire attempted on a null map");
+            System.out.println(
+                    "resolveImmediateDesire attempted on a null map");
             return;
         }
         Tile originTile = map.getTile(getMapX(),getMapY());
@@ -122,7 +125,8 @@ public class MapText extends TextCollection implements MapRelativeItem {
     public void overlayGUI(ImageRepresentation[][] mainImRepMatrix) {
         int width = getWidth();
         int height = getHeight();
-        ImageRepresentation[][] overlayMatrix = new ImageRepresentation[width][height];
+        ImageRepresentation[][] overlayMatrix = 
+                new ImageRepresentation[width][height];
         displayOnto(overlayMatrix);
         int[] viewArea = screen.viewArea();
         for(int overlayX = 0; overlayX < width; overlayX++) {
@@ -130,7 +134,8 @@ public class MapText extends TextCollection implements MapRelativeItem {
                 if(overlayMatrix[overlayX][overlayY] != null){
                     int adjustedX = getMapX()-viewArea[0];
                     int adjustedY = getMapY()-viewArea[1];
-                    mainImRepMatrix[adjustedX][adjustedY] = overlayMatrix[overlayX][overlayY];
+                    mainImRepMatrix[adjustedX][adjustedY] = 
+                            overlayMatrix[overlayX][overlayY];
                 }
             }
         }

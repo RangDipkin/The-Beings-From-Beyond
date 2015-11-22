@@ -1,0 +1,58 @@
+---
+rules:
+- !tp.aoi.grammars.TopologyRule
+   ## Entry Point
+   labels: 
+    - empty
+   output:
+    - entry
+
+- !tp.aoi.grammars.TopologyRule
+   ## entry->connecting rooms
+   labels: 
+    - entry_A
+   output:
+    - entry_A
+    - hallway_B
+    - entry_A-hallway_B
+    - hallway_C
+    - entry_A-hallway_C
+    - room_D
+    - entry_A-room_D
+    
+- !tp.aoi.grammars.TopologyRule
+   ## side halls->connecting hallway & room
+   labels:
+    - entry-hallway_A
+   output:
+    - entry-hallway_A
+    - room_B
+    - hallway_A-room_B
+    - hallway_C
+    - hallway_A-hallway_C
+    
+- !tp.aoi.grammars.TopologyRule
+   ## connect rooms
+   labels: 
+    - room_A
+    - room_A-hallway_C
+    - room_B
+    - room_B-hallway_D
+   output:
+    - room_A
+    - room_A-hallway_C
+    - room_B
+    - room_B-hallway_D
+    - room_A-room_B
+    
+- !tp.aoi.grammars.TopologyRule
+   ## connect hallways
+   labels: 
+    - hallway_A-hallway_B
+    - hallway_D-hallway_C
+    - hallway_B
+    - hallway_C
+   output:
+    - hallway_A-hallway_B
+    - hallway_D-hallway_B
+    - hallway_B

@@ -18,7 +18,6 @@
 package tp.aoi.generation;
 
 import tp.aoi.drawing.ImageRepresentation;
-import tp.aoi.grammars.Vertex;
 import java.util.HashSet;
 import tp.aoi.objects.GameMap;
 import tp.aoi.objects.ObjectTemplate;
@@ -27,13 +26,33 @@ import tp.aoi.objects.PrecedenceClass;
 import tp.aoi.objects.Tile;
 
 public class Room extends HashSet<PlacedObject>{
-    static final ImageRepresentation WHITE_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.WHITE, ImageRepresentation.FILLED_CELL);
-    static final ObjectTemplate WHITE_WALL_TEMPLATE = new ObjectTemplate("White Wall", WHITE_WALL_IMAGE, true, false, PrecedenceClass.NORMAL);
+    static final ImageRepresentation WHITE_WALL_IMAGE = 
+            new ImageRepresentation(ImageRepresentation.WHITE, 
+                    ImageRepresentation.FILLED_CELL);
+    static final ObjectTemplate WHITE_WALL_TEMPLATE = 
+            new ObjectTemplate("White Wall", WHITE_WALL_IMAGE, 
+                    true, false, PrecedenceClass.NORMAL);
 
-    static final ImageRepresentation GRAY_WALL_IMAGE  = new ImageRepresentation(ImageRepresentation.GRAY, ImageRepresentation.FILLED_CELL);
-    static final ObjectTemplate GRAY_WALL_TEMPLATE = new ObjectTemplate("Gray Wall", GRAY_WALL_IMAGE, true, false, PrecedenceClass.NORMAL);
+    static final ImageRepresentation GRAY_WALL_IMAGE = 
+            new ImageRepresentation(ImageRepresentation.GRAY, 
+                    ImageRepresentation.FILLED_CELL);
+    static final ObjectTemplate GRAY_WALL_TEMPLATE = 
+            new ObjectTemplate("Gray Wall", GRAY_WALL_IMAGE, 
+                    true, false, PrecedenceClass.NORMAL);
     
-    public Room() {
+    private String labels;
+    
+    //a record of a room's wall is useful for determining wall-lining doodad 
+    //placement
+    private HashSet<WCSlineSegment> wallLines;
+    
+    public Room(String labels) {
+        this.labels = labels;
+        this.wallLines = new HashSet<WCSlineSegment>();
+    }
+    
+    public String getLabels() {
+        return this.labels;
     }
     
     public void runWall(Tile inStart, Tile inEnd){
@@ -57,13 +76,16 @@ public class Room extends HashSet<PlacedObject>{
         int startX = smallX;
         
         if((start.getX() != end.getX()) && (end.getY() != end.getY())) {
-            System.out.println("createLineWall does not currently support diagonal walls");
+            System.out.println(
+                    "createLineWall does not currently support diagonal walls");
         }
         while(smallY <= bigY) {
             while(smallX <= bigX) {
                 if(!daMap.getTile(smallX,smallY).hasBlockingObject()) {
                     //wallType must be copied
-                    PlacedObject placedWall = GRAY_WALL_TEMPLATE.toPlacedObject(daMap.getTile(smallX,smallY));
+                    PlacedObject placedWall = 
+                            GRAY_WALL_TEMPLATE.toPlacedObject(
+                                    daMap.getTile(smallX,smallY));
                     this.add(placedWall);
                 }
                 smallX++;
@@ -73,7 +95,13 @@ public class Room extends HashSet<PlacedObject>{
         }
     } 
     
-    public void runWall(Vertex from, Vertex to, GameMap map) {
+    public void runWall(WCSvertex from, WCSvertex to, GameMap map) {
         runWall(map.getTile(from.WCSx, from.WCSy), map.getTile(to.WCSx,to.WCSy));
+        this.wallLines.add(new WCSlineSegment(from, to, 
+                "virtual line segment added during runWall"));
+    }
+    
+    public HashSet<WCSlineSegment> getWallLines() {
+        return this.wallLines;
     }
 }

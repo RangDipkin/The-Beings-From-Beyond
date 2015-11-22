@@ -66,7 +66,8 @@ public class FieldOfViewScan {
         {  -1,  -1,-0.5, 0.5,   1,   1, 0.5,-0.5}
     };
 
-    //the first number is a boolean which controls whether the slope or inverse slope is used
+    //the first number is a boolean which controls whether the slope or inverse 
+    // slope is used
     //-1 refers to inverse slope...1 refers to slope
     static final double[][] NEWENDSLOPE_CORNER = {
         {-0.5, 0.5,-0.5,-0.5, 0.5,-0.5, 0.5, 0.5},
@@ -90,29 +91,36 @@ public class FieldOfViewScan {
     public static void scanLine(int depth, double startSlope, double endSlope, 
                                 int octant,PlacedObject origin, int visRange, 
                                 GameMap handlingMap) {      
-        double bonusX = (Math.abs(BONUSES[0][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[0][octant]) : depth*BONUSES[0][octant];
-        double bonusY = (Math.abs(BONUSES[1][octant]) == 0.5)? Math.round(startSlope*depth*2*BONUSES[1][octant]) : depth*BONUSES[1][octant];    
+        double bonusX = 
+                (Math.abs(BONUSES[0][octant]) == 0.5) 
+                ? Math.round(startSlope*depth*2*BONUSES[0][octant]) 
+                : depth*BONUSES[0][octant];
+        double bonusY = (Math.abs(BONUSES[1][octant]) == 0.5) 
+                ? Math.round(startSlope*depth*2*BONUSES[1][octant]) 
+                : depth*BONUSES[1][octant];    
         double newStartSlope = startSlope;
         
-        PreciseCoordinate coords = new PreciseCoordinate(origin.getMapX() + bonusX  + 0.5, origin.getMapY() + bonusY  + 0.5);
-        while(getCurrentSlope(new PreciseCoordinate(
-                                           coords.getX() + NEWENDSLOPE_CORNER[0][octant], 
-                                           coords.getY() + NEWENDSLOPE_CORNER[1][octant]
-                                                   ),octant, origin
-                              ) > endSlope 
+        PreciseCoordinate coords = 
+                new PreciseCoordinate(origin.getMapX() + bonusX  + 0.5, 
+                        origin.getMapY() + bonusY  + 0.5);
+        while(getCurrentSlope(
+                new PreciseCoordinate(
+                    coords.getX() + NEWENDSLOPE_CORNER[0][octant], 
+                    coords.getY() + NEWENDSLOPE_CORNER[1][octant]
+                ),octant, origin
+              ) > endSlope 
                 && depth < visRange
              ) {
-//            System.out.println(new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant]) + "," + endSlope);
             if(handlingMap.isValidTile(coords) && 
-                    getDistance(coords,origin.getMapX(),origin.getMapY()) < visRange) {
-                newStartSlope = visibleAreaChecks(coords, depth, newStartSlope, endSlope, origin, handlingMap, octant, visRange);
+                    getDistance(coords,origin.getMapX(),
+                            origin.getMapY()) < visRange) {
+                newStartSlope = visibleAreaChecks(coords, depth, newStartSlope, 
+                        endSlope, origin, handlingMap, octant, visRange);
             }
             //go to the next tile
             coords.addToX((double)INCREMENTS[0][octant]);
             coords.addToY((double)INCREMENTS[1][octant]); 
-//            System.out.println(new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant]) + "," + endSlope);
-//            System.out.println(getCurrentSlope(new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant])));
-        }  
+        }
     }
     
     /**
@@ -135,50 +143,64 @@ public class FieldOfViewScan {
                                              int visRange) {
         handlingMap.getTile(coords).doFOVaction(origin, depth == 1); 
         
-        boolean thisTileIsBlocking  = handlingMap.getTile(coords).hasBlockingObject(); 
-        boolean priorTileIsBlocking = getPriorTile(coords, handlingMap, octant).hasBlockingObject(); 
+        boolean thisTileIsBlocking  = 
+                handlingMap.getTile(coords).hasBlockingObject(); 
+        boolean priorTileIsBlocking = 
+                getPriorTile(coords, handlingMap, octant).hasBlockingObject(); 
         
         double newStartSlope = startSlope;
         
-        PreciseCoordinate endingCorner  = new PreciseCoordinate(coords.getX() - NEWENDSLOPE_CORNER[0][octant], coords.getY() - NEWENDSLOPE_CORNER[1][octant]);
-        PreciseCoordinate leadingCorner = new PreciseCoordinate(coords.getX() + NEWENDSLOPE_CORNER[0][octant], coords.getY() + NEWENDSLOPE_CORNER[1][octant]);
-        PreciseCoordinate bottomRight = new PreciseCoordinate(coords.getX() - NEWSTARTSLOPE_CORNER[0][octant], coords.getY() - NEWSTARTSLOPE_CORNER[1][octant]);
-        
-//        System.out.println("endingCorner:" + endingCorner);
-//        System.out.println("coords:" + coords + "################################################");
-//        System.out.println("endslope: " + endSlope);
-//        System.out.println("bottomRight: " + bottomRight + ", slopeTo = " + getCurrentSlope(bottomRight));
+        PreciseCoordinate endingCorner  = 
+                new PreciseCoordinate(
+                        coords.getX() - NEWENDSLOPE_CORNER[0][octant], 
+                        coords.getY() - NEWENDSLOPE_CORNER[1][octant]);
+        PreciseCoordinate leadingCorner = 
+                new PreciseCoordinate(
+                        coords.getX() + NEWENDSLOPE_CORNER[0][octant], 
+                        coords.getY() + NEWENDSLOPE_CORNER[1][octant]);
+        PreciseCoordinate bottomRight = 
+                new PreciseCoordinate(
+                        coords.getX() - NEWSTARTSLOPE_CORNER[0][octant], 
+                        coords.getY() - NEWSTARTSLOPE_CORNER[1][octant]);
         
         if (!thisTileIsBlocking && priorTileIsBlocking){
-//            System.out.println("1");
-            newStartSlope = slopeWRTQuadrant(coords.getX() + NEWSTARTSLOPE_CORNER[0][octant],
-                                             coords.getY() + NEWSTARTSLOPE_CORNER[1][octant], 
-                                             origin.getMapX(),
-                                             origin.getMapY(),
-                                             octant);
+            newStartSlope = slopeWRTQuadrant(
+                    coords.getX() + NEWSTARTSLOPE_CORNER[0][octant],
+                    coords.getY() + NEWSTARTSLOPE_CORNER[1][octant], 
+                    origin.getMapX(),
+                    origin.getMapY(),
+                    octant);
         }
         if(thisTileIsBlocking && !priorTileIsBlocking) {              
 //            System.out.println("2");
             double newEndSlope = getCurrentSlope(leadingCorner, octant, origin);
             if (newEndSlope <= START_STARTSLOPE) {
-                scanLine(depth + 1, startSlope, newEndSlope, octant, origin, visRange, handlingMap);
+                scanLine(depth + 1, startSlope, newEndSlope, octant, origin, 
+                        visRange, handlingMap);
             }     
         }
         else if (getCurrentSlope(bottomRight, octant, origin) <= endSlope && 
                 !thisTileIsBlocking) {
 //            System.out.println("3");
             //Math.max(getCurrentSlope(endingCorner), 0)
-            scanLine(depth + 1, newStartSlope, endSlope, octant, origin, visRange, handlingMap);
+            scanLine(depth + 1, newStartSlope, endSlope, octant, origin, 
+                    visRange, handlingMap);
         }
 //        System.out.println("!");
         
         return newStartSlope;
     }
     
-    static double getCurrentSlope(PreciseCoordinate coords, int octant, PlacedObject origin) {
+    static double getCurrentSlope(PreciseCoordinate coords, int octant, 
+            PlacedObject origin) {
         double currentSlope;    
         //if the current octant is in Quadrants I or III, use the standard slope
-        currentSlope = slopeWRTQuadrant(coords.getX(), coords.getY(),(double)origin.getMapX()+0.5,(double)origin.getMapY()+0.5, octant);
+        currentSlope = slopeWRTQuadrant(
+                coords.getX(), 
+                coords.getY(),
+                (double)origin.getMapX()+0.5,
+                (double)origin.getMapY()+0.5, 
+                octant);
 //        System.out.println("slope = " + currentSlope + "," + coords);   
         return currentSlope;
     }
@@ -186,7 +208,8 @@ public class FieldOfViewScan {
     static double getDistance(PreciseCoordinate coords, int originX, int originY) {
         double srcX = (double)originX;
         double srcY = (double)originY;
-        return Math.sqrt(Math.pow((coords.getX()-originX),2) + Math.pow((coords.getY()-originY),2));
+        return Math.sqrt(Math.pow((coords.getX()-originX),2) 
+                + Math.pow((coords.getY()-originY),2));
     }
         
     /**
@@ -201,9 +224,9 @@ public class FieldOfViewScan {
      *        (slopes are forced to become positive)
      * @return the slope
      */
-    static double getSlope(double x1, double y1, double x2, double y2, int neg) {  
+    static double getSlope(double x1, double y1, 
+            double x2, double y2, int neg) {  
         if(x1-x2 != 0){
-            //System.out.println(neg  + "*(" + y1 + "-" + y2 + ")/(" + x1 + "-" + x2 +")");
             return neg * (y1-y2)/(x1-x2);
         }
         else {
@@ -222,7 +245,8 @@ public class FieldOfViewScan {
      *        (slopes are forced to become positive)
      * @return the inverse slope
      */
-    static double getInverseSlope(double x1, double y1, double x2, double y2, int neg) {
+    static double getInverseSlope(double x1, double y1, double x2, double y2, 
+            int neg) {
         double slope = getSlope(x1,y1,x2,y2, neg);
         if (slope != 0) {
             return (1.0 / slope);
@@ -241,7 +265,8 @@ public class FieldOfViewScan {
      * @param octant the origin in which the scan takes place
      * @return the slope or inverse slope
      */
-    static double slopeWRTQuadrant(double x1, double y1, double x2, double y2, int octant) {
+    static double slopeWRTQuadrant(double x1, double y1, double x2, double y2, 
+            int octant) {
         if(INVERSE_SLOPE_HANDLER[octant] < 0){
             return getSlope(x1,y1,x2,y2,NEGATIVE_SLOPE_HANDLER[octant]);
         }
@@ -250,8 +275,10 @@ public class FieldOfViewScan {
         }
     }
 
-    static public Tile getPriorTile(PreciseCoordinate coords, GameMap handlingMap, int octant) {
-        if(handlingMap.isValidTile(coords.getX()-(double)INCREMENTS[0][octant], coords.getY()-(double)INCREMENTS[1][octant])) {                
+    static public Tile getPriorTile(PreciseCoordinate coords, 
+            GameMap handlingMap, int octant) {
+        if(handlingMap.isValidTile(coords.getX()-(double)INCREMENTS[0][octant], 
+                coords.getY()-(double)INCREMENTS[1][octant])) {                
             double x = Math.floor(coords.getX()-INCREMENTS[0][octant]);
             double y = Math.floor(coords.getY()-INCREMENTS[1][octant]);
             

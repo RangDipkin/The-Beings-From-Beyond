@@ -49,7 +49,8 @@ public class InspectScreen extends MainScreen {
         handledMap = inMap;
         int targetStartX = handledMap.mainChar.getMapX();
         int targetStartY = handledMap.mainChar.getMapY();
-        MapText target = new MapText(ImageRepresentation.YELLOW, targetStartX , targetStartY, handledMap, this);
+        MapText target = new MapText(ImageRepresentation.YELLOW, 
+                targetStartX, targetStartY, handledMap, this);
         target.add(new GUIText("X"));
         activeGUIElements.add(target);
         trackedObject = target;
@@ -114,12 +115,14 @@ public class InspectScreen extends MainScreen {
 
             case Keys.ENTER:
                 if(inspectedTileDisplay.size() > 0) {
-                    stepScreenForwards(new DetailedInspectionScreen(getInspectedObject())); 
+                    stepScreenForwards(new DetailedInspectionScreen(
+                            getInspectedObject())); 
                 }
                 break;
 
             default:
-                System.out.println("(Inspect Screen) Some other key was pressed! ");
+                System.out.println(
+                        "(Inspect Screen) Some other key was pressed! ");
                 break;
         }
     }
@@ -135,7 +138,8 @@ public class InspectScreen extends MainScreen {
      */
     void moveTrackedObject(Compass dir, GameMap map) {  
         trackedObject.resolveImmediateDesire(dir, map);
-        inspectedTile = map.getTile(trackedObject.getMapX(), trackedObject.getMapY());
+        inspectedTile = map.getTile(trackedObject.getMapX(), 
+                trackedObject.getMapY());
         //clean up the previous display
         cleanDisplay();
         displayInspectedTile(inspectedTile);
@@ -155,17 +159,22 @@ public class InspectScreen extends MainScreen {
      */
     private void displayInspectedTile(Tile inspectedTile) {
         if (inspectedTile.isVisible()){
-            inspectedTileDisplay = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR, TextCollection.DEFAULT_ACTIVE_COLOR, 0, 0);
+            inspectedTileDisplay = new ScreenText(
+                    TextCollection.DEFAULT_INACTIVE_COLOR, 
+                    TextCollection.DEFAULT_ACTIVE_COLOR, 0, 0);
             for(int i = 0; i < inspectedTile.size(); i++) {
                 String GUIEntryName = inspectedTile.get(i).getName();
                 GUIText newGUIEntry = new GUIText(GUIEntryName);
                 inspectedTileDisplay.add(newGUIEntry, inspectedTile.get(i));
             }
             if(inspectedTile.size() > 1) {
-                inspectedTileDisplay.add(new AncillaryGUIText("Use + and - to navigate this list"));
+                inspectedTileDisplay.add(new AncillaryGUIText(
+                        "Use + and - to navigate this list"));
             }  
-            inspectedTileDisplay.add(new AncillaryGUIText("Press Enter for a detailed description"));
-            inspectedTileDisplay.add(new AncillaryGUIText("Press Escape to exit inspection mode"));
+            inspectedTileDisplay.add(new AncillaryGUIText(
+                    "Press Enter for a detailed description"));
+            inspectedTileDisplay.add(new AncillaryGUIText(
+                    "Press Escape to exit inspection mode"));
             activeGUIElements.add(inspectedTileDisplay);
         }
         else {

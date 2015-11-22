@@ -38,16 +38,22 @@ public class DropScreen extends InventoryScreen {
     DropScreen(PlacedObject inHoldingObject) {
         this.holdingObject = inHoldingObject;
         Inventory myInventory = holdingObject.myInventory;
-        inventoryGUI = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR,TextCollection.DEFAULT_ACTIVE_COLOR, 0,0);
+        inventoryGUI = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR,
+                TextCollection.DEFAULT_ACTIVE_COLOR, 0,0);
         for(int i = 0; i < myInventory.size(); i++){
-            inventoryGUI.add(new GUIText(myInventory.get(i).getName()) ,myInventory.get(i));
+            inventoryGUI.add(new GUIText(myInventory.get(i).getName()),
+                    myInventory.get(i));
         }
         if(myInventory.size() > 1) {
-                inventoryGUI.add(new AncillaryGUIText("Use + and - to navigate this list"));
+                inventoryGUI.add(new AncillaryGUIText(
+                        "Use + and - to navigate this list"));
         }
-        inventoryGUI.add(new AncillaryGUIText("Press 'd' or Enter to drop the current item"));  
-        inventoryGUI.add(new AncillaryGUIText("Press 'i' for a detailed description of the current item"));        
-        inventoryGUI.add(new AncillaryGUIText("Press Escape to exit drop mode"));
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press 'd' or Enter to drop the current item"));  
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press 'i' for a detailed description of the current item"));        
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press Escape to exit drop mode"));
         
         activeGUIElements.add(inventoryGUI);
     }
@@ -76,7 +82,9 @@ public class DropScreen extends InventoryScreen {
                 break;
 
             case Keys.I:
-                stepScreenForwards(new DetailedInspectionScreen(inventoryGUI.getCurrentLogicalObject()));
+                stepScreenForwards(
+                        new DetailedInspectionScreen(
+                                inventoryGUI.getCurrentLogicalObject()));
                 break;
         } 
     }

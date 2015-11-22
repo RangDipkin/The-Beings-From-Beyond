@@ -1,332 +1,141 @@
 ---
 constants: 
-   - !tp.aoi.grammars.Constant {name: left, value: 0.21}
-   - !tp.aoi.grammars.Constant {name: right, value: 0.78}
-   - !tp.aoi.grammars.Constant {name: hallWidth, value: 0.18}
-   - !tp.aoi.grammars.Constant {name: committeeRoomsLeft, value: 0.46}
-   - !tp.aoi.grammars.Constant {name: readingRoomsRight, value: 0.39}
-   - !tp.aoi.grammars.Constant {name: thinHallway, value: 0.16}
-   - !tp.aoi.grammars.Constant {name: thinHallwayHeight, value: 0.63}
-   - !tp.aoi.grammars.Constant {name: bigWindowRoomHeight, value: 0.25}
-   - !tp.aoi.grammars.Constant {name: slantRoomTop, value: 0.38}
-   - !tp.aoi.grammars.Constant {name: slantRoomBottom, value: 0.60}
-   - !tp.aoi.grammars.Constant {name: slightlySmaller, value: 0.95}
-   - !tp.aoi.grammars.Constant {name: horizontalBisector, value: 0.50}
-   - !tp.aoi.grammars.Constant {name: largeCommitteeBisector, value: 0.625}
 shapeRules: 
- - !tp.aoi.grammars.ShapeRule
-   name: facade_af 
-   label: afpattern
-   constants: 
-   repeat:   
-   constraints:  
-   shapeGroups: 
-   output:
-     !tp.aoi.grammars.Output
-     shapeGroupCommands:
-     shapeSpecs:
-       - !tp.aoi.grammars.ShapeSpec 
-         name: north corridor
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: left,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: right,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: right,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: left,y: hallWidth,z: 0}
-         passagePlacers:
-             - !tp.aoi.grammars.PassagePlacer
-               startVert: *NE
-               endVert:   *SE
-               passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.5
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: south corridor
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: left,y: (- slightlySmaller hallWidth),z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: right,y: (- slightlySmaller hallWidth),z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: right,y: slightlySmaller,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: left,y: slightlySmaller,z: 0}
-         passagePlacers:
-             - !tp.aoi.grammars.PassagePlacer
-               startVert: *NE
-               endVert:   *SE
-               passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.5
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: entrance halls
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex {x: right,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex {x: 1,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex {x: 1,y: slightlySmaller,z: 0}
-           - !tp.aoi.grammars.Vertex {x: right,y: slightlySmaller,z: 0}
-         passagePlacers:
-       - !tp.aoi.grammars.ShapeSpec
-         name: north small committee rooms
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: committeeRoomsLeft,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: largeCommitteeBisector,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: largeCommitteeBisector,y: horizontalBisector,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: committeeRoomsLeft,y: horizontalBisector,z: 0}
-         passagePlacers:
-             - !tp.aoi.grammars.PassagePlacer
-               startVert: *NW
-               endVert:   *NE
-               passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-             - !tp.aoi.grammars.PassagePlacer
-               startVert: *SW
-               endVert:   *SE
-               passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: south small committee rooms
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: committeeRoomsLeft,y: horizontalBisector,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: largeCommitteeBisector,y: horizontalBisector,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: largeCommitteeBisector,y: (- slightlySmaller hallWidth),z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: committeeRoomsLeft,y: (- slightlySmaller hallWidth),z: 0}
-         passagePlacers:
-             - !tp.aoi.grammars.PassagePlacer
-               startVert: *NW
-               endVert:   *NE
-               passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-             - !tp.aoi.grammars.PassagePlacer
-               startVert: *SW
-               endVert:   *SE
-               passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: large committee rooms
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: largeCommitteeBisector,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: right,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: right,y: (- slightlySmaller hallWidth),z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: largeCommitteeBisector,y: (- slightlySmaller hallWidth),z: 0}
-         passagePlacers:
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NE
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.10
-                    passageType: MEDIUM_ARCH
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: north reading room
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: left,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: readingRoomsRight,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: readingRoomsRight,y: horizontalBisector,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: left,y: horizontalBisector,z: 0}
-         passagePlacers:
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NW
-              endVert:   *SW
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NE
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *SW
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.85
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: south reading rooms
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: left,y: horizontalBisector,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: readingRoomsRight,y: horizontalBisector,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: readingRoomsRight,y: (- slightlySmaller hallWidth),z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: left,y: (- slightlySmaller hallWidth),z: 0}
-         passagePlacers:
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NW
-              endVert:   *SW
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.20
-                    passageType: MEDIUM_ARCH
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NE
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.20
-                    passageType: MEDIUM_ARCH
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NW
-              endVert:   *NE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.85
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: west division
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: 0,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: left,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: left,y: 1,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: 0,y: 1,z: 0}
-         passagePlacers:
-       - !tp.aoi.grammars.ShapeSpec
-         name: closet
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: thinHallway,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: left,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: left,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: thinHallway,y: hallWidth,z: 0}
-         passagePlacers:
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *NE
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.5
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: thin vertical hallway
-         labelControl: terminal
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex {x: thinHallway,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex {x: left,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex {x: left,y: thinHallwayHeight,z: 0}
-           - !tp.aoi.grammars.Vertex {x: thinHallway,y: thinHallwayHeight,z: 0}
-         passagePlacers:
-       - !tp.aoi.grammars.ShapeSpec
-         name: northwest window room
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: 0,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: thinHallway,y: 0,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: thinHallway,y: bigWindowRoomHeight,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: 0,y: bigWindowRoomHeight,z: 0}
-         passagePlacers:
-            - !tp.aoi.grammars.PassagePlacer
-              startVert: *SW
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.25
-                    passageType: MEDIUM_ARCH
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.75
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-          name: western horizontal hallway
-          terminal: true
-          labels:
-          vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: 0,y: bigWindowRoomHeight,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: thinHallway,y: bigWindowRoomHeight,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: thinHallway,y: slantRoomTop,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: 0,y: slantRoomTop,z: 0}
-          passagePlacers:
-             - !tp.aoi.grammars.PassagePlacer
-              startVert: *NE
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.5
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-          name: central corridor
-          terminal: true
-          labels:
-          vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: readingRoomsRight,  y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: committeeRoomsLeft,y: hallWidth,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: committeeRoomsLeft,y: (- slightlySmaller hallWidth),z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: readingRoomsRight,  y: (- slightlySmaller hallWidth),z: 0}
-          passagePlacers:
-              - !tp.aoi.grammars.PassagePlacer
-                startVert: *NW
-                endVert:   *NE
-                passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.25
-                    passageType: MEDIUM_ARCH
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.75
-                    passageType: MEDIUM_ARCH
-              - !tp.aoi.grammars.PassagePlacer
-                startVert: *SW
-                endVert:   *SE
-                passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.25
-                    passageType: MEDIUM_ARCH
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.75
-                    passageType: MEDIUM_ARCH
-       - !tp.aoi.grammars.ShapeSpec
-         name: central west rooms (also called slantRoom)
-         terminal: true
-         labels:
-         vertices:
-           - !tp.aoi.grammars.Vertex &NW {x: 0,y: slantRoomTop,z: 0}
-           - !tp.aoi.grammars.Vertex &NE {x: thinHallway,y: slantRoomTop,z: 0}
-           - !tp.aoi.grammars.Vertex &SE {x: thinHallway,y: slantRoomBottom,z: 0}
-           - !tp.aoi.grammars.Vertex &SW {x: 0,y: slantRoomBottom,z: 0}
-         passagePlacers:
-             - !tp.aoi.grammars.PassagePlacer
-              startVert: *NW
-              endVert:   *NE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.25
-                    passageType: MEDIUM_ARCH
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.90
-                    passageType: MEDIUM_ARCH
-             - !tp.aoi.grammars.PassagePlacer
-              startVert: *NE
-              endVert:   *SE
-              passages:
-                  - !tp.aoi.grammars.Passage
-                    parameter: 0.50
-                    passageType: MEDIUM_ARCH
+    
+# - !tp.aoi.grammars.ShapeRule
+#   name: mega-split
+#   label: empty
+#   constants:
+#      - !tp.aoi.grammars.Constant {name: left, value: 0.21}
+#      - !tp.aoi.grammars.Constant {name: slightlySmaller, value: 0.95}
+#   constraints:  
+#   shapeGroups: 
+#   output:
+#      !tp.aoi.grammars.Output
+#      shapeGroupCommands:
+#      shapeSpecs:
+#       - !tp.aoi.grammars.ShapeSpec 
+#         name: western division
+#         labels: 
+#            - !tp.aoi.grammars.Label {name: west_division, weight: 1, terminal: false}
+#         vertices:
+#           - !tp.aoi.grammars.Vertex &NW {x: 0,y: 0,z: 0}
+#           - !tp.aoi.grammars.Vertex &NE {x: left,y: 0,z: 0}
+#           - !tp.aoi.grammars.Vertex &SE {x: left,y: 1,z: 0}
+#           - !tp.aoi.grammars.Vertex &SW {x: 0,y: 1,z: 0}
+#         passagePlacers:
+#       - !tp.aoi.grammars.ShapeSpec 
+#         name: eastern division
+#         labels: 
+#            - !tp.aoi.grammars.Label {name: east_division, weight: 1, terminal: false}
+#         vertices:
+#           - !tp.aoi.grammars.Vertex &NW {x: left,y: 0,z: 0}
+#           - !tp.aoi.grammars.Vertex &NE {x: 1,   y: 0,z: 0}
+#           - !tp.aoi.grammars.Vertex &SE {x: 1,   y: slightlySmaller,z: 0}
+#           - !tp.aoi.grammars.Vertex &SW {x: left,y: slightlySmaller,z: 0}
+# 
+# - !tp.aoi.grammars.ShapeRule
+#   name: NW-SW division
+#   label: west_division
+#   constants:
+#       - !tp.aoi.grammars.Constant {name: NW-SWdivider, value: 0.60}
+#   constraints:  
+#   shapeGroups: 
+#   output:
+#      !tp.aoi.grammars.Output
+#      shapeGroupCommands:
+#      shapeSpecs:
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: northwest division
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: nw_division, weight: 1, terminal: false}
+#            vertices:
+#            - !tp.aoi.grammars.Vertex &NW {x: 0,y: 0,z: 0}
+#            - !tp.aoi.grammars.Vertex &NE {x: 1,y: 0,z: 0}
+#            - !tp.aoi.grammars.Vertex &SE {x: 1,y: NW-SWdivider,z: 0}
+#            - !tp.aoi.grammars.Vertex &SW {x: 0,y: NW-SWdivider,z: 0}
+#            passagePlacers:
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: southwest division
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: sw_division, weight: 1, terminal: false}
+#            vertices:
+#            - !tp.aoi.grammars.Vertex &NW {x: 0,y: NW-SWdivider,z: 0}
+#            - !tp.aoi.grammars.Vertex &NE {x: 1,y: NW-SWdivider,z: 0}
+#            - !tp.aoi.grammars.Vertex &SE {x: 1,y: 1,z: 0}
+#            - !tp.aoi.grammars.Vertex &SW {x: 0,y: 1,z: 0}
+#                
+# - !tp.aoi.grammars.ShapeRule
+#   name: 90 degree clockwise T split
+#   label: nw_division
+#   constants:
+#       - !tp.aoi.grammars.Constant {name: thinHallway, value: 0.84}
+#   constraints:  
+#       - "$hallwayWidth = 2"
+#   shapeGroups: 
+#   output:
+#      !tp.aoi.grammars.Output
+#      shapeGroupCommands:
+#      shapeSpecs:
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: north room
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: wide_room, weight: 1, terminal: false}
+#            vertices:
+#            - !tp.aoi.grammars.Vertex &NW {x: 0,y: 0,z: 0}
+#            - !tp.aoi.grammars.Vertex &NE {x: (- 1 $hallwayWidth),y: (/ (- 1 $hallwayWidth) 2),z: 0}
+#            - !tp.aoi.grammars.Vertex &SE {x: (- 1 $hallwayWidth),y: (/ (- 1 $hallwayWidth) 2),z: 0}
+#            - !tp.aoi.grammars.Vertex &SW {x: 0,y: 1,z: 0}
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: horizontal hallway
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: hh, weight: 1, terminal: true}
+#            vertices:
+#            - !tp.aoi.grammars.Vertex &NW {x: 0,                  y: (/ (- 1 $hallwayWidth) 2),z: 0}
+#            - !tp.aoi.grammars.Vertex &NE {x: (- 1 $hallwayWidth),y: (/ (- 1 $hallwayWidth) 2),z: 0}
+#            - !tp.aoi.grammars.Vertex &SE {x: (- 1 $hallwayWidth),y: (+ (/ (- 1 $hallwayWidth) 2) $hallwayWidth),z: 0}
+#            - !tp.aoi.grammars.Vertex &SW {x: 0,                  y: (+ (/ (- 1 $hallwayWidth) 2) $hallwayWidth),z: 0}
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: south room
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: wide_room, weight: 1, terminal: false}
+#            vertices:
+#            - !tp.aoi.grammars.Vertex &NW {x: 0,                  y: (+ (/ (- 1 $hallwayWidth) 2) $hallwayWidth),z: 0}
+#            - !tp.aoi.grammars.Vertex &NE {x: (- 1 $hallwayWidth),y: (+ (/ (- 1 $hallwayWidth) 2) $hallwayWidth),z: 0}
+#            - !tp.aoi.grammars.Vertex &SE {x: (- 1 $hallwayWidth),y: 1,z: 0}
+#            - !tp.aoi.grammars.Vertex &SW {x: 0,                  y: 1,z: 0}
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: vertical hallway
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: vh, weight: 1, terminal: false}
+#            vertices:
+#            - !tp.aoi.grammars.Vertex &NW {x: 0,                  y: 0,z: 0}
+#            - !tp.aoi.grammars.Vertex &NE {x: (- 1 $hallwayWidth),y: 0,z: 0}
+#            - !tp.aoi.grammars.Vertex &SE {x: (- 1 $hallwayWidth),y: 1,z: 0}
+#            - !tp.aoi.grammars.Vertex &SW {x: 0,                  y: 1,z: 0}
+# 
+# - !tp.aoi.grammars.ShapeRule
+#   name: wide room split
+#   label: wide_room
+#   constants:
+#   constraints:  
+#   shapeGroups: 
+#   output:
+#      !tp.aoi.grammars.Output
+#      shapeGroupCommands:
+#      shapeSpecs:
+#          - !tp.aoi.grammars.ShapeSpec 
+#            name: north room
+#            labels: 
+#                - !tp.aoi.grammars.Label {name: split_room, weight: 0.7, terminal: false}
+#                - !tp.aoi.grammars.Label {name: don't_split, weight: 0.3, terminal: true}
+#            vertices:
+#                
+#doodadRules:
+# - !tp.aoi.grammars.ShapeRule
+#   name: bookcase room
+#   label: BOOKCASE_ROOM
+#   constants:  
+#   constraints:  
+#   shapeGroups: 
+#   output:

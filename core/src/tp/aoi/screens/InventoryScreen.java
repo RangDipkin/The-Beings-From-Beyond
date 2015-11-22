@@ -39,18 +39,26 @@ public class InventoryScreen extends Screen {
     
     InventoryScreen(PlacedObject inHoldingObject) {
         this.holdingObject = inHoldingObject;
-        inventoryGUI = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR,TextCollection.DEFAULT_ACTIVE_COLOR, 0,0);
+        inventoryGUI = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR,
+                TextCollection.DEFAULT_ACTIVE_COLOR, 0,0);
         for(int i = 0; i < holdingObject.myInventory.size(); i++){
-            inventoryGUI.add(new GUIText(holdingObject.myInventory.get(i).getName()) , holdingObject.myInventory.get(i));
+            inventoryGUI.add(new GUIText(
+                    holdingObject.myInventory.get(i).getName()), 
+                    holdingObject.myInventory.get(i));
         }
         
         if(holdingObject.myInventory.size() > 1) {
-            inventoryGUI.add(new AncillaryGUIText("Use + and - to navigate this list"));
+            inventoryGUI.add(new AncillaryGUIText(
+                    "Use + and - to navigate this list"));
         }  
-        inventoryGUI.add(new AncillaryGUIText("Press Enter for a detailed description of the current item"));
-        inventoryGUI.add(new AncillaryGUIText("Press 't' to throw the current item"));
-        inventoryGUI.add(new AncillaryGUIText("Press 'd' to drop the current item"));
-        inventoryGUI.add(new AncillaryGUIText("Press Escape to exit inventory mode"));
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press Enter for a detailed description of the current item"));
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press 't' to throw the current item"));
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press 'd' to drop the current item"));
+        inventoryGUI.add(new AncillaryGUIText(
+                "Press Escape to exit inventory mode"));
         activeGUIElements.add(inventoryGUI);
     }
     
@@ -85,7 +93,8 @@ public class InventoryScreen extends Screen {
                 break;
                 
             case Keys.ENTER:
-                stepScreenForwards(new DetailedInspectionScreen(inventoryGUI.getCurrentLogicalObject()));
+                stepScreenForwards(new DetailedInspectionScreen(
+                        inventoryGUI.getCurrentLogicalObject()));
                 break;
         } 
     }

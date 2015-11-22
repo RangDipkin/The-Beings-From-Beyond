@@ -37,10 +37,12 @@ import tp.aoi.objects.PlacedObject;
 import tp.aoi.objects.Tile;
 
 public class GrabScreen extends MainScreen{
-    ScreenText grabbableItemGUIOverlay = new ScreenText(TextCollection.DEFAULT_INACTIVE_COLOR, TextCollection.DEFAULT_ACTIVE_COLOR, 0, 0);
+    ScreenText grabbableItemGUIOverlay = new ScreenText(
+            TextCollection.DEFAULT_INACTIVE_COLOR, 
+            TextCollection.DEFAULT_ACTIVE_COLOR, 0, 0);
     PlacedObject grabber;
     
-    GrabScreen(GameMap inMap, PlacedObject inGrabber) {     
+    GrabScreen(GameMap inMap, PlacedObject inGrabber) {
         handledMap = inMap;
         grabber = inGrabber;
         trackedObject = inGrabber;
@@ -62,7 +64,8 @@ public class GrabScreen extends MainScreen{
                 break;
 
             case Keys.ENTER:
-                grabber.grabItem(grabbableItemGUIOverlay.getCurrentLogicalObject());
+                grabber.grabItem(
+                        grabbableItemGUIOverlay.getCurrentLogicalObject());
                 stepScreenBackwards();
                 break;
         }
@@ -90,7 +93,9 @@ public class GrabScreen extends MainScreen{
         }
         else {
             for(int i = 0; i < grabbableItems.size(); i++) {
-                grabbableItemGUIOverlay.add(new GUIText(grabbableItems.get(i).getName()) , grabbableItems.get(i));
+                grabbableItemGUIOverlay.add(new GUIText(
+                        grabbableItems.get(i).getName()), 
+                        grabbableItems.get(i));
             }
             grabbableItemGUIOverlay.add(new AncillaryGUIText("Use + and - to navigate this list"));
             grabbableItemGUIOverlay.add(new AncillaryGUIText("Press Enter to pick up the selected item"));

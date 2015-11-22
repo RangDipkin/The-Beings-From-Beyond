@@ -17,9 +17,9 @@
  * GUIText.java
  * 
  * A GUIText object is basically just a string with additional functionality for
- * distinguishing between mainstream textString items and ancillary textString items (usually
- * ancillary textString is used for information related to the ChoiceList to which the
- * GUIText is linked)
+ * distinguishing between mainstream textString items and ancillary textString 
+ * items (usually ancillary textString is used for information related to the 
+ * ChoiceList to which the GUIText is linked)
  */
 package tp.aoi.gui;
 

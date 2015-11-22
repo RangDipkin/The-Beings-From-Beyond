@@ -8,7 +8,13 @@
     </open-files>
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-      <group/>
+      <group>
+        <file>file:/C:/Users/Travis/Desktop/Atlas-Of-India/core/src/tp/aoi/grammars/TopologyGrammar.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Atlas-Of-India/core/src/tp/aoi/grammars/TopologyRule.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Atlas-Of-India/core/src/tp/aoi/grammars/YAMLparser.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Atlas-Of-India/core/src/tp/aoi/generation/Building.java</file>
+        <file>file:/C:/Users/Travis/Desktop/Atlas-Of-India/core/src/tp/aoi/generation/Room.java</file>
+      </group>
     </open-files>
   </auxiliary>
 </gradle-project-properties>

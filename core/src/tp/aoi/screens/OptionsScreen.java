@@ -28,7 +28,8 @@ import tp.aoi.event.GameEvent;
 
 public class OptionsScreen extends Screen {
     public OptionsScreen() {
-        ScreenText placeholder = new ScreenText(TextCollection.DEFAULT_ACTIVE_COLOR, 37,0);
+        ScreenText placeholder = 
+                new ScreenText(TextCollection.DEFAULT_ACTIVE_COLOR, 37,0);
         placeholder.add(new GUIText("OPTIONS"));
         
         activeGUIElements.add(placeholder);

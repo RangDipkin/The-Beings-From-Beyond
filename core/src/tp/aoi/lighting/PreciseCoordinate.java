@@ -28,7 +28,7 @@ public class PreciseCoordinate {
     double x;
     double y;
     
-    PreciseCoordinate(double x, double y){
+    public PreciseCoordinate(double x, double y){
         this.x = x;
         this.y = y;
     }

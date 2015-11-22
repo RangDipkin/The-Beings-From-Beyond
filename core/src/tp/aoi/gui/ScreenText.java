@@ -23,7 +23,8 @@ public class ScreenText extends TextCollection {
     private int screenX, screenY;
     
     /**
-      * Basic Constructor for TextCollection for text which does not change colors.
+      * Basic Constructor for TextCollection for text which does not change 
+      * colors.
       * @param inInactive color of the text
       * @param x position of upper-left corner of the list (assuming 
       *        position is not explicitly assigned with GUIText.specX)
